@@ -21,12 +21,10 @@
 
   const dispatch = createEventDispatcher();
 
-  let element: HTMLDivElement;
-
   const { map: mapInstance } = createMapContext();
   $: map = $mapInstance;
 
-  onMount(() => {
+  function createMap(element: HTMLDivElement) {
     $mapInstance = new Map({
       container: element,
       style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
@@ -55,20 +53,20 @@
       zoom = ev.target.getZoom();
     });
 
-    return () => {
-      $mapInstance?.remove();
-      $mapInstance = null;
+    return {
+      destroy() {
+        $mapInstance?.remove();
+        $mapInstance = null;
+      },
     };
-  });
+  }
 
-  $: if ($mapInstance && center && !compare(center, $mapInstance?.getCenter()))
-    $mapInstance.panTo(center);
-  $: if ($mapInstance && zoom && !compare(zoom, $mapInstance.getZoom())) $mapInstance?.zoomTo(zoom);
-  $: if ($mapInstance && bounds && !compare(bounds, $mapInstance.getBounds()))
-    $mapInstance?.fitBounds(bounds);
+  $: if (center && !compare(center, $mapInstance?.getCenter())) $mapInstance?.panTo(center);
+  $: if (zoom && !compare(zoom, $mapInstance?.getZoom())) $mapInstance?.zoomTo(zoom);
+  $: if (bounds && !compare(bounds, $mapInstance?.getBounds())) $mapInstance?.fitBounds(bounds);
 </script>
 
-<div class={classNames} bind:this={element}>
+<div class={classNames} use:createMap>
   {#if $mapInstance && loaded}
     <slot />
   {/if}
