@@ -1,0 +1,85 @@
+<script lang="ts">
+  import { onMount, createEventDispatcher } from 'svelte';
+  import { createMapContext } from './context.js';
+  import { Map, type LngLatBoundsLike, type LngLatLike } from 'maplibre-gl';
+  import compare from 'just-compare';
+  import 'maplibre-gl/dist/maplibre-gl.css';
+
+  export let map: Map | null = null;
+  let classNames: string | undefined = undefined;
+  export { classNames as class };
+  export let center: LngLatLike = [0, 0];
+  export let zoom = 1;
+  export let bounds: LngLatBoundsLike | undefined = undefined;
+  export let loaded = false;
+  export let minZoom = 0;
+  export let maxZoom = 22;
+  export let interactive = true;
+  /** Set to true if you want to export the map as an image */
+  export let preserveDrawingBuffer = false;
+  export let maxBounds: LngLatBoundsLike | undefined = undefined;
+
+  const dispatch = createEventDispatcher();
+
+  let element: HTMLDivElement;
+
+  const { map: mapInstance } = createMapContext();
+  $: map = $mapInstance;
+
+  onMount(() => {
+    $mapInstance = new Map({
+      container: element,
+      style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+      center,
+      zoom,
+      minZoom,
+      maxZoom,
+      interactive,
+      preserveDrawingBuffer,
+      maxBounds,
+      bounds,
+    });
+
+    $mapInstance.on('load', () => {
+      loaded = true;
+      dispatch('load');
+    });
+
+    $mapInstance.on('moveend', (ev) => {
+      center = ev.target.getCenter();
+      zoom = ev.target.getZoom();
+      bounds = ev.target.getBounds();
+    });
+
+    $mapInstance.on('zoomend', (ev) => {
+      zoom = ev.target.getZoom();
+    });
+
+    return () => {
+      $mapInstance?.remove();
+      $mapInstance = null;
+    };
+  });
+
+  $: if ($mapInstance && center && !compare(center, $mapInstance?.getCenter()))
+    $mapInstance.panTo(center);
+  $: if ($mapInstance && zoom && !compare(zoom, $mapInstance.getZoom())) $mapInstance?.zoomTo(zoom);
+  $: if ($mapInstance && bounds && !compare(bounds, $mapInstance.getBounds()))
+    $mapInstance?.fitBounds(bounds);
+</script>
+
+<div class={classNames} bind:this={element}>
+  {#if $mapInstance && loaded}
+    <slot />
+  {/if}
+</div>
+
+<style>
+  div {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+</style>
