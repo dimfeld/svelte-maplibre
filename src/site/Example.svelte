@@ -13,5 +13,6 @@
 
   <slot name="belowMap" />
 
-  <a href="/">Back to Examples</a>
+  <p><a href="/">Back to Examples</a></p>
+  <p><a href="https://github.com/dimfeld/svelte-maplibre">Github</a></p>
 </div>
