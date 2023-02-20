@@ -23,7 +23,7 @@
   $: $marker?.setLngLat(lngLat);
 
   function handleKeyDown(e: KeyboardEvent) {
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === ' ') {
       e.preventDefault();
       e.stopPropagation();
       dispatch('click');
