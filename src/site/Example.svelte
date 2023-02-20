@@ -7,7 +7,7 @@
 
   <slot name="aboveMap" />
 
-  <div class="relative w-5/6 aspect-video">
+  <div class="relative w-full aspect-[9/16] max-h-[80vh] sm:w-11/12 sm:aspect-video">
     <slot />
   </div>
 

@@ -40,7 +40,7 @@
 </script>
 
 <Example name="Custom Marker">
-  <Map zoom={2} center={[10, 20]}>
+  <Map zoom={1} center={[-20, 0]}>
     {#each markers as { lngLat, label, name } (label)}
       <Marker
         {lngLat}
