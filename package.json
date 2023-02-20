@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.28.1",
+    "@skeletonlabs/skeleton": "^0.124.2",
     "@sveltejs/adapter-vercel": "^2.0.4",
     "@sveltejs/kit": "^1.5.0",
     "@sveltejs/package": "^2.0.0",

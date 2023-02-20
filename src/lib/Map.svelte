@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import { createMapContext } from './context.js';
-  import { Map, type LngLatBoundsLike, type LngLatLike } from 'maplibre-gl';
+  import maplibre, { type LngLatBoundsLike, type LngLatLike } from 'maplibre-gl';
   import compare from 'just-compare';
   import 'maplibre-gl/dist/maplibre-gl.css';
 
-  export let map: Map | null = null;
+  export let map: maplibregl.Map | null = null;
   let classNames: string | undefined = undefined;
   export { classNames as class };
   export let center: LngLatLike = [0, 0];
@@ -25,7 +25,7 @@
   $: map = $mapInstance;
 
   function createMap(element: HTMLDivElement) {
-    $mapInstance = new Map({
+    $mapInstance = new maplibre.Map({
       container: element,
       style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
       center,

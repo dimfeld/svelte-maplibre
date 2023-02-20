@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@playwright/test': ^1.28.1
+  '@skeletonlabs/skeleton': ^0.124.2
   '@sveltejs/adapter-vercel': ^2.0.4
   '@sveltejs/kit': ^1.5.0
   '@sveltejs/package': ^2.0.0
@@ -31,6 +32,7 @@ dependencies:
 
 devDependencies:
   '@playwright/test': 1.30.0
+  '@skeletonlabs/skeleton': 0.124.2
   '@sveltejs/adapter-vercel': 2.0.4_@sveltejs+kit@1.7.2
   '@sveltejs/kit': 1.7.2_svelte@3.55.1+vite@4.1.2
   '@sveltejs/package': 2.0.1_4x7phaipmicbaooxtnresslofa
@@ -403,6 +405,12 @@ packages:
     dependencies:
       estree-walker: 2.0.2
       picomatch: 2.3.1
+    dev: true
+
+  /@skeletonlabs/skeleton/0.124.2:
+    resolution: {integrity: sha512-SQ0tgXXEj/QJ5BSA+UwKdSMADW5Xt+5iNpks1y94YnX2iwAY80MlffEfip+//VXYayeGvzx4xiU4//MpK9+Zgg==}
+    dependencies:
+      svelte: 3.55.1
     dev: true
 
   /@sveltejs/adapter-vercel/2.0.4_@sveltejs+kit@1.7.2:
