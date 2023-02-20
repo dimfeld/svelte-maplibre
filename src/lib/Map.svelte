@@ -38,19 +38,23 @@
       bounds,
     });
 
-    $mapInstance.on('load', () => {
+    $mapInstance.on('load', (e) => {
       loaded = true;
-      dispatch('load');
+      dispatch('load', { map: $mapInstance });
     });
 
+    $mapInstance.on('movestart', (ev) => dispatch('movestart', { ...ev, map: $mapInstance }));
     $mapInstance.on('moveend', (ev) => {
       center = ev.target.getCenter();
       zoom = ev.target.getZoom();
       bounds = ev.target.getBounds();
+      dispatch('moveend', { ...ev, map: $mapInstance });
     });
 
+    $mapInstance.on('zoomstart', (ev) => dispatch('zoomstart', { ...ev, map: $mapInstance }));
     $mapInstance.on('zoomend', (ev) => {
       zoom = ev.target.getZoom();
+      dispatch('zoomend', { ...ev, map: $mapInstance });
     });
 
     return {

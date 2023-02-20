@@ -1,9 +1,20 @@
-import type { Map } from 'maplibre-gl';
+import type { Map, Marker } from 'maplibre-gl';
 import { getContext, setContext } from 'svelte';
-import { writable, type Readable, type Writable } from 'svelte/store';
+import { readable, writable, type Readable, type Writable } from 'svelte/store';
+
+// Choose current time instead of 0 to avoid possible reuse during HMR.
+export let nextId = Date.now();
+/** Return an ID to use for a source or layer, in case you don't care about
+ * the name. */
+export function getId(prefix: string) {
+  return `${prefix}-${nextId++}`;
+}
 
 export interface MapContext {
   map: Readable<Map | null>;
+  source: Readable<string | null>;
+  layer: Readable<string | null>;
+  popupTarget: Readable<Marker | string | null>;
 }
 
 const MAP_CONTEXT_KEY = Symbol.for('svelte-maplibre');
@@ -15,6 +26,9 @@ export function mapContext(): MapContext {
 export function createMapContext(): MapContext {
   return setContext(MAP_CONTEXT_KEY, {
     map: writable<Map | null>(null),
+    source: readable(null),
+    layer: readable(null),
+    popupTarget: readable(null),
   });
 }
 
@@ -25,20 +39,27 @@ function readableFromWritable<T>(writable: Readable<T>): Readable<T> {
   };
 }
 
-export interface UpdatedContext extends MapContext {
-  // TODO the right type for this...
-  self: Writable<Map | null>;
+export interface UpdatedContext<TYPE> extends MapContext {
+  self: Writable<TYPE | null>;
 }
 
 /** Replace one or more elements of the map context with a new store. */
-export function updateMapContext(...keys: (keyof MapContext)[]): UpdatedContext {
+function updatedContext<T extends string | Marker>(
+  key: 'source' | 'layer' | 'popupTarget',
+  setPopupTarget = false
+): UpdatedContext<T> {
   let currentContext = mapContext();
 
-  let newCtx = { ...currentContext };
-  let newValue = writable<Map | null>(null);
-  let passDown = readableFromWritable(newValue);
-  for (const key of keys) {
-    newCtx[key] = passDown;
+  let newValue = writable<T | null>(null);
+  let ctxValue = readableFromWritable(newValue);
+  let newCtx = {
+    ...currentContext,
+    [key]: readableFromWritable(newValue),
+  };
+
+  if (setPopupTarget) {
+    // This type also becomes a popup target in addition to whatever else it was.
+    newCtx.popupTarget = ctxValue;
   }
 
   setContext(MAP_CONTEXT_KEY, newCtx);
@@ -47,4 +68,16 @@ export function updateMapContext(...keys: (keyof MapContext)[]): UpdatedContext 
     ...currentContext,
     self: newValue,
   };
+}
+
+export function updatedSourceContext(): UpdatedContext<string> {
+  return updatedContext<string>('source');
+}
+
+export function updatedLayerContext(): UpdatedContext<string> {
+  return updatedContext<string>('layer', true);
+}
+
+export function updatedMarkerContext(): UpdatedContext<Marker> {
+  return updatedContext<Marker>('popupTarget', true);
 }
