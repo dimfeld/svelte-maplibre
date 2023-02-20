@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type LngLatLike, Marker } from 'maplibre-gl';
+  import maplibre, { type LngLatLike } from 'maplibre-gl';
   import { onDestroy } from 'svelte';
   import { updatedMarkerContext } from './context';
 
@@ -9,7 +9,7 @@
 
   let el: HTMLButtonElement;
   $: if ($map && el && !$marker) {
-    $marker = new Marker(el).setLngLat(lngLat).addTo($map);
+    $marker = new maplibre.Marker(el).setLngLat(lngLat).addTo($map);
   }
 
   onDestroy(() => $marker?.remove());
