@@ -3,7 +3,7 @@
 </script>
 
 <div class="w-full flex flex-col items-center mx-auto">
-  <h1>{name}</h1>
+  <h1 class="mb-4">{name}</h1>
 
   <slot name="aboveMap" />
 

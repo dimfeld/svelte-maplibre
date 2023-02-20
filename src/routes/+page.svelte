@@ -7,5 +7,6 @@
   <ul>
     <li><a href="/examples/basic">Basic</a></li>
     <li><a href="/examples/custom_marker">Custom Marker</a></li>
+    <li><a href="/examples/geojson_polygon">GeoJSON Polygon</a></li>
   </ul>
 </div>

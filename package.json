@@ -46,6 +46,7 @@
     "@sveltejs/adapter-vercel": "^2.0.4",
     "@sveltejs/kit": "^1.5.0",
     "@sveltejs/package": "^2.0.0",
+    "@types/geojson": "^7946.0.10",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
     "autoprefixer": "^10.4.7",
@@ -69,6 +70,7 @@
   "type": "module",
   "dependencies": {
     "just-compare": "^2.3.0",
+    "just-flush": "^2.3.0",
     "maplibre-gl": "3.0.0-pre.4"
   }
 }

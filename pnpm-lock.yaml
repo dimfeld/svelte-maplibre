@@ -6,6 +6,7 @@ specifiers:
   '@sveltejs/adapter-vercel': ^2.0.4
   '@sveltejs/kit': ^1.5.0
   '@sveltejs/package': ^2.0.0
+  '@types/geojson': ^7946.0.10
   '@typescript-eslint/eslint-plugin': ^5.45.0
   '@typescript-eslint/parser': ^5.45.0
   autoprefixer: ^10.4.7
@@ -13,6 +14,7 @@ specifiers:
   eslint-config-prettier: ^8.5.0
   eslint-plugin-svelte3: ^4.0.0
   just-compare: ^2.3.0
+  just-flush: ^2.3.0
   maplibre-gl: 3.0.0-pre.4
   postcss: ^8.4.14
   prettier: ^2.8.0
@@ -28,6 +30,7 @@ specifiers:
 
 dependencies:
   just-compare: 2.3.0
+  just-flush: 2.3.0
   maplibre-gl: 3.0.0-pre.4
 
 devDependencies:
@@ -36,6 +39,7 @@ devDependencies:
   '@sveltejs/adapter-vercel': 2.0.4_@sveltejs+kit@1.7.2
   '@sveltejs/kit': 1.7.2_svelte@3.55.1+vite@4.1.2
   '@sveltejs/package': 2.0.1_4x7phaipmicbaooxtnresslofa
+  '@types/geojson': 7946.0.10
   '@typescript-eslint/eslint-plugin': 5.52.0_6cfvjsbua5ptj65675bqcn6oza
   '@typescript-eslint/parser': 5.52.0_7kw3g6rralp5ps6mg3uyzz6azm
   autoprefixer: 10.4.13_postcss@8.4.21
@@ -505,7 +509,6 @@ packages:
 
   /@types/geojson/7946.0.10:
     resolution: {integrity: sha512-Nmh0K3iWQJzniTuPRcJn5hxXkfB1T1pgB89SBig5PlJQU5yocazeu4jATJlaA0GYFKWMqDdvYemoSnF2pXgLVA==}
-    dev: false
 
   /@types/json-schema/7.0.11:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
@@ -1624,6 +1627,10 @@ packages:
 
   /just-compare/2.3.0:
     resolution: {integrity: sha512-6shoR7HDT+fzfL3gBahx1jZG3hWLrhPAf+l7nCwahDdT9XDtosB9kIF0ZrzUp5QY8dJWfQVr5rnsPqsbvflDzg==}
+    dev: false
+
+  /just-flush/2.3.0:
+    resolution: {integrity: sha512-fBuxQ1gJ61BurmhwKS5LYTzhkbrT5j/2U7ax+UbLm9aRvCTh2h6AfzLteOckE4KKomqOf0Y3zIG3Xu57sRsKUg==}
     dev: false
 
   /kdbush/3.0.0:
