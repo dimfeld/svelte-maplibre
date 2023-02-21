@@ -2,6 +2,8 @@
   import Map from '$lib/Map.svelte';
   import Marker from '$lib/Marker.svelte';
   import { mapClasses } from '../styles';
+  import code from './+page.svelte?raw';
+  import CodeSample from '$site/CodeSample.svelte';
 
   let clickedName = '';
 
@@ -60,3 +62,5 @@
     </Marker>
   {/each}
 </Map>
+
+<CodeSample {code} />

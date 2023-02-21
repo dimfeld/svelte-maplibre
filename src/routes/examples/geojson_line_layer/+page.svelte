@@ -4,6 +4,8 @@
   import type { Feature } from 'geojson';
   import LineLayer from '$lib/LineLayer.svelte';
   import { mapClasses } from '../styles';
+  import code from './+page.svelte?raw';
+  import CodeSample from '$site/CodeSample.svelte';
 
   const data: Feature = {
     type: 'Feature',
@@ -53,3 +55,5 @@
     />
   </GeoJSON>
 </Map>
+
+<CodeSample {code} />

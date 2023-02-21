@@ -5,6 +5,8 @@
   import FillLayer from '$lib/FillLayer.svelte';
   import LineLayer from '$lib/LineLayer.svelte';
   import { mapClasses } from '../styles.js';
+  import code from './+page.svelte?raw';
+  import CodeSample from '$site/CodeSample.svelte';
 
   const data: Feature = {
     type: 'Feature',
@@ -54,7 +56,6 @@
 </div>
 
 <Map center={[-68.137, 45.137]} zoom={5} class={mapClasses}>
-  >
   <GeoJSON id="maine" {data}>
     {#if showFill}
       <FillLayer
@@ -69,6 +70,8 @@
     {/if}
   </GeoJSON>
 </Map>
+
+<CodeSample {code} />
 
 <style>
   .grid {
