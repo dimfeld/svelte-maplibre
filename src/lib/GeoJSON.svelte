@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  import { onDestroy, tick } from 'svelte';
   import { getId, updatedSourceContext } from './context';
   import type { GeoJSON } from 'geojson';
 
@@ -32,7 +32,15 @@
 
   onDestroy(() => {
     if ($source) {
-      $map?.removeSource($source);
+      let sourceName = $source;
+      $source = null;
+      tick().then(() => {
+        // Check if the map is still loaded. If the entire map was being torn down
+        // then we don't want to call any other functions on it.
+        if ($map?.loaded()) {
+          $map?.removeSource(sourceName);
+        }
+      });
     }
   });
 </script>
