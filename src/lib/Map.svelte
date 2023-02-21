@@ -72,7 +72,7 @@
 
 <div class={classNames} class:expand-map={!classNames} use:createMap>
   {#if $mapInstance && loaded}
-    <slot />
+    <slot map={$mapInstance} />
   {/if}
 </div>
 
