@@ -7,9 +7,9 @@
    * of a source component. */
   export let source: string | undefined = undefined;
   /** Draw this layer under another layer. This is only evaluated when the component is created. */
-  export let beforeId: string | undefined;
-  export let paint: maplibregl.FillPaintProps;
-  export let layout: maplibregl.FillLayoutProps;
+  export let beforeId: string | undefined = undefined;
+  export let paint: maplibregl.FillLayerSpecification['paint'];
+  export let layout: maplibregl.FillLayerSpecification['layout'] | undefined = undefined;
   export let filter: maplibregl.FilterSpecification | undefined = undefined;
 </script>
 
