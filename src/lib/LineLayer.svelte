@@ -11,6 +11,8 @@
   export let paint: maplibregl.LineLayerSpecification['paint'];
   export let layout: maplibregl.LineLayerSpecification['layout'] | undefined = undefined;
   export let filter: maplibregl.FilterSpecification | undefined = undefined;
+  export let minzoom: number | undefined = undefined;
+  export let maxzoom: number | undefined = undefined;
 </script>
 
-<Layer {id} type="line" {source} {beforeId} {paint} {layout} {filter} />
+<Layer {id} type="line" {source} {beforeId} {paint} {layout} {filter} {minzoom} {maxzoom} />
