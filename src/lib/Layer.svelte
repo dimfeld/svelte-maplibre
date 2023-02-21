@@ -8,6 +8,7 @@ code instead of directly using this component.
   import { getId, updatedLayerContext } from './context.js';
   import { diffApplier } from './compare.js';
   import flush from 'just-flush';
+  import { onDestroy } from 'svelte';
 
   export let id = getId('layer');
   /** Set the source for this layer. This can be omitted when the Layer is created in the slot
@@ -22,6 +23,12 @@ code instead of directly using this component.
   export let filter: maplibregl.FilterSpecification | undefined = undefined;
 
   const { map, source: sourceName, self: layer } = updatedLayerContext();
+
+  onDestroy(() => {
+    if ($layer) {
+      $map?.removeLayer($layer);
+    }
+  });
 
   $: actualSource = source || $sourceName;
 
@@ -44,4 +51,8 @@ code instead of directly using this component.
   $: applyLayout?.(layout);
 </script>
 
-<slot />
+{#if $layer}
+  {#key $layer}
+    <slot />
+  {/key}
+{/if}
