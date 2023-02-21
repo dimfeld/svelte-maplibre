@@ -70,14 +70,14 @@
   $: if (bounds && !compare(bounds, $mapInstance?.getBounds())) $mapInstance?.fitBounds(bounds);
 </script>
 
-<div class={classNames} use:createMap>
+<div class={classNames} class:expand-map={!classNames} use:createMap>
   {#if $mapInstance && loaded}
     <slot />
   {/if}
 </div>
 
 <style>
-  div {
+  .expand-map {
     position: absolute;
     top: 0;
     bottom: 0;

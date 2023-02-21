@@ -21,6 +21,8 @@ code instead of directly using this component.
   export let paint: object | undefined = undefined;
   export let layout: object | undefined = undefined;
   export let filter: maplibregl.FilterSpecification | undefined = undefined;
+  export let minzoom = 0;
+  export let maxzoom = 24;
 
   const { map, source: sourceName, self: layer } = updatedLayerContext();
 
@@ -35,7 +37,7 @@ code instead of directly using this component.
   $: if ($map && $layer !== id && actualSource) {
     $layer = id;
     $map.addLayer(
-      flush({ id: $layer, type, source: actualSource, filter, paint, layout }),
+      flush({ id: $layer, type, source: actualSource, filter, paint, layout, minzoom, maxzoom }),
       beforeId
     );
   }
@@ -49,6 +51,7 @@ code instead of directly using this component.
 
   $: applyPaint?.(paint);
   $: applyLayout?.(layout);
+  $: if ($layer) $map?.setLayerZoomRange($layer, minzoom, maxzoom);
 </script>
 
 {#if $layer}

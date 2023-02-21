@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Example from '$site/Example.svelte';
   import Map from '$lib/Map.svelte';
   import Marker from '$lib/Marker.svelte';
+  import { mapClasses } from '../styles';
 
   let clickedName = '';
 
@@ -39,26 +39,24 @@
   ];
 </script>
 
-<Example name="Custom Marker">
-  <Map zoom={1} center={[-20, 0]}>
-    {#each markers as { lngLat, label, name } (label)}
-      <Marker
-        {lngLat}
-        on:click={() => (clickedName = name)}
-        class="border-gray-200 border shadow-2xl focus:outline-2 focus:outline-black w-8 h-8 bg-red-300 text-black rounded-full grid place-items-center"
-      >
-        <span>
-          {label}
-        </span>
-      </Marker>
-    {/each}
-  </Map>
+<p>
+  {#if clickedName}
+    You clicked {clickedName}
+  {:else}
+    Click a marker to see the airport's name.
+  {/if}
+</p>
 
-  <div slot="belowMap" class="w-5/6">
-    {#if clickedName}
-      You clicked {clickedName}
-    {:else}
-      Click a marker to see the airport's name.
-    {/if}
-  </div>
-</Example>
+<Map zoom={1} center={[-20, 0]} class={mapClasses}>
+  {#each markers as { lngLat, label, name } (label)}
+    <Marker
+      {lngLat}
+      on:click={() => (clickedName = name)}
+      class="border-gray-200 border shadow-2xl focus:outline-2 focus:outline-black w-8 h-8 bg-red-300 text-black rounded-full grid place-items-center"
+    >
+      <span>
+        {label}
+      </span>
+    </Marker>
+  {/each}
+</Map>

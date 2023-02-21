@@ -2,9 +2,8 @@
   import Map from '$lib/Map.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import type { Feature } from 'geojson';
-  import FillLayer from '$lib/FillLayer.svelte';
   import LineLayer from '$lib/LineLayer.svelte';
-  import { mapClasses } from '../styles.js';
+  import { mapClasses } from '../styles';
 
   const data: Feature = {
     type: 'Feature',
@@ -39,39 +38,18 @@
       ],
     },
   };
-
-  let showBorder = true;
-  let showFill = true;
-  let fillColor = '#008800';
-  let borderColor = '#003300';
 </script>
 
-<div class="self-start w-full max-w-md grid gap-y-2 items-center">
-  <label><input type="checkbox" bind:checked={showFill} /> Show fill</label>
-  <label><input type="color" bind:value={fillColor} /> Fill Color </label>
-  <label><input type="checkbox" bind:checked={showBorder} /> Show border</label>
-  <label><input type="color" bind:value={borderColor} /> Border Color </label>
-</div>
-
 <Map center={[-68.137, 45.137]} zoom={5} class={mapClasses}>
-  >
   <GeoJSON id="maine" {data}>
-    {#if showFill}
-      <FillLayer
-        paint={{ 'fill-color': fillColor, 'fill-opacity': 0.5, 'fill-outline-color': '#880000' }}
-      />
-    {/if}
-    {#if showBorder}
-      <LineLayer
-        layout={{ 'line-cap': 'round', 'line-join': 'round' }}
-        paint={{ 'line-color': borderColor, 'line-width': 3 }}
-      />
-    {/if}
+    <LineLayer
+      layout={{ 'line-cap': 'round', 'line-join': 'round' }}
+      paint={{
+        'line-width': 5,
+        'line-dasharray': [5, 2],
+        'line-color': '#008800',
+        'line-opacity': 0.8,
+      }}
+    />
   </GeoJSON>
 </Map>
-
-<style>
-  .grid {
-    grid-template-columns: repeat(auto-fill, 150px);
-  }
-</style>

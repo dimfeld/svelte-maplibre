@@ -1,8 +1,9 @@
 <script lang="ts">
-  import Example from '$site/Example.svelte';
   import Map from '$lib/Map.svelte';
+  import { mapClasses } from '../styles';
+  import type { PageData } from './$types';
+
+  export let data: PageData;
 </script>
 
-<Example name="Basic Map">
-  <Map />
-</Example>
+<Map class={mapClasses} />
