@@ -13,9 +13,7 @@
 
   const source = 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson';
 
-  let eventOutput: LayerClickInfo | null = null;
-  $: clickedFeature = eventOutput?.features[0]?.properties;
-  $: clickedCluster = clickedFeature?.cluster;
+  let clickedFeature: Feature | null = null;
 </script>
 
 <p>
@@ -32,7 +30,8 @@
       radius: 500,
       maxZoom: 14,
       properties: {
-        'total-mag': ['+', ['get', 'mag']],
+        // Sum the `mag` property from all the points in each cluster.
+        total_mag: ['+', ['get', 'mag']],
       },
     }}
   >
@@ -47,7 +46,7 @@
         'circle-color': ['step', ['get', 'point_count'], '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
         'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
       }}
-      on:click={(e) => (eventOutput = e.detail)}
+      on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     />
 
     <SymbolLayer
@@ -66,13 +65,13 @@
         'circle-stroke-width': 1,
         'circle-stroke-color': '#fff',
       }}
-      on:click={(e) => (eventOutput = e.detail)}
+      on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     />
   </GeoJSON>
 </Map>
 
 {#if clickedFeature}
-  {#if clickedCluster}
+  {#if clickedFeature.cluster}
     <p>
       Number of Earthquakes:
       <span class="font-bold text-gray-800">{clickedFeature['point_count']}</span>
@@ -80,11 +79,11 @@
     <p>
       Average Magnitude:
       <span class="font-bold text-gray-800">
-        {(clickedFeature['total-mag'] / clickedFeature['point_count']).toFixed(2)}
+        {(clickedFeature.total_mag / clickedFeature.point_count).toFixed(2)}
       </span>
     </p>
   {:else}
-    <p>Magnitude: <span class="font-bold text-gray-800">{clickedFeature['mag']}</span></p>
+    <p>Magnitude: <span class="font-bold text-gray-800">{clickedFeature.mag}</span></p>
   {/if}
 {/if}
 
