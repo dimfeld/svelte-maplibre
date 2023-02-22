@@ -12,6 +12,7 @@
     <li><a href="/examples/heatmap">Heatmap</a></li>
     <li><a href="/examples/controls">Controls</a></li>
     <li><a href="/examples/clusters">Clusters</a></li>
+    <li><a href="/examples/image_symbols">Images in a Symbol Layer</a></li>
   </ul>
 
   <p class="mt-4"><a href="https://github.com/dimfeld/svelte-maplibre">Github</a></p>

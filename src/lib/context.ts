@@ -17,6 +17,8 @@ export interface MapContext {
   layer: Readable<string | null>;
   cluster: Writable<ClusterOptions | undefined>;
   popupTarget: Readable<Marker | string | null>;
+  /** A list of images that have been successfully loaded. */
+  loadedImages: Writable<Set<string>>;
 }
 
 const MAP_CONTEXT_KEY = Symbol.for('svelte-maplibre');
@@ -32,6 +34,7 @@ export function createMapContext(): MapContext {
     layer: readable(null),
     popupTarget: readable(null),
     cluster: writable(),
+    loadedImages: writable(new Set()),
   });
 }
 

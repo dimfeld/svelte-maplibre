@@ -8,6 +8,12 @@
   import CircleLayer from '$lib/CircleLayer.svelte';
   import SymbolLayer from '$lib/SymbolLayer.svelte';
   import { hoverStateFilter } from '$lib/filters';
+  import { imageWithFallback } from '$lib/expressions';
+
+  import quakeImageUrl from './earthquake.png';
+  import tsunamiImageUrl from './tsunami.png';
+
+  export let data: PageData;
 
   const source = 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson';
 
@@ -15,12 +21,19 @@
 </script>
 
 <p>
-  Data and layer configuration from <a
-    href="https://maplibre.org/maplibre-gl-js-docs/example/cluster/">MapLibre cluster Example.</a
+  Data from <a href="https://maplibre.org/maplibre-gl-js-docs/example/cluster/"
+    >MapLibre cluster Example.</a
   >
 </p>
 
-<Map class={mapClasses}>
+<Map
+  class={mapClasses}
+  images={[
+    { id: 'quake', url: quakeImageUrl },
+    { id: 'tsunami', url: tsunamiImageUrl },
+  ]}
+  let:allImagesLoaded
+>
   <GeoJSON
     id="earthquakes"
     data={source}
@@ -74,16 +87,15 @@
       }}
     />
 
-    <SymbolLayer applyToClusters={false} hoverCursor="pointer" />
-
-    <CircleLayer
+    <SymbolLayer
       applyToClusters={false}
       hoverCursor="pointer"
-      paint={{
-        'circle-color': '#11b4da',
-        'circle-radius': 4,
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#fff',
+      layout={{
+        'icon-image': ['case', ['==', ['get', 'tsunami'], 0], 'quake', 'tsunami'],
+        'icon-allow-overlap': true,
+        'text-field': '{mag}',
+        'text-offset': [0, -2],
+        'text-size': 12,
       }}
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     />
@@ -107,4 +119,28 @@
   {/if}
 {/if}
 
-<CodeSample {code} endBoundary="<CodeSample" omitEndBoundary />
+<!-- ENDEMBED -->
+
+<p>
+  Symbol images are embedded into the map and rendered via webGL. This makes them faster but less
+  flexible. For more rendering flexibility such as using SVG, see the <a
+    href="/examples/custom_marker">Custom Marker</a
+  > example.
+</p>
+
+<CodeSample {code} endBoundary="<!-- ENDEMBED" omitEndBoundary />
+
+<footer class="self-start">
+  <p>
+    <a
+      class="text-sm"
+      href="https://www.flaticon.com/free-icons/earthquake"
+      title="earthquake icons">Earthquake icons created by Freepik - Flaticon</a
+    >
+  </p>
+  <p>
+    <a class="text-sm" href="https://www.flaticon.com/free-icons/tsunami" title="tsunami icons"
+      >Tsunami icons created by surang - Flaticon</a
+    >
+  </p>
+</footer>
