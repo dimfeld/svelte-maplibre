@@ -17,22 +17,28 @@
             center: [-5, 54],
             zoom: 4,
           });
-        }}>UK</ControlButton
+        }}
       >
+        UK
+      </ControlButton>
       <ControlButton
         on:click={() =>
           map.fitBounds([
             [-120, 50],
             [-70, 20],
-          ])}>US</ControlButton
+          ])}
       >
+        US
+      </ControlButton>
       <ControlButton
         on:click={() =>
           map.fitBounds([
             [110, 20],
             [140, 0],
-          ])}>PH</ControlButton
+          ])}
       >
+        PH
+      </ControlButton>
     </ControlGroup>
 
     <ControlGroup>

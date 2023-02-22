@@ -7,6 +7,7 @@ code instead of directly using this component.
 <script lang="ts">
   import { getId, updatedLayerContext } from './context.js';
   import { diffApplier } from './compare.js';
+  import { combineFilters } from './filters.js';
   import flush from 'just-flush';
   import { onDestroy } from 'svelte';
 
@@ -20,9 +21,20 @@ code instead of directly using this component.
   export let type: maplibregl.LayerSpecification['type'];
   export let paint: object | undefined = undefined;
   export let layout: object | undefined = undefined;
-  export let filter: maplibregl.FilterSpecification | undefined = undefined;
+  export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
+  export let applyToClusters: boolean | undefined = undefined;
   export let minzoom = 0;
   export let maxzoom = 24;
+
+  let clusterFilter: maplibregl.ExpressionSpecification | undefined;
+  $: clusterFilter =
+    applyToClusters === true
+      ? ['has', 'point_count']
+      : applyToClusters === false
+      ? ['!', ['has', 'point_count']]
+      : undefined;
+  $: layerFilter = combineFilters('all', clusterFilter, filter);
+  $: console.log({ layerFilter });
 
   const { map, source: sourceName, self: layer } = updatedLayerContext();
 
@@ -37,7 +49,16 @@ code instead of directly using this component.
   $: if ($map && $layer !== id && actualSource) {
     $layer = id;
     $map.addLayer(
-      flush({ id: $layer, type, source: actualSource, filter, paint, layout, minzoom, maxzoom }),
+      flush({
+        id: $layer,
+        type,
+        source: actualSource,
+        filter: layerFilter,
+        paint,
+        layout,
+        minzoom,
+        maxzoom,
+      }),
       beforeId
     );
   }

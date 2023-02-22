@@ -8,11 +8,23 @@
   export let source: string | undefined = undefined;
   /** Draw this layer under another layer. This is only evaluated when the component is created. */
   export let beforeId: string | undefined = undefined;
-  export let paint: maplibregl.SymbolLayerSpecification['paint'];
+  export let paint: maplibregl.SymbolLayerSpecification['paint'] | undefined = undefined;
   export let layout: maplibregl.SymbolLayerSpecification['layout'] | undefined = undefined;
-  export let filter: maplibregl.FilterSpecification | undefined = undefined;
+  export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
+  export let applyToClusters: boolean | undefined = undefined;
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
 </script>
 
-<Layer {id} type="symbol" {source} {beforeId} {paint} {layout} {filter} {minzoom} {maxzoom} />
+<Layer
+  {id}
+  type="symbol"
+  {source}
+  {beforeId}
+  {paint}
+  {layout}
+  {filter}
+  {applyToClusters}
+  {minzoom}
+  {maxzoom}
+/>
