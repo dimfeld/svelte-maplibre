@@ -4,6 +4,7 @@
   import maplibre, { type LngLatBoundsLike, type LngLatLike } from 'maplibre-gl';
   import compare from 'just-compare';
   import 'maplibre-gl/dist/maplibre-gl.css';
+  import type { CustomImageSpec } from './types.js';
 
   export let map: maplibregl.Map | null = null;
   let classNames: string | undefined = undefined;
@@ -18,11 +19,48 @@
   /** Set to true if you want to export the map as an image */
   export let preserveDrawingBuffer = false;
   export let maxBounds: LngLatBoundsLike | undefined = undefined;
+  /** Custom images to load into the map. */
+  export let images: CustomImageSpec[] = [];
 
   const dispatch = createEventDispatcher();
 
-  const { map: mapInstance } = createMapContext();
+  const { map: mapInstance, loadedImages } = createMapContext();
   $: map = $mapInstance;
+
+  let loadingImages = new Set();
+  function loadImage(image: CustomImageSpec) {
+    if (!$mapInstance?.loaded()) {
+      return;
+    }
+
+    if ('url' in image) {
+      loadingImages.add(image.id);
+      $mapInstance.loadImage(image.url, (error, imageData) => {
+        loadingImages.delete(image.id);
+        if (error) {
+          dispatch('error', error);
+        } else if (imageData) {
+          $mapInstance?.addImage(image.id, imageData, image.options);
+          $loadedImages.add(image.id);
+          $loadedImages = $loadedImages; // trigger reactivity
+        }
+      });
+    } else {
+      $mapInstance.addImage(image.id, image.data, image.options);
+      $loadedImages.add(image.id);
+      $loadedImages = $loadedImages; // trigger reactivity
+    }
+  }
+
+  $: if (loaded && $mapInstance?.loaded()) {
+    for (let image of images) {
+      if (!loadingImages.has(image.id) && !$mapInstance.hasImage(image.id)) {
+        loadImage(image);
+      }
+    }
+  }
+
+  $: allImagesLoaded = images.every((image) => $loadedImages.has(image.id));
 
   function createMap(element: HTMLDivElement) {
     $mapInstance = new maplibre.Map({
@@ -43,6 +81,8 @@
       dispatch('load', { map: $mapInstance });
     });
 
+    $mapInstance.on('error', (e) => dispatch('error', { ...e, map: $mapInstance }));
+
     $mapInstance.on('movestart', (ev) => dispatch('movestart', { ...ev, map: $mapInstance }));
     $mapInstance.on('moveend', (ev) => {
       center = ev.target.getCenter();
@@ -59,6 +99,7 @@
 
     return {
       destroy() {
+        loaded = false;
         $mapInstance?.remove();
         $mapInstance = null;
       },
@@ -72,7 +113,7 @@
 
 <div class={classNames} class:expand-map={!classNames} use:createMap>
   {#if $mapInstance && loaded}
-    <slot map={$mapInstance} />
+    <slot map={$mapInstance} loadedImages={$loadedImages} {allImagesLoaded} />
   {/if}
 </div>
 

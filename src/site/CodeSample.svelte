@@ -2,7 +2,7 @@
   import { CodeBlock } from '@skeletonlabs/skeleton';
 
   export let code: string;
-  export let startBoundary = '<Map ';
+  export let startBoundary = '<Map';
   export let endBoundary = '</Map>';
   export let omitStartBoundary = false;
   export let omitEndBoundary = false;

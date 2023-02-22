@@ -15,6 +15,25 @@ export interface ClusterOptions {
   properties?: Record<string, maplibregl.ExpressionSpecification>;
 }
 
+export interface CustomImageUrlSpec {
+  id: string;
+  url: string;
+  options?: Partial<maplibregl.StyleImageMetadata>;
+}
+
+export interface CustomImageDataSpec {
+  id: string;
+  data:
+    | HTMLImageElement
+    | ImageBitmap
+    | ImageData
+    | { width: number; height: number; data: Uint8Array | Uint8ClampedArray }
+    | maplibregl.StyleImageInterface;
+  options?: Partial<maplibregl.StyleImageMetadata>;
+}
+
+export type CustomImageSpec = CustomImageUrlSpec | CustomImageDataSpec;
+
 export interface LayerClickInfo {
   map: maplibregl.Map;
   clusterId: string | undefined;
