@@ -34,5 +34,5 @@ export function hoverStateFilter(
   defaultValue: string | number | boolean,
   hoverValue: string | number | boolean
 ): ExpressionSpecification {
-  return ['case', ['boolean', ['feature-state', 'hover'], false], defaultValue, hoverValue];
+  return ['case', ['boolean', ['feature-state', 'hover'], false], hoverValue, defaultValue];
 }

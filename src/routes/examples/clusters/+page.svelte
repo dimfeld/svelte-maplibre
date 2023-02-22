@@ -49,7 +49,7 @@
         'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
         'circle-stroke-color': '#f00',
         'circle-stroke-width': 1,
-        'circle-stroke-opacity': hoverStateFilter(1, 0),
+        'circle-stroke-opacity': hoverStateFilter(0, 1),
       }}
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     />
