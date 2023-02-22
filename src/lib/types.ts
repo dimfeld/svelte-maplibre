@@ -1,3 +1,5 @@
+import type { Feature } from 'geojson';
+
 export interface ClusterOptions {
   /** The minimum number of points required to form a cluster.
    * This can not be changed after the source is created.
@@ -10,5 +12,12 @@ export interface ClusterOptions {
   radius?: number;
   /** Aggregations to peform on the cluster points.
    * This can not be changed after the source is created. */
-  properties?: maplibregl.ExpressionSpecification;
+  properties?: Record<string, maplibregl.ExpressionSpecification>;
+}
+
+export interface LayerClickInfo {
+  clusterId: string | undefined;
+  layer: string;
+  source: string;
+  features: Feature[];
 }

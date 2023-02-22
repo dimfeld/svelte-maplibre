@@ -10,7 +10,7 @@
   export let beforeId: string | undefined = undefined;
   export let paint: maplibregl.FillExtrusionLayerSpecification['paint'];
   export let layout: maplibregl.FillExtrusionLayerSpecification['layout'] | undefined = undefined;
-  export let filter: maplibregl.FilterSpecification | undefined = undefined;
+  export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
 </script>
@@ -25,4 +25,5 @@
   {filter}
   {minzoom}
   {maxzoom}
+  on:click
 />

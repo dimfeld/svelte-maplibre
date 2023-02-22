@@ -27,4 +27,5 @@
   {applyToClusters}
   {minzoom}
   {maxzoom}
+  on:click
 />

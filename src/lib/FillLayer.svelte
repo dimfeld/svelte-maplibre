@@ -10,9 +10,20 @@
   export let beforeId: string | undefined = undefined;
   export let paint: maplibregl.FillLayerSpecification['paint'];
   export let layout: maplibregl.FillLayerSpecification['layout'] | undefined = undefined;
-  export let filter: maplibregl.FilterSpecification | undefined = undefined;
+  export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
 </script>
 
-<Layer {id} type="fill" {source} {beforeId} {paint} {layout} {filter} {minzoom} {maxzoom} />
+<Layer
+  {id}
+  type="fill"
+  {source}
+  {beforeId}
+  {paint}
+  {layout}
+  {filter}
+  {minzoom}
+  {maxzoom}
+  on:click
+/>

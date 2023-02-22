@@ -4,15 +4,24 @@
   export let code: string;
   export let startBoundary = '<Map ';
   export let endBoundary = '</Map>';
-  export let includeBoundaries = true;
+  export let omitStartBoundary = false;
+  export let omitEndBoundary = false;
 
-  function getExtract(code: string, start: string, end: string, includeBoundaries = false) {
+  function getExtract(
+    code: string,
+    start: string,
+    end: string,
+    omitStartBoundary = false,
+    omitEndBoundary = false
+  ) {
     let startIndex = code.indexOf(start);
     let endIndex = code.indexOf(end, startIndex);
 
-    if (includeBoundaries) {
+    if (!omitEndBoundary) {
       endIndex += end.length;
-    } else {
+    }
+
+    if (omitStartBoundary) {
       // Assume that the boundary text is on its own line when we're using this.
       startIndex = code.indexOf('\n', startIndex);
     }
@@ -20,7 +29,7 @@
     return code.slice(startIndex, endIndex).trim();
   }
 
-  $: output = getExtract(code, startBoundary, endBoundary, includeBoundaries);
+  $: output = getExtract(code, startBoundary, endBoundary, omitStartBoundary, omitEndBoundary);
 </script>
 
 <div class="my-4 flex flex-col w-full items-stretch">

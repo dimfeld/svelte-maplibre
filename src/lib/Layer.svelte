@@ -8,8 +8,9 @@ code instead of directly using this component.
   import { getId, updatedLayerContext } from './context.js';
   import { diffApplier } from './compare.js';
   import { combineFilters } from './filters.js';
+  import type { LayerClickInfo } from './types.js';
   import flush from 'just-flush';
-  import { onDestroy } from 'svelte';
+  import { onDestroy, createEventDispatcher } from 'svelte';
 
   export let id = getId('layer');
   /** Set the source for this layer. This can be omitted when the Layer is created in the slot
@@ -26,6 +27,10 @@ code instead of directly using this component.
   export let minzoom = 0;
   export let maxzoom = 24;
 
+  const dispatch = createEventDispatcher<{
+    click: LayerClickInfo;
+  }>();
+
   let clusterFilter: maplibregl.ExpressionSpecification | undefined;
   $: clusterFilter =
     applyToClusters === true
@@ -34,7 +39,6 @@ code instead of directly using this component.
       ? ['!', ['has', 'point_count']]
       : undefined;
   $: layerFilter = combineFilters('all', clusterFilter, filter);
-  $: console.log({ layerFilter });
 
   const { map, source: sourceName, self: layer } = updatedLayerContext();
 
@@ -61,6 +65,24 @@ code instead of directly using this component.
       }),
       beforeId
     );
+
+    $map.on('click', $layer, (e) => {
+      if (!$layer) {
+        return;
+      }
+
+      let features =
+        $map?.queryRenderedFeatures(e.point, {
+          layers: [$layer],
+        }) ?? [];
+      let clusterId = features[0]?.properties?.cluster_id;
+      dispatch('click', {
+        clusterId,
+        layer: $layer,
+        source: actualSource!,
+        features,
+      });
+    });
   }
 
   $: applyPaint = $layer

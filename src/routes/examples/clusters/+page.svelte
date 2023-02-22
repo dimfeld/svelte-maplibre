@@ -7,10 +7,15 @@
   import type { PageData } from './$types';
   import CircleLayer from '$lib/CircleLayer.svelte';
   import SymbolLayer from '$lib/SymbolLayer.svelte';
+  import type { LayerClickInfo } from '$lib/types';
 
   export let data: PageData;
 
   const source = 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson';
+
+  let eventOutput: LayerClickInfo | null = null;
+  $: clickedFeature = eventOutput?.features[0]?.properties;
+  $: clickedCluster = clickedFeature?.cluster;
 </script>
 
 <p>
@@ -20,7 +25,17 @@
 </p>
 
 <Map class={mapClasses}>
-  <GeoJSON id="earthquakes" data={source} cluster={{ radius: 500, maxZoom: 14 }}>
+  <GeoJSON
+    id="earthquakes"
+    data={source}
+    cluster={{
+      radius: 500,
+      maxZoom: 14,
+      properties: {
+        'total-mag': ['+', ['get', 'mag']],
+      },
+    }}
+  >
     <CircleLayer
       applyToClusters
       paint={{
@@ -32,6 +47,7 @@
         'circle-color': ['step', ['get', 'point_count'], '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
         'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
       }}
+      on:click={(e) => (eventOutput = e.detail)}
     />
 
     <SymbolLayer
@@ -50,8 +66,26 @@
         'circle-stroke-width': 1,
         'circle-stroke-color': '#fff',
       }}
+      on:click={(e) => (eventOutput = e.detail)}
     />
   </GeoJSON>
 </Map>
 
-<CodeSample {code} />
+{#if clickedFeature}
+  {#if clickedCluster}
+    <p>
+      Number of Earthquakes:
+      <span class="font-bold text-gray-800">{clickedFeature['point_count']}</span>
+    </p>
+    <p>
+      Average Magnitude:
+      <span class="font-bold text-gray-800">
+        {(clickedFeature['total-mag'] / clickedFeature['point_count']).toFixed(2)}
+      </span>
+    </p>
+  {:else}
+    <p>Magnitude: <span class="font-bold text-gray-800">{clickedFeature['mag']}</span></p>
+  {/if}
+{/if}
+
+<CodeSample {code} endBoundary="<CodeSample" omitEndBoundary />

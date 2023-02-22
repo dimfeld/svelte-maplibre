@@ -7,7 +7,7 @@
 
   export let id: string = getId('geojson');
   export let data: GeoJSON | string;
-  export let filter: maplibregl.FilterSpecification | undefined = undefined;
+  export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
   /** True to calculate line lengths. Required to use a line layer that
    * uses the "line-gradient" paint property. */
   export let lineMetrics: boolean | undefined = undefined;
