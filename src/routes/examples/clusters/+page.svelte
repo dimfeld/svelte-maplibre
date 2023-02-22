@@ -8,6 +8,7 @@
   import CircleLayer from '$lib/CircleLayer.svelte';
   import SymbolLayer from '$lib/SymbolLayer.svelte';
   import type { LayerClickInfo } from '$lib/types';
+  import { hoverStateFilter } from '$lib/filters';
 
   export let data: PageData;
 
@@ -46,6 +47,9 @@
         //   * Pink, 40px circles when point count is greater than or equal to 750
         'circle-color': ['step', ['get', 'point_count'], '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
         'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
+        'circle-stroke-color': '#f00',
+        'circle-stroke-width': 1,
+        'circle-stroke-opacity': hoverStateFilter(1, 0),
       }}
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     />

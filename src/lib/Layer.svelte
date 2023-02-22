@@ -26,12 +26,14 @@ code instead of directly using this component.
   export let applyToClusters: boolean | undefined = undefined;
   export let minzoom = 0;
   export let maxzoom = 24;
+  export let manageHoverState = true;
 
   export let hoverCursor: string | undefined = undefined;
 
   const dispatch = createEventDispatcher<{
     click: LayerClickInfo;
     mouseenter: LayerClickInfo;
+    mousemove: LayerClickInfo;
     mouseleave: Pick<LayerClickInfo, 'map' | 'layer' | 'source'>;
   }>();
 
@@ -54,6 +56,8 @@ code instead of directly using this component.
 
   $: actualSource = source || $sourceName;
 
+  let hoverFeatureId: string | number | undefined = undefined;
+
   $: if ($map && $layer !== id && actualSource) {
     $layer = id;
     $map.addLayer(
@@ -75,10 +79,7 @@ code instead of directly using this component.
         return;
       }
 
-      let features =
-        $map?.queryRenderedFeatures(e.point, {
-          layers: [$layer],
-        }) ?? [];
+      let features = e.features ?? [];
       let clusterId = features[0]?.properties?.cluster_id;
       dispatch('click', {
         map: $map!,
@@ -98,13 +99,33 @@ code instead of directly using this component.
         $map.getCanvas().style.cursor = hoverCursor;
       }
 
-      let features =
-        $map?.queryRenderedFeatures(e.point, {
-          layers: [$layer],
-        }) ?? [];
+      let features = e.features ?? [];
       let clusterId = features[0]?.properties?.cluster_id;
 
       dispatch('mouseenter', {
+        map: $map!,
+        clusterId,
+        layer: $layer!,
+        source: actualSource!,
+        features,
+      });
+    });
+
+    $map.on('mousemove', $layer, (e) => {
+      let features = e.features ?? [];
+      let clusterId = features[0]?.properties?.cluster_id;
+
+      let featureId = features[0]?.id;
+      if (manageHoverState && featureId !== hoverFeatureId) {
+        if (hoverFeatureId) {
+          $map?.setFeatureState({ source: actualSource!, id: hoverFeatureId }, { hover: false });
+        }
+
+        hoverFeatureId = featureId;
+        $map?.setFeatureState({ source: actualSource!, id: hoverFeatureId }, { hover: true });
+      }
+
+      dispatch('mousemove', {
         map: $map!,
         clusterId,
         layer: $layer!,
@@ -120,6 +141,11 @@ code instead of directly using this component.
 
       if (hoverCursor) {
         $map.getCanvas().style.cursor = '';
+      }
+
+      if (manageHoverState && hoverFeatureId) {
+        $map?.setFeatureState({ source: actualSource!, id: hoverFeatureId }, { hover: false });
+        hoverFeatureId = undefined;
       }
 
       dispatch('mouseleave', {

@@ -29,3 +29,10 @@ export function combineFilters(
 
   return outputFilters;
 }
+
+export function hoverStateFilter(
+  defaultValue: string | number | boolean,
+  hoverValue: string | number | boolean
+): ExpressionSpecification {
+  return ['case', ['boolean', ['feature-state', 'hover'], false], defaultValue, hoverValue];
+}
