@@ -14,6 +14,8 @@
   export let applyToClusters: boolean | undefined = undefined;
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
+  /** Set the cursor style to this value when the mouse is over the layer. */
+  export let hoverCursor: string | undefined = undefined;
 </script>
 
 <Layer
@@ -27,5 +29,8 @@
   {applyToClusters}
   {minzoom}
   {maxzoom}
+  {hoverCursor}
   on:click
+  on:mouseenter
+  on:mouseleave
 />

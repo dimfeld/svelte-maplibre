@@ -27,8 +27,12 @@ code instead of directly using this component.
   export let minzoom = 0;
   export let maxzoom = 24;
 
+  export let hoverCursor: string | undefined = undefined;
+
   const dispatch = createEventDispatcher<{
     click: LayerClickInfo;
+    mouseenter: LayerClickInfo;
+    mouseleave: Pick<LayerClickInfo, 'map' | 'layer' | 'source'>;
   }>();
 
   let clusterFilter: maplibregl.ExpressionSpecification | undefined;
@@ -67,7 +71,7 @@ code instead of directly using this component.
     );
 
     $map.on('click', $layer, (e) => {
-      if (!$layer) {
+      if (!$layer || !$map) {
         return;
       }
 
@@ -77,10 +81,51 @@ code instead of directly using this component.
         }) ?? [];
       let clusterId = features[0]?.properties?.cluster_id;
       dispatch('click', {
+        map: $map!,
         clusterId,
         layer: $layer,
         source: actualSource!,
         features,
+      });
+    });
+
+    $map.on('mouseenter', $layer, (e) => {
+      if (!$layer || !$map) {
+        return;
+      }
+
+      if (hoverCursor) {
+        $map.getCanvas().style.cursor = hoverCursor;
+      }
+
+      let features =
+        $map?.queryRenderedFeatures(e.point, {
+          layers: [$layer],
+        }) ?? [];
+      let clusterId = features[0]?.properties?.cluster_id;
+
+      dispatch('mouseenter', {
+        map: $map!,
+        clusterId,
+        layer: $layer!,
+        source: actualSource!,
+        features,
+      });
+    });
+
+    $map.on('mouseleave', $layer, () => {
+      if (!$layer || !$map) {
+        return;
+      }
+
+      if (hoverCursor) {
+        $map.getCanvas().style.cursor = '';
+      }
+
+      dispatch('mouseleave', {
+        map: $map!,
+        layer: $layer,
+        source: actualSource!,
       });
     });
   }

@@ -16,6 +16,7 @@ export interface ClusterOptions {
 }
 
 export interface LayerClickInfo {
+  map: maplibregl.Map;
   clusterId: string | undefined;
   layer: string;
   source: string;

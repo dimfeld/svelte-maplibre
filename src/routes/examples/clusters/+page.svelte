@@ -37,6 +37,7 @@
   >
     <CircleLayer
       applyToClusters
+      hoverCursor="pointer"
       paint={{
         // Use step expressions (https://maplibre.org/maplibre-gl-js-docs/style-spec/#expressions-step)
         // with three steps to implement three types of circles:
@@ -59,6 +60,7 @@
 
     <CircleLayer
       applyToClusters={false}
+      hoverCursor="pointer"
       paint={{
         'circle-color': '#11b4da',
         'circle-radius': 4,
