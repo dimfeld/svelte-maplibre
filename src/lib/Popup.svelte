@@ -34,7 +34,6 @@
   const markerHover = markerHoverContext();
 
   $: actualCloseButton = closeButton ?? openOn !== 'hover';
-  $: isMarkerPopup = $popupTarget instanceof maplibregl.Marker;
 
   let popup: maplibregl.Popup;
   $: {
@@ -113,6 +112,9 @@
   }
 
   $: if (openOn === 'hover' && markerHover) {
+    if ($popupTarget instanceof maplibregl.Marker) {
+      lngLat = $popupTarget.getLngLat();
+    }
     open = $markerHover ?? false;
   }
 
