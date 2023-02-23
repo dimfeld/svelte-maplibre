@@ -6,6 +6,7 @@
   import CodeSample from '$site/CodeSample.svelte';
   import HeatmapLayer from '$lib/HeatmapLayer.svelte';
   import CircleLayer from '$lib/CircleLayer.svelte';
+  import Popup from '$lib/Popup.svelte';
 </script>
 
 <p>
@@ -58,7 +59,9 @@
         // Transition from heatmap to circle layer by zoom level
         'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 1, 9, 0],
       }}
-    />
+    >
+      <Popup openOn="hover">Test popup</Popup>
+    </HeatmapLayer>
 
     <CircleLayer
       id="earthquakes-circle"

@@ -6,6 +6,11 @@
   import Control from '$lib/Control.svelte';
   import ControlGroup from '$lib/ControlGroup.svelte';
   import ControlButton from '$lib/ControlButton.svelte';
+  import NavigationControl from '$lib/NavigationControl.svelte';
+  import GeolocateControl from '$lib/GeolocateControl.svelte';
+  import AttributionControl from '$lib/AttributionControl.svelte';
+  import ScaleControl from '$lib/ScaleControl.svelte';
+  import FullscreenControl from '$lib/FullscreenControl.svelte';
 </script>
 
 <p>Click the controls in the upper right corner to fly to a location.</p>
@@ -15,8 +20,17 @@
   class={mapClasses}
   center={[-120, 50]}
   zoom={2}
+  attributionControl={false}
   let:map
 >
+  <NavigationControl position="top-left" />
+  <GeolocateControl position="top-left" fitBoundsOptions={{ maxZoom: 12 }} />
+  <FullscreenControl position="top-left" />
+  <ScaleControl />
+  <AttributionControl
+    customAttribution={`A <strong class="text-red-500">custom</strong> attribution`}
+  />
+
   <Control class="flex flex-col gap-y-2">
     <ControlGroup>
       <ControlButton

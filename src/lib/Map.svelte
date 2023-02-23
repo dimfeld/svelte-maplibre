@@ -18,6 +18,7 @@
   export let minZoom = 0;
   export let maxZoom = 22;
   export let interactive = true;
+  export let attributionControl = true;
   /** Set to true if you want to export the map as an image */
   export let preserveDrawingBuffer = false;
   export let maxBounds: LngLatBoundsLike | undefined = undefined;
@@ -76,6 +77,7 @@
       preserveDrawingBuffer,
       maxBounds,
       bounds,
+      attributionControl,
     });
 
     $mapInstance.on('load', (e) => {
