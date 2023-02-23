@@ -76,6 +76,11 @@
     }
 
     popupElement = el;
+
+    if (openOn === 'hover') {
+      popupElement.style.pointerEvents = 'none';
+    }
+
     // The popup element has some padding, so we need to place it here instead of on the
     // content element that we manage.
     popupElement.addEventListener(
@@ -94,7 +99,9 @@
       popup?.remove();
 
       if ($popupTarget instanceof maplibregl.Marker) {
-        $popupTarget.setPopup(undefined);
+        if ($popupTarget.getPopup() === popup) {
+          $popupTarget.setPopup(undefined);
+        }
       } else if (typeof $popupTarget === 'string') {
         $map.off('click', $popupTarget, handleLayerClick);
         $map.off('mousemove', $popupTarget, handleLayerMouseMove);

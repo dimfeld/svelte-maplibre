@@ -21,7 +21,7 @@
       <div class="bg-gray-200 rounded-full p-2 shadow">
         <div class="text-sm font-bold">{feature.properties.NAME}</div>
       </div>
-      <Popup openOn="click">
+      <Popup>
         {feature.properties.NAME} has FIPS code {feature.properties.STATEFP}
       </Popup>
     </MarkerLayer>
@@ -29,9 +29,3 @@
 </Map>
 
 <CodeSample {code} />
-
-<style>
-  .grid {
-    grid-template-columns: repeat(auto-fill, 150px);
-  }
-</style>

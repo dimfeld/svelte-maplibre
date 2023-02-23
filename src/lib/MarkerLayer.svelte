@@ -1,9 +1,8 @@
 <script lang="ts">
   import type { Feature } from 'geojson';
   import { onDestroy } from 'svelte';
-  import { mapContext } from './context';
+  import { getId, mapContext } from './context';
   import { combineFilters, isClusterFilter } from './filters';
-  import flush from 'just-flush';
   import centroid from '@turf/centroid';
   import Marker from './Marker.svelte';
   import FillLayer from './FillLayer.svelte';
@@ -74,12 +73,20 @@
     });
 
     // Need to dedupe the results of featureList
-    let featureMap = new Map<string, Feature>();
+    let featureMap = new Map<string | number, Feature>();
     for (let feature of featureList) {
+      if (!feature.id) {
+        feature.id = getId('autofeat');
+      }
       featureMap.set(feature.id, feature);
     }
 
-    features = [...featureMap.values()];
+    // Sort the features by ID so that the #each loop doesn't think the order ever changes. If the order
+    // changes then it tries to move the element around which interferes with the map's management of the
+    // marker element.
+    features = [...featureMap.values()].sort((a, b) =>
+      a.id.toString().localeCompare(b.id.toString())
+    );
   }
 </script>
 
@@ -92,7 +99,7 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
 <!-- Set up an invisible layer so that querySourceFeatures has something search through. -->
 <FillLayer paint={{ 'fill-opacity': 0 }} beforeLayerType="symbol" />
 
-{#each features as feature (feature.id ?? feature)}
+{#each features as feature (feature.id)}
   {@const c = centroid(feature)}
   <Marker {interactive} lngLat={c.geometry.coordinates}>
     <slot {feature} centroid={c} />
