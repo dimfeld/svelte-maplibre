@@ -5,7 +5,7 @@
 
   const { map } = mapContext();
 
-  export let position: maplibregl.ControlPosition = 'top-right';
+  export let position: maplibregl.ControlPosition = 'top-left';
   export let positionOptions: PositionOptions | undefined = undefined;
   export let fitBoundsOptions: maplibregl.FitBoundsOptions | undefined = undefined;
   export let trackUserLocation = false;

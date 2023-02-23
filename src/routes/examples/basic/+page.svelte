@@ -10,6 +10,7 @@
 <Map
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class="relative w-full aspect-[9/16] max-h-[70vh] sm:max-h-full sm:aspect-video"
+  standardControls
 />
 
 <CodeSample {code} startBoundary="<Map" endBoundary="/>" />

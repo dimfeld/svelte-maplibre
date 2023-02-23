@@ -5,6 +5,10 @@
   import compare from 'just-compare';
   import 'maplibre-gl/dist/maplibre-gl.css';
   import type { CustomImageSpec } from './types.js';
+  import NavigationControl from './NavigationControl.svelte';
+  import GeolocateControl from './GeolocateControl.svelte';
+  import FullscreenControl from './FullscreenControl.svelte';
+  import ScaleControl from './ScaleControl.svelte';
 
   export let map: maplibregl.Map | null = null;
   let classNames: string | undefined = undefined;
@@ -18,12 +22,18 @@
   export let minZoom = 0;
   export let maxZoom = 22;
   export let interactive = true;
+  /** Set false to hide the default attribution control, so you can add your own. */
   export let attributionControl = true;
   /** Set to true if you want to export the map as an image */
   export let preserveDrawingBuffer = false;
   export let maxBounds: LngLatBoundsLike | undefined = undefined;
   /** Custom images to load into the map. */
   export let images: CustomImageSpec[] = [];
+  /** Set to true or a position to add all the standard controls. */
+  export let standardControls: boolean | maplibregl.ControlPosition = false;
+
+  $: standardControlsPosition =
+    typeof standardControls === 'boolean' ? undefined : standardControls;
 
   const dispatch = createEventDispatcher();
 
@@ -117,6 +127,12 @@
 
 <div class={classNames} class:expand-map={!classNames} use:createMap>
   {#if $mapInstance && loaded}
+    {#if standardControls}
+      <NavigationControl position={standardControlsPosition} />
+      <GeolocateControl position={standardControlsPosition} fitBoundsOptions={{ maxZoom: 12 }} />
+      <FullscreenControl position={standardControlsPosition} />
+      <ScaleControl position={standardControlsPosition} />
+    {/if}
     <slot map={$mapInstance} loadedImages={$loadedImages} {allImagesLoaded} />
   {/if}
 </div>

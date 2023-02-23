@@ -26,6 +26,7 @@
 <Map
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
+  standardControls
   images={[
     { id: 'quake', url: quakeImageUrl },
     { id: 'tsunami', url: tsunamiImageUrl },

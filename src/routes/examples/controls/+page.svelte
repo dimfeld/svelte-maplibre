@@ -23,6 +23,7 @@
   attributionControl={false}
   let:map
 >
+  <!-- You can also set the Map's `standardControls` attribute to create these. -->
   <NavigationControl position="top-left" />
   <GeolocateControl position="top-left" fitBoundsOptions={{ maxZoom: 12 }} />
   <FullscreenControl position="top-left" />

@@ -45,6 +45,7 @@
 <Map
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
+  standardControls
   center={[-68.137, 45.137]}
   zoom={5}
 >

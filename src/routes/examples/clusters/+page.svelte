@@ -30,7 +30,11 @@
   <label><input type="radio" bind:group={openOn} value="click" />Click</label>
 </fieldset>
 
-<Map style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" class={mapClasses}>
+<Map 
+  style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" 
+  class={mapClasses}
+  standardControls
+>
   <GeoJSON
     id="earthquakes"
     data={source}
