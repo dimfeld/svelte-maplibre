@@ -64,7 +64,7 @@
       }}
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     >
-      <Popup {openOn} let:features>
+      <Popup {openOn} closeOnClickInside let:features>
         <ClusterPopup feature={features?.[0]} />
       </Popup>
     </CircleLayer>
@@ -105,7 +105,7 @@
       }}
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     >
-      <Popup {openOn} let:features>
+      <Popup {openOn} closeOnClickInside let:features>
         {@const props = features?.[0]?.properties}
         <p>
           Date: <span class="font-medium text-gray-800"

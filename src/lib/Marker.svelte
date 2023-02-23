@@ -1,7 +1,6 @@
 <script lang="ts">
   import maplibre, { type LngLatLike } from 'maplibre-gl';
   import { onDestroy, createEventDispatcher } from 'svelte';
-  import { writable } from 'svelte/store';
   import { createMarkerHoverContext, updatedMarkerContext } from './context';
   import type { MarkerClickInfo } from './types';
 
