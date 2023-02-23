@@ -1,15 +1,12 @@
-<!--
-@component Manages a set of markers for the features in a source.
-  This acts similar to a Layer component, but is not actually registered with
-the map as a layer. Markers for non-point features are placed at the geometry's centroid.
--->
 <script lang="ts">
   import type { Feature } from 'geojson';
   import { onDestroy } from 'svelte';
   import { mapContext } from './context';
   import { combineFilters, isClusterFilter } from './filters';
+  import flush from 'just-flush';
   import centroid from '@turf/centroid';
   import Marker from './Marker.svelte';
+  import FillLayer from './FillLayer.svelte';
 
   const { map, source } = mapContext();
 
@@ -19,33 +16,41 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
 
   $: actualFilter = combineFilters('all', isClusterFilter(applyToClusters), filter);
 
+  let installedHandlers = false;
   function setupHandlers() {
-    if (!$map?.loaded()) {
+    if (!$map) {
       return;
     }
+
+    installedHandlers = true;
 
     $map.on('move', updateMarkers);
     $map.on('moveend', updateMarkers);
-    updateMarkers();
+    if (!$map.loaded()) {
+      updateMarkers();
+    } else {
+      $map.once('load', updateMarkers);
+    }
   }
 
   function handleData(e: maplibregl.MapSourceDataEvent) {
-    if (!$map?.loaded()) {
-      return;
-    }
-
     if (e.sourceId === $source && e.isSourceLoaded) {
-      setupHandlers();
-      $map?.off('sourcedata', handleData);
+      if (installedHandlers) {
+        updateMarkers();
+      } else {
+        setupHandlers();
+      }
     }
   }
 
   onDestroy(() => {
-    if ($map?.loaded()) {
-      $map.off('move', updateMarkers);
-      $map.off('moveend', updateMarkers);
-      $map.off('sourcedata', handleData);
+    if (!$map) {
+      return;
     }
+
+    $map.off('move', updateMarkers);
+    $map.off('moveend', updateMarkers);
+    $map.off('sourcedata', handleData);
   });
 
   $: if ($map && $source) {
@@ -60,15 +65,32 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
 
   let features: Feature[] = [];
   function updateMarkers() {
-    if (!$map?.loaded() || !$source) {
+    if (!$map || !$source) {
       return;
     }
 
-    features = $map.querySourceFeatures($source, {
+    let featureList = $map.querySourceFeatures($source, {
       filter: actualFilter,
     });
+
+    // Need to dedupe the results of featureList
+    let featureMap = new Map<string, Feature>();
+    for (let feature of featureList) {
+      featureMap.set(feature.id, feature);
+    }
+
+    features = [...featureMap.values()];
   }
 </script>
+
+<!--
+@component Manages a set of HTML markers for the features in a source.
+  This acts similar to a Layer component, but is not actually registered with
+the map as a layer. Markers for non-point features are placed at the geometry's centroid.
+-->
+
+<!-- Set up an invisible layer so that querySourceFeatures has something search through. -->
+<FillLayer paint={{ 'fill-opacity': 0 }} beforeLayerType="symbol" />
 
 {#each features as feature (feature.id ?? feature)}
   {@const c = centroid(feature)}

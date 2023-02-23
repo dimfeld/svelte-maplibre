@@ -27,7 +27,7 @@
       startIndex = code.indexOf('\n', startIndex);
     }
 
-    let outputCode = code.slice(startIndex, endIndex).trim();
+    let outputCode = code.slice(startIndex, endIndex).trimEnd();
 
     if (filename) {
       outputCode = `<!-- File: ${filename} -->\n${outputCode}`;
