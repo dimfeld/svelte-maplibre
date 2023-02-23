@@ -31,4 +31,6 @@
   on:click
   on:mouseenter
   on:mouseleave
-/>
+>
+  <slot />
+</Layer>

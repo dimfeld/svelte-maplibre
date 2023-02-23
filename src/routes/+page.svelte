@@ -11,7 +11,7 @@
     <li><a href="/examples/geojson_line_layer">Styled Line</a></li>
     <li><a href="/examples/heatmap">Heatmap</a></li>
     <li><a href="/examples/controls">Controls</a></li>
-    <li><a href="/examples/clusters">Clusters</a></li>
+    <li><a href="/examples/clusters">Clusters and Popups</a></li>
     <li><a href="/examples/image_symbols">Images in a Symbol Layer</a></li>
   </ul>
 

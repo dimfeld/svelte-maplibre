@@ -4,6 +4,7 @@
   import { mapClasses } from '../styles';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
+  import Popup from '$lib/Popup.svelte';
 
   let clickedName = '';
 
@@ -59,6 +60,10 @@
       <span>
         {label}
       </span>
+
+      <Popup openOn="hover" offset={[0, -10]}>
+        <div class="text-lg font-bold">{name}</div>
+      </Popup>
     </Marker>
   {/each}
 </Map>

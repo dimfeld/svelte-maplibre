@@ -49,7 +49,7 @@ code instead of directly using this component.
   const { map, source: sourceName, self: layer } = updatedLayerContext();
 
   onDestroy(() => {
-    if ($layer) {
+    if ($layer && $map?.loaded()) {
       $map?.removeLayer($layer);
     }
   });
@@ -81,13 +81,16 @@ code instead of directly using this component.
 
       let features = e.features ?? [];
       let clusterId = features[0]?.properties?.cluster_id;
-      dispatch('click', {
+      let eventData: LayerClickInfo = {
+        event: e,
         map: $map!,
         clusterId,
         layer: $layer,
         source: actualSource!,
         features,
-      });
+      };
+
+      dispatch('click', eventData);
     });
 
     $map.on('mouseenter', $layer, (e) => {
@@ -102,13 +105,16 @@ code instead of directly using this component.
       let features = e.features ?? [];
       let clusterId = features[0]?.properties?.cluster_id;
 
-      dispatch('mouseenter', {
+      let data: LayerClickInfo = {
+        event: e,
         map: $map!,
         clusterId,
         layer: $layer!,
         source: actualSource!,
         features,
-      });
+      };
+
+      dispatch('mouseenter', data);
     });
 
     $map.on('mousemove', $layer, (e) => {
@@ -126,6 +132,7 @@ code instead of directly using this component.
       }
 
       dispatch('mousemove', {
+        event: e,
         map: $map!,
         clusterId,
         layer: $layer!,

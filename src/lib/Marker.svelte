@@ -1,7 +1,9 @@
 <script lang="ts">
   import maplibre, { type LngLatLike } from 'maplibre-gl';
   import { onDestroy, createEventDispatcher } from 'svelte';
-  import { updatedMarkerContext } from './context';
+  import { writable } from 'svelte/store';
+  import { createMarkerHoverContext, updatedMarkerContext } from './context';
+  import type { MarkerClickInfo } from './types';
 
   export let lngLat: LngLatLike;
   let classNames: string | undefined = undefined;
@@ -12,6 +14,8 @@
 
   const dispatch = createEventDispatcher();
   const { map, self: marker } = updatedMarkerContext();
+
+  let hovered = createMarkerHoverContext();
 
   let el: HTMLDivElement;
   $: if ($map && el && !$marker) {
@@ -26,8 +30,32 @@
     if (e.key === ' ') {
       e.preventDefault();
       e.stopPropagation();
-      dispatch('click');
+      sendEvent('click');
     }
+  }
+
+  function sendEvent(eventName: string) {
+    let loc = $marker?.getLngLat();
+    if (!loc) {
+      return;
+    }
+
+    let data: MarkerClickInfo = {
+      map: $map!,
+      marker: $marker!,
+      features: [
+        {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Point',
+            coordinates: [loc.lng, loc.lat],
+          },
+        },
+      ],
+    };
+
+    dispatch(eventName, data);
   }
 </script>
 
@@ -37,7 +65,16 @@
     class={classNames}
     tabindex={interactive ? 0 : undefined}
     role={interactive ? 'button' : undefined}
-    on:click
+    on:click={() => sendEvent('click')}
+    on:mouseenter={() => {
+      $hovered = true;
+      sendEvent('mouseenter');
+    }}
+    on:mouseleave={() => {
+      $hovered = false;
+      sendEvent('mouseleave');
+    }}
+    on:mousemove={() => sendEvent('mousemove')}
     on:keydown={handleKeyDown}
   >
     <slot />

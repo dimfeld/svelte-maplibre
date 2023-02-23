@@ -2,6 +2,7 @@
   import { CodeBlock } from '@skeletonlabs/skeleton';
 
   export let code: string;
+  export let filename = '';
   export let startBoundary = '<Map';
   export let endBoundary = '</Map>';
   export let omitStartBoundary = false;
@@ -14,8 +15,8 @@
     omitStartBoundary = false,
     omitEndBoundary = false
   ) {
-    let startIndex = code.indexOf(start);
-    let endIndex = code.indexOf(end, startIndex);
+    let startIndex = start.length ? code.indexOf(start) : 0;
+    let endIndex = end.length ? code.indexOf(end, startIndex) : code.length;
 
     if (!omitEndBoundary) {
       endIndex += end.length;
@@ -26,7 +27,13 @@
       startIndex = code.indexOf('\n', startIndex);
     }
 
-    return code.slice(startIndex, endIndex).trim();
+    let outputCode = code.slice(startIndex, endIndex).trim();
+
+    if (filename) {
+      outputCode = `<!-- File: ${filename} -->\n${outputCode}`;
+    }
+
+    return outputCode;
   }
 
   $: output = getExtract(code, startBoundary, endBoundary, omitStartBoundary, omitEndBoundary);

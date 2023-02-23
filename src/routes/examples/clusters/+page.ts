@@ -2,6 +2,6 @@ import type { PageLoad } from './$types';
 
 export const load: PageLoad = () => {
   return {
-    title: 'Clusters',
+    title: 'Clusters and Popups',
   };
 };

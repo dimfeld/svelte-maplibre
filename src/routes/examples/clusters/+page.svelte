@@ -4,21 +4,31 @@
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
   import { mapClasses } from '../styles';
-  import type { PageData } from './$types';
   import CircleLayer from '$lib/CircleLayer.svelte';
   import SymbolLayer from '$lib/SymbolLayer.svelte';
   import { hoverStateFilter } from '$lib/filters';
+  import Popup from '$lib/Popup.svelte';
+  import ClusterPopup from '../ClusterPopup.svelte';
+  import clusterPopupCode from '../ClusterPopup.svelte?raw';
 
   const source = 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson';
 
   let clickedFeature: Record<string, any> | null = null;
+
+  let openOn: 'click' | 'hover' = 'click';
 </script>
 
 <p>
-  Data and layer configuration from <a
+  Data and layer configuration derived from <a
     href="https://maplibre.org/maplibre-gl-js-docs/example/cluster/">MapLibre cluster Example.</a
   >
 </p>
+
+<fieldset class="border border-gray-300 self-start px-2 flex gap-x-4 mb-2">
+  <legend>Show popup on</legend>
+  <label><input type="radio" bind:group={openOn} value="click" />Click</label>
+  <label><input type="radio" bind:group={openOn} value="hover" />Hover</label>
+</fieldset>
 
 <Map class={mapClasses}>
   <GeoJSON
@@ -49,7 +59,11 @@
         'circle-stroke-opacity': hoverStateFilter(0, 1),
       }}
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
-    />
+    >
+      <Popup {openOn} let:features>
+        <ClusterPopup feature={features?.[0]} />
+      </Popup>
+    </CircleLayer>
 
     <SymbolLayer
       applyToClusters
@@ -86,7 +100,20 @@
         'circle-stroke-color': '#fff',
       }}
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
-    />
+    >
+      <Popup {openOn} let:features>
+        {@const props = features?.[0]?.properties}
+        <p>
+          Date: <span class="font-medium text-gray-800"
+            >{new Date(props.time).toLocaleDateString()}</span
+          >
+        </p>
+        <p>Magnitude: <span class="font-medium text-gray-800">{props.mag}</span></p>
+        <p>
+          Tsunami: <span class="font-medium text-gray-800">{props.tsunami ? 'Yes' : 'No'}</span>
+        </p>
+      </Popup>
+    </CircleLayer>
   </GeoJSON>
 </Map>
 
@@ -108,3 +135,9 @@
 {/if}
 
 <CodeSample {code} endBoundary="<CodeSample" omitEndBoundary />
+<CodeSample
+  code={clusterPopupCode}
+  filename="ClusterPopup.svelte"
+  startBoundary=""
+  endBoundary=""
+/>

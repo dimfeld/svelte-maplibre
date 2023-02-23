@@ -1,4 +1,5 @@
 import type { Feature } from 'geojson';
+import type { MapMouseEvent, Marker } from 'maplibre-gl';
 
 export interface ClusterOptions {
   /** The minimum number of points required to form a cluster.
@@ -36,8 +37,15 @@ export type CustomImageSpec = CustomImageUrlSpec | CustomImageDataSpec;
 
 export interface LayerClickInfo {
   map: maplibregl.Map;
+  event: MapMouseEvent;
   clusterId: string | undefined;
   layer: string;
   source: string;
+  features: Feature[];
+}
+
+export interface MarkerClickInfo {
+  map: maplibregl.Map;
+  marker: Marker;
   features: Feature[];
 }
