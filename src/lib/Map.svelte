@@ -9,6 +9,8 @@
   export let map: maplibregl.Map | null = null;
   let classNames: string | undefined = undefined;
   export { classNames as class };
+  /** The style to use for the map. */
+  export let style: string | maplibregl.StyleSpecification;
   export let center: LngLatLike = [0, 0];
   export let zoom = 1;
   export let bounds: LngLatBoundsLike | undefined = undefined;
@@ -65,7 +67,7 @@
   function createMap(element: HTMLDivElement) {
     $mapInstance = new maplibre.Map({
       container: element,
-      style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+      style,
       center,
       zoom,
       minZoom,

@@ -50,7 +50,12 @@
   {/if}
 </p>
 
-<Map zoom={1} center={[-20, 0]} class={mapClasses}>
+<Map
+  style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+  zoom={1}
+  center={[-20, 0]}
+  class={mapClasses}
+>
   {#each markers as { lngLat, label, name } (label)}
     <Marker
       {lngLat}

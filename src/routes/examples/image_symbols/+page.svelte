@@ -8,12 +8,9 @@
   import CircleLayer from '$lib/CircleLayer.svelte';
   import SymbolLayer from '$lib/SymbolLayer.svelte';
   import { hoverStateFilter } from '$lib/filters';
-  import { imageWithFallback } from '$lib/expressions';
 
   import quakeImageUrl from './earthquake.png';
   import tsunamiImageUrl from './tsunami.png';
-
-  export let data: PageData;
 
   const source = 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson';
 
@@ -27,6 +24,7 @@
 </p>
 
 <Map
+  style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
   images={[
     { id: 'quake', url: quakeImageUrl },

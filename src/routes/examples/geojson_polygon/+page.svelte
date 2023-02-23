@@ -55,7 +55,12 @@
   <label><input type="color" bind:value={borderColor} /> Border Color </label>
 </div>
 
-<Map center={[-68.137, 45.137]} zoom={5} class={mapClasses}>
+<Map
+  style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+  class={mapClasses}
+  center={[-68.137, 45.137]}
+  zoom={5}
+>
   <GeoJSON id="maine" {data}>
     {#if showFill}
       <FillLayer

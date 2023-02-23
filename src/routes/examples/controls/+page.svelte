@@ -8,7 +8,15 @@
   import ControlButton from '$lib/ControlButton.svelte';
 </script>
 
-<Map center={[-120, 50]} zoom={2} class={mapClasses} let:map>
+<p>Click the controls in the upper right corner to fly to a location.</p>
+
+<Map
+  style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+  class={mapClasses}
+  center={[-120, 50]}
+  zoom={2}
+  let:map
+>
   <Control class="flex flex-col gap-y-2">
     <ControlGroup>
       <ControlButton

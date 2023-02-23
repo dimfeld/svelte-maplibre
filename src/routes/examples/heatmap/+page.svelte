@@ -15,7 +15,12 @@
   >
 </p>
 
-<Map center={[-120, 50]} zoom={2} class={mapClasses}>
+<Map
+  style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+  class={mapClasses}
+  center={[-120, 50]}
+  zoom={2}
+>
   <GeoJSON
     id="earthquakes"
     data="https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson"

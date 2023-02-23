@@ -15,7 +15,7 @@
 
   let clickedFeature: Record<string, any> | null = null;
 
-  let openOn: 'click' | 'hover' = 'click';
+  let openOn: 'click' | 'hover' = 'hover';
 </script>
 
 <p>
@@ -26,11 +26,11 @@
 
 <fieldset class="border border-gray-300 self-start px-2 flex gap-x-4 mb-2">
   <legend>Show popup on</legend>
-  <label><input type="radio" bind:group={openOn} value="click" />Click</label>
   <label><input type="radio" bind:group={openOn} value="hover" />Hover</label>
+  <label><input type="radio" bind:group={openOn} value="click" />Click</label>
 </fieldset>
 
-<Map class={mapClasses}>
+<Map style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" class={mapClasses}>
   <GeoJSON
     id="earthquakes"
     data={source}
