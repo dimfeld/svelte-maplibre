@@ -65,7 +65,8 @@
   <GeoJSON id="maine" {data}>
     {#if showFill}
       <FillLayer
-        paint={{ 'fill-color': fillColor, 'fill-opacity': 0.5, 'fill-outline-color': '#880000' }}
+        paint={{ 'fill-color': fillColor, 'fill-opacity': 0.8, 'fill-outline-color': '#880000' }}
+        beforeLayerType="symbol"
       />
     {/if}
     {#if showBorder}

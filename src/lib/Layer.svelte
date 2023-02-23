@@ -19,6 +19,8 @@ code instead of directly using this component.
 
   /** Draw this layer under another layer. This is only evaluated when the component is created. */
   export let beforeId: string | undefined = undefined;
+  /** Calculate beforeId so that this layer appears below all layers of a particular type. */
+  export let beforeLayerType: string | undefined = undefined;
   export let type: maplibregl.LayerSpecification['type'];
   export let paint: object | undefined = undefined;
   export let layout: object | undefined = undefined;
@@ -59,6 +61,15 @@ code instead of directly using this component.
   let hoverFeatureId: string | number | undefined = undefined;
 
   $: if ($map && $layer !== id && actualSource) {
+    let actualBeforeId = beforeId;
+    if (!beforeId && beforeLayerType) {
+      let layers = $map.getStyle().layers;
+      let beforeLayer = layers?.find((l) => l.type === beforeLayerType);
+      if (beforeLayer) {
+        actualBeforeId = beforeLayer.id;
+      }
+    }
+
     $layer = id;
     $map.addLayer(
       flush({
@@ -71,7 +82,7 @@ code instead of directly using this component.
         minzoom,
         maxzoom,
       }),
-      beforeId
+      actualBeforeId
     );
 
     $map.on('click', $layer, (e) => {

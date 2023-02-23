@@ -8,6 +8,8 @@
   export let source: string | undefined = undefined;
   /** Draw this layer under another layer. This is only evaluated when the component is created. */
   export let beforeId: string | undefined = undefined;
+  /** Draw this layer all layers of this type. This is only evaluated when the component is created. */
+  export let beforeLayerType: string | undefined = undefined;
   export let paint: maplibregl.SymbolLayerSpecification['paint'] | undefined = undefined;
   export let layout: maplibregl.SymbolLayerSpecification['layout'] | undefined = undefined;
   export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
@@ -23,6 +25,7 @@
   type="symbol"
   {source}
   {beforeId}
+  {beforeLayerType}
   {paint}
   {layout}
   {filter}
