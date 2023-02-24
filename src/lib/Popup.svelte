@@ -4,8 +4,8 @@
   import { onDestroy, tick } from 'svelte';
   import { mapContext, markerHoverContext } from './context.js';
 
-  /** Show the built-in close button. This defaults to true if openOn is 'click' or 'manual',
-   * and to false if openOn is 'hover'. */
+  /** Show the built-in close button. By default the close button will be shown
+   * only if closeOnClickOutside and closeOnClickInside are not set. */
   export let closeButton: boolean | undefined = undefined;
   /** Close on click outside the popu. */
   export let closeOnClickOutside = true;
@@ -37,7 +37,7 @@
   const { map, popupTarget } = mapContext();
   const markerHover = markerHoverContext();
 
-  $: actualCloseButton = closeButton ?? openOn !== 'hover';
+  $: actualCloseButton = closeButton ?? (!closeOnClickOutside && !closeOnClickInside);
 
   let popup: maplibregl.Popup;
   $: {
