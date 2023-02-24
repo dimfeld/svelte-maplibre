@@ -44,6 +44,7 @@
     moveend: maplibregl.MapMouseEvent & { map: maplibregl.Map };
     zoomstart: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
     zoomend: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
+    styledata: maplibregl.MapStyleDataEvent & { map: maplibregl.Map };
   }>();
 
   const { map: mapInstance, loadedImages } = createMapContext();
@@ -120,6 +121,10 @@
     $mapInstance.on('zoomend', (ev) => {
       zoom = ev.target.getZoom();
       dispatch('zoomend', { ...ev, map: $mapInstance });
+    });
+
+    $mapInstance.on('styledata', (ev) => {
+      dispatch('styledata', { ...ev, map: $mapInstance });
     });
 
     return {

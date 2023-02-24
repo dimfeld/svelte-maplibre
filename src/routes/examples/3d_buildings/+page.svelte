@@ -18,13 +18,16 @@
   zoom={15.5}
   pitch={45}
   bearing={-17.6}
-  on:load={({ detail: map }) => {
+  on:styledata={({ detail: { map } }) => {
     // Hide the built-in extrusion layer since we're doing our own.
+    // Doing this in the styledata event handler ensures that we
+    // hide it as soon as possible. If we hide in the `load` event then
+    // the built-in layer will be visible for a short time before we hide it.
     map.setLayoutProperty('building-3d', 'visibility', 'none');
   }}
 >
   <!-- The source and sourceLayer are specific to the map style. You
-  will want to look into the JSON file itself for your style to see
+  will want to look into the style JSON data for your style to see
   the appropriate values. -->
   <FillExtrusionLayer
     source="maptiler_planet"
