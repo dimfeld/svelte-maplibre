@@ -21,7 +21,7 @@
       <div class="bg-gray-200 rounded-full p-2 shadow">
         <div class="text-sm font-bold">{feature.properties.NAME}</div>
       </div>
-      <Popup>
+      <Popup openOn="hover">
         {feature.properties.NAME} has FIPS code {feature.properties.STATEFP}
       </Popup>
     </MarkerLayer>

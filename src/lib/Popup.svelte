@@ -64,6 +64,7 @@
     });
   }
 
+  let hoveringOnPopup = false;
   let popupElement: HTMLElement | undefined;
   function setPopupClickHandler() {
     if (!popup) {
@@ -80,6 +81,22 @@
     if (openOn === 'hover') {
       popupElement.style.pointerEvents = 'none';
     }
+
+    popupElement.addEventListener(
+      'mouseenter',
+      () => {
+        hoveringOnPopup = true;
+      },
+      { passive: true }
+    );
+
+    popupElement.addEventListener(
+      'mouseleave',
+      () => {
+        hoveringOnPopup = false;
+      },
+      { passive: true }
+    );
 
     // The popup element has some padding, so we need to place it here instead of on the
     // content element that we manage.
@@ -164,7 +181,7 @@
     if ($popupTarget instanceof maplibregl.Marker) {
       lngLat = $popupTarget.getLngLat();
     }
-    open = $markerHover ?? false;
+    open = ($markerHover || hoveringOnPopup) ?? false;
   }
 
   $: if (popupEl) {
