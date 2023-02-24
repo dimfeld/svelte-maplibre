@@ -7,8 +7,8 @@
 </script>
 
 <p>
-  This example uses a FillExtrusionLayer to show a 3D view of builderings, with shorter buildings in
-  green and higher buildings in red.
+  This example uses a FillExtrusionLayer to show a 3D view of buildings, with shorter buildings in
+  green and taller buildings in red.<br /> Hold down Ctrl and drag the mouse to rotate on a computer.
 </p>
 <Map
   style={streetsStyle}
@@ -30,7 +30,7 @@
     source="maptiler_planet"
     sourceLayer="building"
     beforeLayerType={(l) => l.type === 'symbol' && !!l.paint?.['text-color']}
-    minzoom={15}
+    minzoom={14}
     paint={{
       // Show lower buildings in green, higher in red.
       'fill-extrusion-color': [
@@ -49,18 +49,18 @@
         'interpolate',
         ['linear'],
         ['zoom'],
-        15,
+        14,
         0,
-        15.05,
+        14.05,
         ['get', 'render_height'],
       ],
       'fill-extrusion-base': [
         'interpolate',
         ['linear'],
         ['zoom'],
-        15,
+        14,
         0,
-        15.05,
+        14.05,
         ['get', 'render_min_height'],
       ],
       'fill-extrusion-opacity': 0.6,
