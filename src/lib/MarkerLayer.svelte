@@ -3,7 +3,7 @@
   import { onDestroy } from 'svelte';
   import { getId, mapContext } from './context';
   import { combineFilters, isClusterFilter } from './filters';
-  import centroid from '@turf/centroid';
+  import center from '@turf/center';
   import Marker from './Marker.svelte';
   import FillLayer from './FillLayer.svelte';
 
@@ -93,15 +93,15 @@
 <!--
 @component Manages a set of HTML markers for the features in a source.
   This acts similar to a Layer component, but is not actually registered with
-the map as a layer. Markers for non-point features are placed at the geometry's centroid.
+the map as a layer. Markers for non-point features are placed at the geometry's center.
 -->
 
 <!-- Set up an invisible layer so that querySourceFeatures has something search through. -->
 <FillLayer paint={{ 'fill-opacity': 0 }} beforeLayerType="symbol" />
 
 {#each features as feature (feature.id)}
-  {@const c = centroid(feature)}
+  {@const c = center(feature)}
   <Marker {interactive} lngLat={c.geometry.coordinates}>
-    <slot {feature} centroid={c} />
+    <slot {feature} center={c} />
   </Marker>
 {/each}

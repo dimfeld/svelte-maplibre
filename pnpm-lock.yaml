@@ -6,7 +6,7 @@ specifiers:
   '@sveltejs/adapter-vercel': ^2.0.4
   '@sveltejs/kit': ^1.5.0
   '@sveltejs/package': ^2.0.0
-  '@turf/centroid': ^6.5.0
+  '@turf/center': ^6.5.0
   '@types/d3-color': ^3.1.0
   '@types/geojson': ^7946.0.10
   '@typescript-eslint/eslint-plugin': ^5.45.0
@@ -34,7 +34,7 @@ specifiers:
   vitest: ^0.25.3
 
 dependencies:
-  '@turf/centroid': 6.5.0
+  '@turf/center': 6.5.0
   just-compare: 2.3.0
   just-flush: 2.3.0
   maplibre-gl: 3.0.0-pre.4
@@ -503,11 +503,18 @@ packages:
       - supports-color
     dev: true
 
-  /@turf/centroid/6.5.0:
-    resolution: {integrity: sha512-MwE1oq5E3isewPprEClbfU5pXljIK/GUOMbn22UM3IFPDJX0KeoyLNwghszkdmFp/qMGL/M13MMWvU+GNLXP/A==}
+  /@turf/bbox/6.5.0:
+    resolution: {integrity: sha512-RBbLaao5hXTYyyg577iuMtDB8ehxMlUqHEJiMs8jT1GHkFhr6sYre3lmLsPeYEi/ZKj5TP5tt7fkzNdJ4GIVyw==}
     dependencies:
       '@turf/helpers': 6.5.0
       '@turf/meta': 6.5.0
+    dev: false
+
+  /@turf/center/6.5.0:
+    resolution: {integrity: sha512-T8KtMTfSATWcAX088rEDKjyvQCBkUsLnK/Txb6/8WUXIeOZyHu42G7MkdkHRoHtwieLdduDdmPLFyTdG5/e7ZQ==}
+    dependencies:
+      '@turf/bbox': 6.5.0
+      '@turf/helpers': 6.5.0
     dev: false
 
   /@turf/helpers/6.5.0:
