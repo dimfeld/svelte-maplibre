@@ -10,11 +10,18 @@
   /** Set the source for this layer. This can be omitted when the Layer is created in the slot
    * of a source component. */
   export let source: string | undefined = undefined;
+  /** When setting up a layer for a vector tile source, the source layer to which this layer corresponds. */
+  export let sourceLayer: string | undefined = undefined;
 
   /** Draw this layer under another layer. This is only evaluated when the component is created. */
   export let beforeId: string | undefined = undefined;
-  /** Calculate beforeId so that this layer appears below all layers of a particular type. */
-  export let beforeLayerType: string | undefined = undefined;
+  /** Calculate beforeId so that this layer appears below all layers of a particular type.
+   * If this is a function, this layer will be added before the first layer for which
+   * the function returns true.*/
+  export let beforeLayerType:
+    | string
+    | ((layer: maplibregl.LayerSpecification) => boolean)
+    | undefined = undefined;
   export let type: maplibregl.LayerSpecification['type'];
   export let paint: object | undefined = undefined;
   export let layout: object | undefined = undefined;
@@ -52,7 +59,11 @@
     let actualBeforeId = beforeId;
     if (!beforeId && beforeLayerType) {
       let layers = $map.getStyle().layers;
-      let beforeLayer = layers?.find((l) => l.type === beforeLayerType);
+      let layerFunc =
+        typeof beforeLayerType === 'function'
+          ? beforeLayerType
+          : (l: maplibregl.LayerSpecification) => l.type === beforeLayerType;
+      let beforeLayer = layers?.find(layerFunc);
       if (beforeLayer) {
         actualBeforeId = beforeLayer.id;
       }
@@ -64,6 +75,7 @@
         id: $layer,
         type,
         source: actualSource,
+        'source-layer': sourceLayer,
         filter: layerFilter,
         paint,
         layout,

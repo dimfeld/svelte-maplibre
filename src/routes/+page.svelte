@@ -14,6 +14,7 @@
     <li><a href="/examples/clusters">Clusters and Popups</a></li>
     <li><a href="/examples/image_symbols">Images in a Symbol Layer</a></li>
     <li><a href="/examples/marker_layer">Layer Consisting of Markers</a></li>
+    <li><a href="/examples/3d_buildings">3D Buildings</a></li>
   </ul>
 
   <p class="mt-4"><a href="https://github.com/dimfeld/svelte-maplibre">Github</a></p>

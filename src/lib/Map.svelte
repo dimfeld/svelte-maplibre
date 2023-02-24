@@ -17,6 +17,8 @@
   export let style: string | maplibregl.StyleSpecification;
   export let center: LngLatLike = [0, 0];
   export let zoom = 1;
+  export let pitch = 0;
+  export let bearing = 0;
   export let bounds: LngLatBoundsLike | undefined = undefined;
   export let loaded = false;
   export let minZoom = 0;
@@ -35,7 +37,14 @@
   $: standardControlsPosition =
     typeof standardControls === 'boolean' ? undefined : standardControls;
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    load: maplibregl.Map;
+    error: Error;
+    movestart: maplibregl.MapMouseEvent & { map: maplibregl.Map };
+    moveend: maplibregl.MapMouseEvent & { map: maplibregl.Map };
+    zoomstart: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
+    zoomend: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
+  }>();
 
   const { map: mapInstance, loadedImages } = createMapContext();
   $: map = $mapInstance;
@@ -81,6 +90,8 @@
       style,
       center,
       zoom,
+      pitch,
+      bearing,
       minZoom,
       maxZoom,
       interactive,
@@ -92,7 +103,7 @@
 
     $mapInstance.on('load', (e) => {
       loaded = true;
-      dispatch('load', { map: $mapInstance });
+      dispatch('load', $mapInstance);
     });
 
     $mapInstance.on('error', (e) => dispatch('error', { ...e, map: $mapInstance }));
