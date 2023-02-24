@@ -1,13 +1,7 @@
-<!--
-@component
-A component that handles a generic layer. This is intended for use by other type-specific
-layer components, such as FillLayer, and usually you will want to use one of those in your
-code instead of directly using this component.
--->
 <script lang="ts">
   import { getId, updatedLayerContext } from './context.js';
   import { diffApplier } from './compare.js';
-  import { combineFilters } from './filters.js';
+  import { combineFilters, isClusterFilter } from './filters.js';
   import type { LayerClickInfo } from './types.js';
   import flush from 'just-flush';
   import { onDestroy, createEventDispatcher } from 'svelte';
@@ -39,13 +33,7 @@ code instead of directly using this component.
     mouseleave: Pick<LayerClickInfo, 'map' | 'layer' | 'source'>;
   }>();
 
-  let clusterFilter: maplibregl.ExpressionSpecification | undefined;
-  $: clusterFilter =
-    applyToClusters === true
-      ? ['has', 'point_count']
-      : applyToClusters === false
-      ? ['!', ['has', 'point_count']]
-      : undefined;
+  $: clusterFilter = isClusterFilter(applyToClusters);
   $: layerFilter = combineFilters('all', clusterFilter, filter);
 
   const { map, source: sourceName, self: layer } = updatedLayerContext();
@@ -185,6 +173,13 @@ code instead of directly using this component.
   $: applyLayout?.(layout);
   $: if ($layer) $map?.setLayerZoomRange($layer, minzoom, maxzoom);
 </script>
+
+<!--
+@component
+A component that handles a generic layer. This is intended for use by other type-specific
+layer components, such as FillLayer, and usually you will want to use one of those in your
+code instead of directly using this component.
+-->
 
 {#if $layer}
   {#key $layer}

@@ -30,6 +30,16 @@ export function combineFilters(
   return outputFilters;
 }
 
+export function isClusterFilter(
+  matchClusters: boolean | undefined
+): ExpressionSpecification | undefined {
+  return matchClusters === true
+    ? ['has', 'point_count']
+    : matchClusters === false
+    ? ['!', ['has', 'point_count']]
+    : undefined;
+}
+
 export function hoverStateFilter(
   defaultValue: string | number | boolean,
   hoverValue: string | number | boolean

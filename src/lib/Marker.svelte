@@ -1,8 +1,9 @@
 <script lang="ts">
   import maplibre, { type LngLatLike } from 'maplibre-gl';
-  import { onDestroy, createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
   import { createMarkerHoverContext, updatedMarkerContext } from './context';
   import type { MarkerClickInfo } from './types';
+  import type { Feature } from 'geojson';
 
   export let lngLat: LngLatLike;
   let classNames: string | undefined = undefined;
@@ -16,12 +17,15 @@
 
   let hovered = createMarkerHoverContext();
 
-  let el: HTMLDivElement;
-  $: if ($map && el && !$marker) {
-    $marker = new maplibre.Marker(el).setLngLat(lngLat).addTo($map);
-  }
+  function addMarker(node: HTMLDivElement) {
+    $marker = new maplibre.Marker({ element: node }).setLngLat(lngLat).addTo($map);
 
-  onDestroy(() => $marker?.remove());
+    return {
+      destroy() {
+        $marker?.remove();
+      },
+    };
+  }
 
   $: $marker?.setLngLat(lngLat);
 
@@ -58,24 +62,23 @@
   }
 </script>
 
-<div bind:this={el}>
-  <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-  <div
-    class={classNames}
-    tabindex={interactive ? 0 : undefined}
-    role={interactive ? 'button' : undefined}
-    on:click={() => sendEvent('click')}
-    on:mouseenter={() => {
-      $hovered = true;
-      sendEvent('mouseenter');
-    }}
-    on:mouseleave={() => {
-      $hovered = false;
-      sendEvent('mouseleave');
-    }}
-    on:mousemove={() => sendEvent('mousemove')}
-    on:keydown={handleKeyDown}
-  >
-    <slot />
-  </div>
+<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<div
+  use:addMarker
+  class={classNames}
+  tabindex={interactive ? 0 : undefined}
+  role={interactive ? 'button' : undefined}
+  on:click={() => sendEvent('click')}
+  on:mouseenter={() => {
+    $hovered = true;
+    sendEvent('mouseenter');
+  }}
+  on:mouseleave={() => {
+    $hovered = false;
+    sendEvent('mouseleave');
+  }}
+  on:mousemove={() => sendEvent('mousemove')}
+  on:keydown={handleKeyDown}
+>
+  <slot />
 </div>

@@ -4,8 +4,8 @@
   import { onDestroy, tick } from 'svelte';
   import { mapContext, markerHoverContext } from './context.js';
 
-  /** Show the built-in close button. This defaults to true if openOn is 'click' or 'manual',
-   * and to false if openOn is 'hover'. */
+  /** Show the built-in close button. By default the close button will be shown
+   * only if closeOnClickOutside and closeOnClickInside are not set. */
   export let closeButton: boolean | undefined = undefined;
   /** Close on click outside the popu. */
   export let closeOnClickOutside = true;
@@ -37,7 +37,7 @@
   const { map, popupTarget } = mapContext();
   const markerHover = markerHoverContext();
 
-  $: actualCloseButton = closeButton ?? openOn !== 'hover';
+  $: actualCloseButton = closeButton ?? (!closeOnClickOutside && !closeOnClickInside);
 
   let popup: maplibregl.Popup;
   $: {
@@ -76,6 +76,11 @@
     }
 
     popupElement = el;
+
+    if (openOn === 'hover') {
+      popupElement.style.pointerEvents = 'none';
+    }
+
     // The popup element has some padding, so we need to place it here instead of on the
     // content element that we manage.
     popupElement.addEventListener(
@@ -94,7 +99,9 @@
       popup?.remove();
 
       if ($popupTarget instanceof maplibregl.Marker) {
-        $popupTarget.setPopup(undefined);
+        if ($popupTarget.getPopup() === popup) {
+          $popupTarget.setPopup(undefined);
+        }
       } else if (typeof $popupTarget === 'string') {
         $map.off('click', $popupTarget, handleLayerClick);
         $map.off('mousemove', $popupTarget, handleLayerMouseMove);

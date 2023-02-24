@@ -7,6 +7,10 @@
 
   export let id: string = getId('geojson');
   export let data: GeoJSON | string;
+  /** Generate a unique id for each feature. This will overwrite existing IDs. */
+  export let generateId: boolean = false;
+  /** Use this property on the feature as the ID. This will overwrite existing IDs. */
+  export let promoteId: string | undefined = undefined;
   export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
   /** True to calculate line lengths. Required to use a line layer that
    * uses the "line-gradient" paint property. */
@@ -33,6 +37,8 @@
         data,
         filter,
         lineMetrics,
+        generateId,
+        promoteId,
         cluster: !!cluster,
         clusterMinPoints: cluster?.minPoints,
         clusterMaxZoom: cluster?.maxZoom,
