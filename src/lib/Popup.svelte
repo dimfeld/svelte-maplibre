@@ -1,13 +1,17 @@
 <script lang="ts">
   import type { Feature } from 'geojson';
-  import maplibregl, { type MapLayerMouseEvent, type MapLayerTouchEvent } from 'maplibre-gl';
-  import { onDestroy, tick } from 'svelte';
+  import maplibregl, {
+    MapMouseEvent,
+    type MapLayerMouseEvent,
+    type MapLayerTouchEvent,
+  } from 'maplibre-gl';
+  import { onDestroy, onMount, tick } from 'svelte';
   import { mapContext, markerHoverContext } from './context.js';
 
   /** Show the built-in close button. By default the close button will be shown
    * only if closeOnClickOutside and closeOnClickInside are not set. */
   export let closeButton: boolean | undefined = undefined;
-  /** Close on click outside the popu. */
+  /** Close on click outside the popup. */
   export let closeOnClickOutside = true;
   /** Close on click inside the popup. This should only be used for non-interactive popups. */
   export let closeOnClickInside = false;
@@ -40,10 +44,11 @@
   $: actualCloseButton = closeButton ?? (!closeOnClickOutside && !closeOnClickInside);
 
   let popup: maplibregl.Popup;
-  $: {
+  $: if (!popup) {
     popup = new maplibregl.Popup({
       closeButton: actualCloseButton,
-      closeOnClick: closeOnClickOutside,
+      // We handle this ourselves to improve behavior on mobile.
+      closeOnClick: false,
       closeOnMove,
       focusAfterOpen,
       maxWidth,
@@ -59,7 +64,7 @@
       setPopupClickHandler();
     });
 
-    popup.on('close', () => {
+    popup.on('close', (e) => {
       open = false;
     });
   }
@@ -111,24 +116,50 @@
     );
   }
 
-  onDestroy(() => {
-    if ($map?.loaded()) {
-      popup?.remove();
-
-      if ($popupTarget instanceof maplibregl.Marker) {
-        if ($popupTarget.getPopup() === popup) {
-          $popupTarget.setPopup(undefined);
-        }
-      } else if (typeof $popupTarget === 'string') {
-        $map.off('click', $popupTarget, handleLayerClick);
-        $map.off('mousemove', $popupTarget, handleLayerMouseMove);
-        $map.off('mouseleave', $popupTarget, handleLayerMouseLeave);
-        $map.off('touchstart', $popupTarget, handleLayerTouch);
-      }
+  $: if (popup && $popupTarget instanceof maplibregl.Marker) {
+    if (openOn === 'click') {
+      $popupTarget.setPopup(popup);
+    } else if ($popupTarget.getPopup() === popup) {
+      $popupTarget.setPopup(undefined);
     }
+  }
+
+  onMount(() => {
+    if (!$map) {
+      return;
+    }
+
+    $map.on('click', globalClickHandler);
+    if (typeof $popupTarget === 'string') {
+      $map.on('click', $popupTarget, handleLayerClick);
+      $map.on('mousemove', $popupTarget, handleLayerMouseMove);
+      $map.on('mouseleave', $popupTarget, handleLayerMouseLeave);
+      $map.on('touchstart', $popupTarget, handleLayerTouchStart);
+      $map.on('touchend', $popupTarget, handleLayerTouchEnd);
+    }
+
+    return () => {
+      if ($map?.loaded()) {
+        popup?.remove();
+        $map.off('click', globalClickHandler);
+
+        if ($popupTarget instanceof maplibregl.Marker) {
+          if ($popupTarget.getPopup() === popup) {
+            $popupTarget.setPopup(undefined);
+          }
+        } else if (typeof $popupTarget === 'string') {
+          $map.off('click', $popupTarget, handleLayerClick);
+          $map.off('mousemove', $popupTarget, handleLayerMouseMove);
+          $map.off('mouseleave', $popupTarget, handleLayerMouseLeave);
+          $map.off('touchstart', $popupTarget, handleLayerTouchStart);
+          $map.off('touchend', $popupTarget, handleLayerTouchEnd);
+        }
+      }
+    };
   });
 
   let features: Feature[] | null = null;
+  let touchOpenState: 'normal' | 'opening' | 'justOpened' = 'normal';
   function handleLayerClick(e: MapLayerMouseEvent) {
     if (openOn !== 'click') {
       return;
@@ -141,16 +172,34 @@
     setTimeout(() => (open = true));
   }
 
-  function handleLayerTouch(e: MapLayerTouchEvent) {
-    lngLat = e.lngLat;
-    features = e.features ?? [];
-    // Wait a tick in case closeOnClick is set. Then the map will close the popup and we'll reopen it
-    // just after.
-    setTimeout(() => (open = true));
+  let touchStartCoords: MapLayerTouchEvent['point'] | null = null;
+  function handleLayerTouchStart(e: MapLayerTouchEvent) {
+    touchStartCoords = e.point;
+  }
+
+  function handleLayerTouchEnd(e: MapLayerTouchEvent) {
+    if (!touchStartCoords || openOn !== 'hover') {
+      return;
+    }
+
+    let distance = touchStartCoords.dist(e.point);
+    touchStartCoords = null;
+    if (distance < 3) {
+      lngLat = e.lngLat;
+      features = e.features ?? [];
+
+      if (popup.isOpen()) {
+        // Pretend we just opened again to avoid the click handler closing the popup.
+        touchOpenState = 'justOpened';
+      } else {
+        touchOpenState = 'opening';
+        open = true;
+      }
+    }
   }
 
   function handleLayerMouseLeave(e: MapLayerMouseEvent) {
-    if (openOn !== 'hover') {
+    if (openOn !== 'hover' || touchStartCoords || touchOpenState !== 'normal') {
       return;
     }
 
@@ -159,7 +208,7 @@
   }
 
   function handleLayerMouseMove(e: MapLayerMouseEvent) {
-    if (openOn !== 'hover') {
+    if (openOn !== 'hover' || touchStartCoords || touchOpenState !== 'normal') {
       return;
     }
 
@@ -168,13 +217,28 @@
     lngLat = e.lngLat;
   }
 
-  $: if ($popupTarget instanceof maplibregl.Marker) {
-    $popupTarget.setPopup(popup);
-  } else if ($map && typeof $popupTarget === 'string') {
-    $map.on('click', $popupTarget, handleLayerClick);
-    $map.on('mousemove', $popupTarget, handleLayerMouseMove);
-    $map.on('mouseleave', $popupTarget, handleLayerMouseLeave);
-    $map.on('touchstart', $popupTarget, handleLayerTouch);
+  function globalClickHandler(e: MapMouseEvent) {
+    if (touchOpenState === 'justOpened') {
+      touchOpenState = 'normal';
+      return;
+    }
+
+    if (!closeOnClickOutside) {
+      return;
+    }
+
+    let checkElements = [
+      popupElement,
+      $popupTarget instanceof maplibregl.Marker ? $popupTarget?.getElement() : null,
+    ];
+
+    if (
+      open &&
+      popup.isOpen() &&
+      !checkElements.some((el) => el?.contains(e.originalEvent.target as Node))
+    ) {
+      open = false;
+    }
   }
 
   $: if (openOn === 'hover' && markerHover) {
@@ -193,10 +257,13 @@
   $: if (lngLat) popup.setLngLat(lngLat);
 
   $: if ($map) {
-    if (open && !popup.isOpen()) {
+    let isOpen = popup.isOpen();
+    if (open && !isOpen) {
       popup.addTo($map);
-      setTimeout(() => setPopupClickHandler);
-    } else if (!open && popup.isOpen()) {
+      if (touchOpenState === 'opening') {
+        touchOpenState = 'justOpened';
+      }
+    } else if (!open && isOpen) {
       popup.remove();
     }
   }
