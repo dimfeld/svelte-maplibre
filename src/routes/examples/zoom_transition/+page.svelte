@@ -37,7 +37,10 @@
   let currentZoom = 4;
 </script>
 
-<p>This example transitions smoothly between two states and counties as the map zooms.</p>
+<p>
+  This example uses the ZoomRange component and zoomTransition function to fade smoothly between
+  states and counties as the map zooms.
+</p>
 
 <div class="self-start w-full">
   <label class="flex flex-wrap gap-x-2 w-full">
