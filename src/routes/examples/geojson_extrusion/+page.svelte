@@ -51,4 +51,3 @@
 </Map>
 
 <CodeSample {code} />
-<CodeSample {code} />
