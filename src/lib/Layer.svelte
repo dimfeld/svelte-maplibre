@@ -27,8 +27,8 @@
   export let layout: object | undefined = undefined;
   export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
   export let applyToClusters: boolean | undefined = undefined;
-  export let minzoom = 0;
-  export let maxzoom = 24;
+  export let minzoom: number | undefined = undefined;
+  export let maxzoom: number | undefined = undefined;
   export let manageHoverState = true;
 
   export let hoverCursor: string | undefined = undefined;
@@ -43,7 +43,16 @@
   $: clusterFilter = isClusterFilter(applyToClusters);
   $: layerFilter = combineFilters('all', clusterFilter, filter);
 
-  const { map, source: sourceName, self: layer } = updatedLayerContext();
+  const {
+    map,
+    source: sourceName,
+    self: layer,
+    minzoom: minZoomContext,
+    maxzoom: maxZoomContext,
+  } = updatedLayerContext();
+
+  $: actualMinZoom = minzoom ?? $minZoomContext;
+  $: actualMaxZoom = maxzoom ?? $maxZoomContext;
 
   onDestroy(() => {
     if ($layer && $map?.loaded()) {
@@ -79,8 +88,8 @@
         filter: layerFilter,
         paint,
         layout,
-        minzoom,
-        maxzoom,
+        minzoom: actualMinZoom,
+        maxzoom: actualMaxZoom,
       }),
       actualBeforeId
     );
@@ -183,7 +192,7 @@
 
   $: applyPaint?.(paint);
   $: applyLayout?.(layout);
-  $: if ($layer) $map?.setLayerZoomRange($layer, minzoom, maxzoom);
+  $: if ($layer) $map?.setLayerZoomRange($layer, actualMinZoom, actualMaxZoom);
 </script>
 
 <!--

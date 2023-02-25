@@ -92,8 +92,6 @@
       }}
     />
 
-    <SymbolLayer applyToClusters={false} hoverCursor="pointer" />
-
     <CircleLayer
       applyToClusters={false}
       hoverCursor="pointer"

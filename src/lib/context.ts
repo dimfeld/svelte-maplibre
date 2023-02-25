@@ -20,6 +20,8 @@ export interface MapContext {
   popupTarget: Readable<Marker | string | null>;
   /** A list of images that have been successfully loaded. */
   loadedImages: Writable<Set<string>>;
+  minzoom: Writable<number>;
+  maxzoom: Writable<number>;
 }
 
 const MAP_CONTEXT_KEY = Symbol.for('svelte-maplibre');
@@ -37,6 +39,10 @@ export function mapContext(): MapContext {
   return getContext(MAP_CONTEXT_KEY);
 }
 
+export function setMapContext(context: MapContext): MapContext {
+  return setContext(MAP_CONTEXT_KEY, context);
+}
+
 export function createMapContext(): MapContext {
   return setContext(MAP_CONTEXT_KEY, {
     map: writable<Map | null>(null),
@@ -45,6 +51,8 @@ export function createMapContext(): MapContext {
     popupTarget: readable(null),
     cluster: writable(),
     loadedImages: writable(new Set()),
+    minzoom: writable(0),
+    maxzoom: writable(24),
   });
 }
 
@@ -101,6 +109,26 @@ export function updatedLayerContext(): UpdatedContext<string> {
 
 export function updatedMarkerContext(): UpdatedContext<Marker> {
   return updatedContext<Marker>('popupTarget', true);
+}
+
+export function updatedZoomRangeContext(
+  initialMinZoom: number | undefined,
+  initialMaxZoom: number | undefined
+) {
+  let currentContext = mapContext();
+  let minzoom = writable(initialMinZoom);
+  let maxzoom = writable();
+  setContext(MAP_CONTEXT_KEY, {
+    ...currentContext,
+    minzoom: readableFromWritable(minzoom),
+    maxzoom: readableFromWritable(maxzoom),
+  });
+  return {
+    originalMinZoom: currentContext.minzoom,
+    originalMaxZoom: currentContext.maxzoom,
+    minzoom,
+    maxzoom,
+  };
 }
 
 export function eventTracker(mouseEvent: Writable<LayerClickInfo | null>) {}

@@ -6,16 +6,25 @@
   import center from '@turf/center';
   import Marker from './Marker.svelte';
   import FillLayer from './FillLayer.svelte';
+  import type { MapLibreZoomEvent } from 'maplibre-gl';
 
-  const { map, source } = mapContext();
+  const { map, source, minzoom: minZoomContext, maxzoom: maxZoomContext } = mapContext();
   const dispatch = createEventDispatcher();
 
   export let applyToClusters: boolean | undefined = undefined;
   export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
+  /** How to calculate the coordinates of the marker.
+   * @default Calls turf.center` on the feature. */
+  export let markerLngLat: (feature: Feature) => [number, number] = (f) =>
+    center(f).geometry.coordinates;
   /** If interactive is true (default), the markers will render as `button`. If not,
    * they will render as `div` elements. */
   export let interactive = false;
+  export let minzoom: number | undefined = undefined;
+  export let maxzoom: number | undefined = undefined;
 
+  $: actualMinZoom = minzoom ?? $minZoomContext;
+  $: actualMaxZoom = maxzoom ?? $maxZoomContext;
   $: actualFilter = combineFilters('all', isClusterFilter(applyToClusters), filter);
 
   let installedHandlers = false;
@@ -26,6 +35,7 @@
 
     installedHandlers = true;
 
+    $map.on('zoom', handleZoom);
     $map.on('move', updateMarkers);
     $map.on('moveend', updateMarkers);
     if (!$map.loaded()) {
@@ -50,6 +60,7 @@
       return;
     }
 
+    $map.off('zoom', handleZoom);
     $map.off('move', updateMarkers);
     $map.off('moveend', updateMarkers);
     $map.off('sourcedata', handleData);
@@ -95,6 +106,12 @@
       a.id.toString().localeCompare(b.id.toString())
     );
   }
+
+  let zoom = $map?.getZoom() ?? 0;
+  function handleZoom(e: MapLibreZoomEvent) {
+    zoom = $map!.getZoom();
+    updateMarkers();
+  }
 </script>
 
 <!--
@@ -104,15 +121,13 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
 -->
 
 <!-- Set up an invisible layer so that querySourceFeatures has something search through. -->
-<FillLayer paint={{ 'fill-opacity': 0 }} beforeLayerType="symbol" />
+<FillLayer {minzoom} {maxzoom} paint={{ 'fill-opacity': 0 }} beforeLayerType="symbol" />
 
-{#each features as feature (feature.id)}
-  {@const c = center(feature)}
-  <Marker
-    {interactive}
-    lngLat={c.geometry.coordinates}
-    on:click={(e) => dispatch('click', { ...e, feature })}
-  >
-    <slot {feature} center={c} />
-  </Marker>
-{/each}
+{#if zoom >= actualMinZoom && zoom <= actualMaxZoom}
+  {#each features as feature (feature.id)}
+    {@const c = markerLngLat(feature)}
+    <Marker {interactive} lngLat={c} on:click={(e) => dispatch('click', { ...e, feature })}>
+      <slot {feature} position={c} />
+    </Marker>
+  {/each}
+{/if}

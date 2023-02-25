@@ -18,6 +18,7 @@ export { default as NavigationControl } from './NavigationControl.svelte';
 export { default as Popup } from './Popup.svelte';
 export { default as ScaleControl } from './ScaleControl.svelte';
 export { default as SymbolLayer } from './SymbolLayer.svelte';
+export { default as ZoomRange } from './ZoomRange.svelte';
 export {
   getId,
   mapContext,

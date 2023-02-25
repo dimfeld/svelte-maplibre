@@ -18,12 +18,9 @@
   zoom={15.5}
   pitch={45}
   bearing={-17.6}
-  on:styledata={({ detail: { map } }) => {
-    // Hide the built-in extrusion layer since we're doing our own.
-    // Doing this in the styledata event handler ensures that we
-    // hide it as soon as possible. If we hide in the `load` event then
-    // the built-in layer will be visible for a short time before we hide it.
-    map.setLayoutProperty('building-3d', 'visibility', 'none');
+  filterLayers={(l) => {
+    // Hide the built-in 3D building layer since we're doing our own.
+    return l.id !== 'building-3d';
   }}
 >
   <!-- The source and sourceLayer are specific to the map style. You

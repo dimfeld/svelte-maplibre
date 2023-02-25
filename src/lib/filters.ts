@@ -30,6 +30,7 @@ export function combineFilters(
   return outputFilters;
 }
 
+/** Return an expression that returns a value based on whether the feature is a cluster or an individual point. */
 export function isClusterFilter(
   matchClusters: boolean | undefined
 ): ExpressionSpecification | undefined {
@@ -40,9 +41,19 @@ export function isClusterFilter(
     : undefined;
 }
 
+/** Return an expression that returns a value based on whether the feature is hovered. */
 export function hoverStateFilter(
   defaultValue: string | number | boolean,
   hoverValue: string | number | boolean
 ): ExpressionSpecification {
   return ['case', ['boolean', ['feature-state', 'hover'], false], hoverValue, defaultValue];
+}
+
+/** A function that returns if a layer is a text layer, and optionally if it belongs to a particular source. */
+export function isTextLayer(layer: maplibregl.LayerSpecification, source?: string): boolean {
+  return (
+    layer.type === 'symbol' &&
+    (!source || layer.source === source) &&
+    !!layer.layout?.['text-field']
+  );
 }

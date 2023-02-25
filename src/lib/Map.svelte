@@ -33,6 +33,9 @@
   export let images: CustomImageSpec[] = [];
   /** Set to true or a position to add all the standard controls. */
   export let standardControls: boolean | maplibregl.ControlPosition = false;
+  /** Filter the map's builtin layers, hiding any for which this function returns false. */
+  export let filterLayers: ((layer: maplibregl.LayerSpecification) => boolean) | undefined =
+    undefined;
 
   $: standardControlsPosition =
     typeof standardControls === 'boolean' ? undefined : standardControls;
@@ -124,6 +127,17 @@
     });
 
     $mapInstance.on('styledata', (ev) => {
+      if ($mapInstance && filterLayers) {
+        const layers = $mapInstance.getStyle().layers;
+        if (layers) {
+          for (let layer of layers) {
+            if (!filterLayers(layer)) {
+              $mapInstance.setLayoutProperty(layer.id, 'visibility', 'none');
+            }
+          }
+        }
+      }
+
       dispatch('styledata', { ...ev, map: $mapInstance });
     });
 

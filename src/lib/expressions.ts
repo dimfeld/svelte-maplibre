@@ -7,3 +7,14 @@ export function imageWithFallback(
 ): ExpressionSpecification {
   return ['coalesce', ['image', imageId], ['image', fallbackId]];
 }
+
+/** Create an interpolation that changes with the map's zoom level. */
+export function zoomTransition(
+  start: number,
+  startValue: number | ExpressionSpecification,
+  end: number,
+  endValue: number | ExpressionSpecification
+): ExpressionSpecification {
+  // let actualStart = typeof startValue === 'number' ? ['literal', startValue];
+  return ['interpolate', ['linear'], ['zoom'], start, startValue, end, endValue];
+}
