@@ -3,13 +3,12 @@
   import { createEventDispatcher } from 'svelte';
   import { createMarkerHoverContext, updatedMarkerContext } from './context';
   import type { MarkerClickInfo } from './types';
-  import type { Feature } from 'geojson';
 
   export let lngLat: LngLatLike;
   let classNames: string | undefined = undefined;
   export { classNames as class };
   /** If interactive is true (default), it will render as a `button`. If not,
-   * if will render as a `div` element. */
+   * it will render as a `div` element. */
   export let interactive = true;
 
   const dispatch = createEventDispatcher();

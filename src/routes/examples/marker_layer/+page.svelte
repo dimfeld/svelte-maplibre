@@ -17,7 +17,7 @@
   zoom={4}
 >
   <GeoJSON id="states" data={states} promoteId="STATEFP">
-    <MarkerLayer let:feature>
+    <MarkerLayer interactive let:feature>
       <div class="bg-gray-200 rounded-full p-2 shadow">
         <div class="text-sm font-bold">{feature.properties.NAME}</div>
       </div>

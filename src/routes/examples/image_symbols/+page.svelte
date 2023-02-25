@@ -9,8 +9,8 @@
   import SymbolLayer from '$lib/SymbolLayer.svelte';
   import { hoverStateFilter } from '$lib/filters';
 
-  import quakeImageUrl from './earthquake.png';
-  import tsunamiImageUrl from './tsunami.png';
+  import quakeImageUrl from '$site/earthquake.png';
+  import tsunamiImageUrl from '$site/tsunami.png';
 
   const source = 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson';
 

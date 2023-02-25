@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Feature } from 'geojson';
-  import { onDestroy } from 'svelte';
+  import { createEventDispatcher, onDestroy } from 'svelte';
   import { getId, mapContext } from './context';
   import { combineFilters, isClusterFilter } from './filters';
   import center from '@turf/center';
@@ -8,9 +8,12 @@
   import FillLayer from './FillLayer.svelte';
 
   const { map, source } = mapContext();
+  const dispatch = createEventDispatcher();
 
   export let applyToClusters: boolean | undefined = undefined;
   export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
+  /** If interactive is true (default), the markers will render as `button`. If not,
+   * they will render as `div` elements. */
   export let interactive = false;
 
   $: actualFilter = combineFilters('all', isClusterFilter(applyToClusters), filter);
@@ -76,7 +79,11 @@
     let featureMap = new Map<string | number, Feature>();
     for (let feature of featureList) {
       if (!feature.id) {
-        feature.id = getId('autofeat');
+        if (feature.properties?.cluster_id) {
+          feature.id = 'autocluster_' + feature.properties.cluster_id;
+        } else {
+          feature.id = getId('autofeat');
+        }
       }
       featureMap.set(feature.id, feature);
     }
@@ -101,7 +108,11 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
 
 {#each features as feature (feature.id)}
   {@const c = center(feature)}
-  <Marker {interactive} lngLat={c.geometry.coordinates}>
+  <Marker
+    {interactive}
+    lngLat={c.geometry.coordinates}
+    on:click={(e) => dispatch('click', { ...e, feature })}
+  >
     <slot {feature} center={c} />
   </Marker>
 {/each}
