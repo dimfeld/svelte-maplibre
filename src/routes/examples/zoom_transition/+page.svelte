@@ -83,13 +83,18 @@
 
     <GeoJSON id="state-centers" data={stateCenters} promoteId="GEOID">
       <SymbolLayer
+        filter={['!=', ['get', 'STUSPS'], 'DC']}
         paint={{
-          'text-color': 'black',
+          'text-color': '#333',
           'text-opacity': fadeStatesText,
+          'text-halo-color': '#eee',
+          'text-halo-width': 0.5,
+          'text-halo-blur': 0.5,
         }}
         layout={{
+          'text-allow-overlap': true,
           'text-field': ['get', 'STUSPS'],
-          'text-size': 24,
+          'text-size': zoomTransition(3, 16, 5, 24),
         }}
       />
     </GeoJSON>
