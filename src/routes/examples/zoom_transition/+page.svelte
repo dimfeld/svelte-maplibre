@@ -10,17 +10,19 @@
   import FillLayer from '$lib/FillLayer.svelte';
   import SymbolLayer from '$lib/SymbolLayer.svelte';
   import LineLayer from '$lib/LineLayer.svelte';
-  import center from '@turf/center';
-  import type { FeatureCollection } from 'geojson';
+  import { geoCentroid } from 'd3-geo';
+  import type { FeatureCollection, Feature, Point } from 'geojson';
   import ZoomRange from '$lib/ZoomRange.svelte';
   import { zoomTransition } from '$lib/expressions.js';
 
   function calculateCenters(g: FeatureCollection): FeatureCollection {
-    let centers = g.features.map((f) => {
-      let point = center(f);
+    let centers: Feature<Point>[] = g.features.map((f) => {
       return {
         ...f,
-        geometry: point.geometry,
+        geometry: {
+          type: 'Point',
+          coordinates: geoCentroid(f),
+        },
       };
     });
 

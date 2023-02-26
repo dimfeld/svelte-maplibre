@@ -3,7 +3,7 @@
   import { createEventDispatcher, onDestroy } from 'svelte';
   import { getId, mapContext } from './context';
   import { combineFilters, isClusterFilter } from './filters';
-  import center from '@turf/center';
+  import { geoCentroid } from 'd3-geo';
   import Marker from './Marker.svelte';
   import FillLayer from './FillLayer.svelte';
   import type { MapLibreZoomEvent } from 'maplibre-gl';
@@ -14,9 +14,8 @@
   export let applyToClusters: boolean | undefined = undefined;
   export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
   /** How to calculate the coordinates of the marker.
-   * @default Calls turf.center` on the feature. */
-  export let markerLngLat: (feature: Feature) => [number, number] = (f) =>
-    center(f).geometry.coordinates;
+   * @default Calls d3.geoCentroid` on the feature. */
+  export let markerLngLat: (feature: Feature) => [number, number] = geoCentroid;
   /** If interactive is true (default), the markers will render as `button`. If not,
    * they will render as `div` elements. */
   export let interactive = false;
