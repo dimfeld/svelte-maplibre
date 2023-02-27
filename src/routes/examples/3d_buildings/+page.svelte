@@ -1,10 +1,17 @@
 <script lang="ts">
   import Map from '$lib/Map.svelte';
-  import { mapClasses, streetsStyle } from '../styles.js';
+  import { mapClasses, streetsStyle, hasMaptilerKey } from '../styles.js';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import FillExtrusionLayer from '$lib/FillExtrusionLayer.svelte';
 </script>
+
+{#if !hasMaptilerKey}
+  <h2 class="text-red-500">
+    Please set the PUBLIC_MAPTILER_KEY environment variable to your MapTiler API key to run this
+    example.
+  </h2>
+{/if}
 
 <p>
   This example uses a FillExtrusionLayer to show a 3D view of buildings, with shorter buildings in
