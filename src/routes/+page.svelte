@@ -18,6 +18,7 @@
     <li><a href="/examples/3d_buildings">3D Buildings</a></li>
     <li><a href="/examples/geojson_extrusion">GeoJSON Extrusion</a></li>
     <li><a href="/examples/zoom_transition">Transition Layers with Zoom</a></li>
+    <li><a href="/examples/deckgl-arcs">Deck.gl Arc Layers</a></li>
   </ul>
 
   <p class="mt-4"><a href="https://github.com/dimfeld/svelte-maplibre">Github</a></p>
