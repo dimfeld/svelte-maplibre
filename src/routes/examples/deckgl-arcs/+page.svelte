@@ -45,6 +45,8 @@
   let hovered = null;
 </script>
 
+<p>This is still experimental and may have some bugs.</p>
+
 <label class="flex items-center mb-4">
   Arc Height: {height}
   <input
