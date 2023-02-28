@@ -3,6 +3,7 @@
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
   import { geoCentroid } from 'd3-geo';
+  import clamp from 'just-clamp';
   import states from '$site/states.json';
   import type { PageData } from './$types';
   import type { FeatureCollection } from 'geojson';
@@ -35,29 +36,51 @@
   }
 
   const arcs = calculateArcs(states);
+
+  let zoom = 3;
+  let height = 1;
+
+  $: arcHeight = clamp(height * 1, 0, 1);
+
+  let hovered = null;
 </script>
 
+{zoom}
+<input class="w-48 max-w-full mb-4" type="range" bind:value={height} min="0" max="1" step="0.01" />
+<span>{height}</span>
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   pitch={30}
   center={[-100, 40]}
-  zoom={3}
+  bind:zoom
   class="relative w-full aspect-[9/16] max-h-[70vh] sm:max-h-full sm:aspect-video"
   standardControls
 >
   <DeckGlLayer
     type={ArcLayer}
     data={arcs}
+    bind:hovered
     getSourcePosition={(d) => d.source}
     getTargetPosition={(d) => d.target}
     getSourceColor={(d) => d.sourceColor}
     getTargetColor={(d) => d.targetColor}
+    autoHighlight={true}
+    highlightColor={[30, 255, 30]}
     getWidth={10}
+    getHeight={arcHeight}
   >
-    <Popup openOn="hover" let:features>
-      <h4>From {features[0].fromName} to {features[0].toName}</h4>
+    <Popup openOn="click" let:data>
+      From {data.fromName} to {data.toName}
     </Popup>
   </DeckGlLayer>
 </MapLibre>
+
+<h4>
+  {#if hovered}
+    From {hovered.fromName} to {hovered.toName}
+  {:else}
+    Hover over an arc to see the locations
+  {/if}
+</h4>
 
 <CodeSample {code} startBoundary="<MapLibre" endBoundary="</MapLibre>" />
