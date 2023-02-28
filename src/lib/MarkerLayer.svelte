@@ -21,6 +21,7 @@
   export let interactive = false;
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
+  export let hovered: Feature | null = null;
 
   $: actualMinZoom = minzoom ?? $minZoomContext;
   $: actualMaxZoom = maxzoom ?? $maxZoomContext;
@@ -125,7 +126,19 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
 {#if zoom >= actualMinZoom && zoom <= actualMaxZoom}
   {#each features as feature (feature.id)}
     {@const c = markerLngLat(feature)}
-    <Marker {interactive} lngLat={c} on:click={(e) => dispatch('click', { ...e, feature })}>
+    <Marker
+      {interactive}
+      lngLat={c}
+      on:mouseenter={() => {
+        hovered = feature;
+      }}
+      on:mouseleave={() => {
+        if (hovered?.id === feature.id) {
+          hovered = null;
+        }
+      }}
+      on:click={(e) => dispatch('click', { ...e, feature })}
+    >
       <slot {feature} position={c} />
     </Marker>
   {/each}

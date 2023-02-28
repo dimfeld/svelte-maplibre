@@ -22,6 +22,7 @@ specifiers:
   eslint-plugin-svelte3: ^4.0.0
   highlight.js: ^11.7.0
   highlightjs-svelte: ^1.0.6
+  just-clamp: ^4.2.0
   just-compare: ^2.3.0
   just-flush: ^2.3.0
   maplibre-gl: 3.0.0-pre.4
@@ -64,6 +65,7 @@ devDependencies:
   eslint-plugin-svelte3: 4.0.0_dbthnr4b2bdkhyiebwn7su3hnq
   highlight.js: 11.7.0
   highlightjs-svelte: 1.0.6
+  just-clamp: 4.2.0
   postcss: 8.4.21
   prettier: 2.8.4
   prettier-plugin-svelte: 2.9.0_jrsxveqmsx2uadbqiuq74wlc4u
@@ -1898,6 +1900,10 @@ packages:
 
   /json-stable-stringify-without-jsonify/1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
+    dev: true
+
+  /just-clamp/4.2.0:
+    resolution: {integrity: sha512-ssHiAxuN7R+VP7jS1XyUP7ju5YC4bTQwQdzYtuZkASTrKe9KsI/X0t+5BJeD6Un6z/dNMDFVNQpQEgUphpXa0w==}
     dev: true
 
   /just-compare/2.3.0:

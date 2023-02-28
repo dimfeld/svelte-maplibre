@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Feature } from 'geojson';
   import { getId } from './context';
   import Layer from './Layer.svelte';
 
@@ -23,6 +24,7 @@
   /** Set the cursor style to this value when the mouse is over the layer. */
   export let hoverCursor: string | undefined = undefined;
   export let manageHoverState = false;
+  export let hovered: Feature | null = null;
 </script>
 
 <Layer
@@ -39,6 +41,7 @@
   {maxzoom}
   {hoverCursor}
   {manageHoverState}
+  bind:hovered
   on:click
   on:mouseenter
   on:mouseleave

@@ -46,6 +46,7 @@
     movestart: maplibregl.MapMouseEvent & { map: maplibregl.Map };
     moveend: maplibregl.MapMouseEvent & { map: maplibregl.Map };
     zoomstart: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
+    zoom: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
     zoomend: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
     styledata: maplibregl.MapStyleDataEvent & { map: maplibregl.Map };
   }>();
@@ -121,6 +122,10 @@
     });
 
     $mapInstance.on('zoomstart', (ev) => dispatch('zoomstart', { ...ev, map: $mapInstance }));
+    $mapInstance.on('zoom', (ev) => {
+      zoom = ev.target.getZoom();
+      dispatch('zoom', { ...ev, map: $mapInstance });
+    });
     $mapInstance.on('zoomend', (ev) => {
       zoom = ev.target.getZoom();
       dispatch('zoomend', { ...ev, map: $mapInstance });

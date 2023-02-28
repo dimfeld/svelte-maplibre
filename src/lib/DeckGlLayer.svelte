@@ -16,6 +16,9 @@
   export let visible = true;
   export let pickable = true;
 
+  /** This indicates the currently hovered feature. Setting this attribute has no effect. */
+  export let hovered: DATA | null = null;
+
   export type DATA = $$Generic;
 
   /** The deck.gl layer class to create */
@@ -64,7 +67,7 @@
   // that will set the event the popup is handling. Consider moving
   // all popup event handling to this model.
   // Convert marker to use layer event instead of special hover store
-  function handleClick(e: DeckGlMouseEvent) {
+  function handleClick(e: DeckGlMouseEvent<DATA>) {
     dispatch('click', e);
     $layerEvent = {
       ...e,
@@ -73,8 +76,9 @@
     };
   }
 
-  function handleHover(e: DeckGlMouseEvent) {
+  function handleHover(e: DeckGlMouseEvent<DATA>) {
     const type = e.index !== -1 ? 'mousemove' : 'mouseleave';
+    hovered = e.object ?? null;
     dispatch(type, e);
     $layerEvent = {
       ...e,

@@ -287,7 +287,7 @@
 {#if $$slots.default}
   <div bind:this={popupEl}>
     {#if features || $popupTarget instanceof maplibregl.Marker}
-      <slot {features} map={$map} close={() => (open = false)} />
+      <slot {features} data={features[0]} map={$map} close={() => (open = false)} />
     {/if}
   </div>
 {/if}
