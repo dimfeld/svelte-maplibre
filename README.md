@@ -1,5 +1,9 @@
 <p align="center">
-<img height="60px" src="https://user-images.githubusercontent.com/122556307/221813473-6e086471-08b0-40fb-a6e6-6fcc1ea6a329.svg" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./static/logos/svelte-maplibre-logo-color-for-dark.svg">
+  <img alt="svelte-maplibre logo" height="60px" src="./static/logos/svelte-maplibre-logo-color-for-light.svg" />
+</picture>
+
 </p>
 <p align="center">Svelte wrapper for the <a href="https://maplibre.org/projects/maplibre-gl-js/">maplibre</a> mapping library.
 </p>
