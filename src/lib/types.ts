@@ -49,3 +49,6 @@ export interface MarkerClickInfo {
   marker: Marker;
   features: Feature[];
 }
+
+export type DeckGlAccessor<DATA, RETVAL> = RETVAL | ((data: DATA) => RETVAL);
+export type DeckGlColorAccessor<DATA> = DeckGlAccessor<DATA, number[]>;

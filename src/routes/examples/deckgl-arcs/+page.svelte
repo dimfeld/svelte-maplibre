@@ -7,6 +7,8 @@
   import type { PageData } from './$types';
   import type { FeatureCollection } from 'geojson';
   import DeckGlLayer from '$lib/DeckGlLayer.svelte';
+  import { ArcLayer } from '@deck.gl/layers';
+  import Popup from '$lib/Popup.svelte';
 
   export let data: PageData;
 
@@ -22,6 +24,8 @@
       let from = fc.features[fromIndex];
       let to = fc.features[toIndex];
       return {
+        fromName: from.properties.NAME,
+        toName: to.properties.NAME,
         source: centers.get(from.properties.GEOID),
         target: centers.get(to.properties.GEOID),
         sourceColor: [255, 128, 0],
@@ -36,12 +40,24 @@
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   pitch={30}
-  center={[-100, 45]}
+  center={[-100, 40]}
   zoom={3}
   class="relative w-full aspect-[9/16] max-h-[70vh] sm:max-h-full sm:aspect-video"
   standardControls
 >
-  <DeckGlLayer data={arcs} />
+  <DeckGlLayer
+    type={ArcLayer}
+    data={arcs}
+    getSourcePosition={(d) => d.source}
+    getTargetPosition={(d) => d.target}
+    getSourceColor={(d) => d.sourceColor}
+    getTargetColor={(d) => d.targetColor}
+    getWidth={10}
+  >
+    <Popup openOn="hover" let:features>
+      <h4>From {features[0].fromName} to {features[0].toName}</h4>
+    </Popup>
+  </DeckGlLayer>
 </MapLibre>
 
 <CodeSample {code} startBoundary="<MapLibre" endBoundary="</MapLibre>" />

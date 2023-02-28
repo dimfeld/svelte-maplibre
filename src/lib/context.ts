@@ -22,6 +22,21 @@ export interface MapContext {
   loadedImages: Writable<Set<string>>;
   minzoom: Writable<number>;
   maxzoom: Writable<number>;
+
+  layerEvent: Writable<DeckGlMouseEvent<unknown> | null>;
+}
+
+export interface DeckGlMouseEvent<DATA = unknown> {
+  layerType: 'deckgl';
+  type: 'click' | 'mouseenter' | 'mouseleave';
+  coordinate: [number, number];
+  object?: DATA;
+  index: number;
+  picked: boolean;
+  color: Uint8Array | null;
+  pixel: [number, number];
+  x: number;
+  y: number;
 }
 
 const MAP_CONTEXT_KEY = Symbol.for('svelte-maplibre');
@@ -53,6 +68,7 @@ export function createMapContext(): MapContext {
     loadedImages: writable(new Set()),
     minzoom: writable(0),
     maxzoom: writable(24),
+    layerEvent: writable(null),
   });
 }
 
@@ -67,12 +83,20 @@ export interface UpdatedContext<TYPE> extends MapContext {
   self: Writable<TYPE | null>;
 }
 
+interface UpdatedContextOptions {
+  key: 'source' | 'layer' | 'popupTarget';
+  setPopupTarget?: boolean;
+  setCluster?: boolean;
+  setMouseEvent?: boolean;
+}
+
 /** Replace one or more elements of the map context with a new store. */
-function updatedContext<T extends string | Marker>(
-  key: 'source' | 'layer' | 'popupTarget',
+function updatedContext<T extends string | Marker>({
+  key,
   setPopupTarget = false,
-  setCluster = false
-): UpdatedContext<T> {
+  setCluster = false,
+  setMouseEvent = false,
+}: UpdatedContextOptions): UpdatedContext<T> {
   let currentContext = mapContext();
 
   let newValue = writable<T | null>(null);
@@ -85,6 +109,10 @@ function updatedContext<T extends string | Marker>(
   if (setPopupTarget) {
     // This type also becomes a popup target in addition to whatever else it was.
     newCtx.popupTarget = ctxValue;
+  }
+
+  if (setMouseEvent) {
+    newCtx.layerEvent = writable(null);
   }
 
   if (setCluster) {
@@ -100,15 +128,19 @@ function updatedContext<T extends string | Marker>(
 }
 
 export function updatedSourceContext(): UpdatedContext<string> {
-  return updatedContext<string>('source', false, true);
+  return updatedContext<string>({ key: 'source', setCluster: true });
 }
 
 export function updatedLayerContext(): UpdatedContext<string> {
-  return updatedContext<string>('layer', true);
+  return updatedContext<string>({ key: 'layer', setPopupTarget: true, setMouseEvent: true });
+}
+
+export function updatedDeckGlContext(): UpdatedContext<string> {
+  return updatedContext<string>({ key: 'layer', setMouseEvent: true });
 }
 
 export function updatedMarkerContext(): UpdatedContext<Marker> {
-  return updatedContext<Marker>('popupTarget', true);
+  return updatedContext<Marker>({ key: 'popupTarget', setPopupTarget: true, setMouseEvent: true });
 }
 
 export function updatedZoomRangeContext(
