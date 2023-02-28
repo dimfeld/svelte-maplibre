@@ -45,9 +45,17 @@
   let hovered = null;
 </script>
 
-{zoom}
-<input class="w-48 max-w-full mb-4" type="range" bind:value={height} min="0" max="1" step="0.01" />
-<span>{height}</span>
+<label class="flex items-center mb-4">
+  Arc Height: {height}
+  <input
+    class="w-48 max-w-full ml-4"
+    type="range"
+    bind:value={height}
+    min="0"
+    max="1"
+    step="0.01"
+  />
+</label>
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   pitch={30}

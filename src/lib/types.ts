@@ -1,4 +1,4 @@
-import type { Feature } from 'geojson';
+import type { Feature, Point } from 'geojson';
 import type { MapMouseEvent, Marker } from 'maplibre-gl';
 
 export interface ClusterOptions {
@@ -47,7 +47,8 @@ export interface LayerClickInfo {
 export interface MarkerClickInfo {
   map: maplibregl.Map;
   marker: Marker;
-  features: Feature[];
+  lngLat: [number, number];
+  features: Feature<Point>[];
 }
 
 export type DeckGlAccessor<DATA, RETVAL> = RETVAL | ((data: DATA) => RETVAL);

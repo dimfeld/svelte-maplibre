@@ -2,7 +2,7 @@ import type { Map, Marker, MapMouseEvent } from 'maplibre-gl';
 import type { Feature } from 'geojson';
 import { getContext, setContext } from 'svelte';
 import { readable, writable, type Readable, type Writable } from 'svelte/store';
-import type { ClusterOptions, LayerClickInfo } from './types';
+import type { ClusterOptions, LayerClickInfo, MarkerClickInfo } from './types';
 
 // Choose current time instead of 0 to avoid possible reuse during HMR.
 export let nextId = Date.now();
@@ -23,8 +23,10 @@ export interface MapContext {
   minzoom: Writable<number>;
   maxzoom: Writable<number>;
 
-  layerEvent: Writable<DeckGlMouseEvent<unknown> | null>;
+  layerEvent: Writable<LayerEvent | null>;
 }
+
+export type MarkerMouseEvent = MarkerClickInfo & { layerType: 'marker'; type: string };
 
 export interface DeckGlMouseEvent<DATA = unknown> {
   layerType: 'deckgl';
@@ -39,16 +41,9 @@ export interface DeckGlMouseEvent<DATA = unknown> {
   y: number;
 }
 
+export type LayerEvent = DeckGlMouseEvent<unknown> | MarkerMouseEvent;
+
 const MAP_CONTEXT_KEY = Symbol.for('svelte-maplibre');
-const MARKER_HOVER_CONTEXT_KEY = Symbol.for('svelte-maplibre-marker-hover');
-
-export function markerHoverContext(): Readable<boolean> | undefined {
-  return getContext(MARKER_HOVER_CONTEXT_KEY);
-}
-
-export function createMarkerHoverContext(): Writable<boolean> {
-  return setContext(MARKER_HOVER_CONTEXT_KEY, writable(false));
-}
 
 export function mapContext(): MapContext {
   return getContext(MAP_CONTEXT_KEY);
@@ -112,7 +107,9 @@ function updatedContext<T extends string | Marker>({
   }
 
   if (setMouseEvent) {
-    newCtx.layerEvent = writable(null);
+    let layerEvent = writable(null);
+    newCtx.layerEvent = layerEvent;
+    currentContext.layerEvent = layerEvent;
   }
 
   if (setCluster) {
@@ -162,5 +159,3 @@ export function updatedZoomRangeContext(
     maxzoom,
   };
 }
-
-export function eventTracker(mouseEvent: Writable<LayerClickInfo | null>) {}
