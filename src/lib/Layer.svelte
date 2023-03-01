@@ -30,6 +30,8 @@
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
   export let manageHoverState = true;
+  /** The feature currently being hovered. */
+  export let hovered: Feature | null = null;
 
   export let hoverCursor: string | undefined = undefined;
 
@@ -123,6 +125,7 @@
       }
 
       let features = e.features ?? [];
+      hovered = features[0] ?? null;
       let clusterId = features[0]?.properties?.cluster_id;
 
       let data: LayerClickInfo = {
@@ -142,13 +145,17 @@
       let clusterId = features[0]?.properties?.cluster_id;
 
       let featureId = features[0]?.id;
-      if (manageHoverState && featureId !== hoverFeatureId) {
-        if (hoverFeatureId) {
-          $map?.setFeatureState({ source: actualSource!, id: hoverFeatureId }, { hover: false });
+      if (featureId !== hoverFeatureId) {
+        if (manageHoverState) {
+          if (hoverFeatureId) {
+            $map?.setFeatureState({ source: actualSource!, id: hoverFeatureId }, { hover: false });
+          }
+
+          $map?.setFeatureState({ source: actualSource!, id: featureId }, { hover: true });
         }
 
         hoverFeatureId = featureId;
-        $map?.setFeatureState({ source: actualSource!, id: hoverFeatureId }, { hover: true });
+        hovered = features[0] ?? null;
       }
 
       dispatch('mousemove', {
@@ -170,6 +177,7 @@
         $map.getCanvas().style.cursor = '';
       }
 
+      hovered = null;
       if (manageHoverState && hoverFeatureId) {
         $map?.setFeatureState({ source: actualSource!, id: hoverFeatureId }, { hover: false });
         hoverFeatureId = undefined;

@@ -1,7 +1,7 @@
 <script lang="ts">
   import maplibre, { type LngLatLike } from 'maplibre-gl';
   import { createEventDispatcher } from 'svelte';
-  import { createMarkerHoverContext, updatedMarkerContext } from './context';
+  import { updatedMarkerContext } from './context';
   import type { MarkerClickInfo } from './types';
 
   export let lngLat: LngLatLike;
@@ -10,11 +10,10 @@
   /** If interactive is true (default), it will render as a `button`. If not,
    * it will render as a `div` element. */
   export let interactive = true;
+  export let feature: GeoJSON.Feature | null = null;
 
   const dispatch = createEventDispatcher();
-  const { map, self: marker } = updatedMarkerContext();
-
-  let hovered = createMarkerHoverContext();
+  const { map, layerEvent, self: marker } = updatedMarkerContext();
 
   function addMarker(node: HTMLDivElement) {
     $marker = new maplibre.Marker({ element: node }).setLngLat(lngLat).addTo($map);
@@ -42,19 +41,27 @@
       return;
     }
 
+    const lngLat: [number, number] = [loc.lng, loc.lat];
     let data: MarkerClickInfo = {
       map: $map!,
       marker: $marker!,
+      lngLat,
       features: [
         {
           type: 'Feature',
-          properties: {},
+          properties: feature?.properties ?? {},
           geometry: {
             type: 'Point',
-            coordinates: [loc.lng, loc.lat],
+            coordinates: lngLat,
           },
         },
       ],
+    };
+
+    $layerEvent = {
+      ...data,
+      layerType: 'marker',
+      type: eventName,
     };
 
     dispatch(eventName, data);
@@ -68,12 +75,10 @@
   tabindex={interactive ? 0 : undefined}
   role={interactive ? 'button' : undefined}
   on:click={() => sendEvent('click')}
-  on:mouseenter={() => {
-    $hovered = true;
+  on:mouseenter={(e) => {
     sendEvent('mouseenter');
   }}
   on:mouseleave={() => {
-    $hovered = false;
     sendEvent('mouseleave');
   }}
   on:mousemove={() => sendEvent('mousemove')}

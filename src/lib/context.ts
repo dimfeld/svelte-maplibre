@@ -2,7 +2,7 @@ import type { Map, Marker, MapMouseEvent } from 'maplibre-gl';
 import type { Feature } from 'geojson';
 import { getContext, setContext } from 'svelte';
 import { readable, writable, type Readable, type Writable } from 'svelte/store';
-import type { ClusterOptions, LayerClickInfo } from './types';
+import type { ClusterOptions, LayerClickInfo, MarkerClickInfo } from './types';
 
 // Choose current time instead of 0 to avoid possible reuse during HMR.
 export let nextId = Date.now();
@@ -22,18 +22,28 @@ export interface MapContext {
   loadedImages: Writable<Set<string>>;
   minzoom: Writable<number>;
   maxzoom: Writable<number>;
+
+  layerEvent: Writable<LayerEvent | null>;
 }
+
+export type MarkerMouseEvent = MarkerClickInfo & { layerType: 'marker'; type: string };
+
+export interface DeckGlMouseEvent<DATA = unknown> {
+  layerType: 'deckgl';
+  type: 'click' | 'mouseenter' | 'mouseleave';
+  coordinate: [number, number];
+  object?: DATA;
+  index: number;
+  picked: boolean;
+  color: Uint8Array | null;
+  pixel: [number, number];
+  x: number;
+  y: number;
+}
+
+export type LayerEvent = DeckGlMouseEvent<unknown> | MarkerMouseEvent;
 
 const MAP_CONTEXT_KEY = Symbol.for('svelte-maplibre');
-const MARKER_HOVER_CONTEXT_KEY = Symbol.for('svelte-maplibre-marker-hover');
-
-export function markerHoverContext(): Readable<boolean> | undefined {
-  return getContext(MARKER_HOVER_CONTEXT_KEY);
-}
-
-export function createMarkerHoverContext(): Writable<boolean> {
-  return setContext(MARKER_HOVER_CONTEXT_KEY, writable(false));
-}
 
 export function mapContext(): MapContext {
   return getContext(MAP_CONTEXT_KEY);
@@ -53,6 +63,7 @@ export function createMapContext(): MapContext {
     loadedImages: writable(new Set()),
     minzoom: writable(0),
     maxzoom: writable(24),
+    layerEvent: writable(null),
   });
 }
 
@@ -67,12 +78,20 @@ export interface UpdatedContext<TYPE> extends MapContext {
   self: Writable<TYPE | null>;
 }
 
+interface UpdatedContextOptions {
+  key: 'source' | 'layer' | 'popupTarget';
+  setPopupTarget?: boolean;
+  setCluster?: boolean;
+  setMouseEvent?: boolean;
+}
+
 /** Replace one or more elements of the map context with a new store. */
-function updatedContext<T extends string | Marker>(
-  key: 'source' | 'layer' | 'popupTarget',
+function updatedContext<T extends string | Marker>({
+  key,
   setPopupTarget = false,
-  setCluster = false
-): UpdatedContext<T> {
+  setCluster = false,
+  setMouseEvent = false,
+}: UpdatedContextOptions): UpdatedContext<T> {
   let currentContext = mapContext();
 
   let newValue = writable<T | null>(null);
@@ -85,6 +104,12 @@ function updatedContext<T extends string | Marker>(
   if (setPopupTarget) {
     // This type also becomes a popup target in addition to whatever else it was.
     newCtx.popupTarget = ctxValue;
+  }
+
+  if (setMouseEvent) {
+    let layerEvent = writable(null);
+    newCtx.layerEvent = layerEvent;
+    currentContext.layerEvent = layerEvent;
   }
 
   if (setCluster) {
@@ -100,15 +125,19 @@ function updatedContext<T extends string | Marker>(
 }
 
 export function updatedSourceContext(): UpdatedContext<string> {
-  return updatedContext<string>('source', false, true);
+  return updatedContext<string>({ key: 'source', setCluster: true });
 }
 
 export function updatedLayerContext(): UpdatedContext<string> {
-  return updatedContext<string>('layer', true);
+  return updatedContext<string>({ key: 'layer', setPopupTarget: true, setMouseEvent: true });
+}
+
+export function updatedDeckGlContext(): UpdatedContext<string> {
+  return updatedContext<string>({ key: 'layer', setMouseEvent: true });
 }
 
 export function updatedMarkerContext(): UpdatedContext<Marker> {
-  return updatedContext<Marker>('popupTarget', true);
+  return updatedContext<Marker>({ key: 'popupTarget', setPopupTarget: true, setMouseEvent: true });
 }
 
 export function updatedZoomRangeContext(
@@ -130,5 +159,3 @@ export function updatedZoomRangeContext(
     maxzoom,
   };
 }
-
-export function eventTracker(mouseEvent: Writable<LayerClickInfo | null>) {}
