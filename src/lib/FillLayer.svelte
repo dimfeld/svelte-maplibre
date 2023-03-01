@@ -42,6 +42,7 @@
   bind:hovered
   on:click
   on:mouseenter
+  on:mousemove
   on:mouseleave
 >
   <slot />
