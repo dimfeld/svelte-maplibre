@@ -38,30 +38,16 @@
   const arcs = calculateArcs(states);
 
   let zoom = 3;
-  let height = 1;
-
-  $: arcHeight = clamp(height * 1, 0, 1);
-
   let hovered = null;
 </script>
 
-<p>This is still experimental and may have some bugs.</p>
+<p>A deck.gl ArcLayer integrated into a MapLibre map, with hover and popup support.</p>
 
-<label class="flex items-center mb-4">
-  Arc Height: {height}
-  <input
-    class="w-48 max-w-full ml-4"
-    type="range"
-    bind:value={height}
-    min="0"
-    max="1"
-    step="0.01"
-  />
-</label>
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   pitch={30}
   center={[-100, 40]}
+  maxZoom={5}
   bind:zoom
   class="relative w-full aspect-[9/16] max-h-[70vh] sm:max-h-full sm:aspect-video"
   standardControls
@@ -77,7 +63,7 @@
     autoHighlight={true}
     highlightColor={[30, 255, 30]}
     getWidth={10}
-    getHeight={arcHeight}
+    getHeight={clamp(3 / zoom, 0, 1)}
   >
     <Popup openOn="click" let:data>
       From {data.fromName} to {data.toName}
