@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Map from '$lib/Map.svelte';
+  import MapLibre from '$lib/MapLibre.svelte';
   import { mapClasses, streetsStyle, hasMaptilerKey } from '../styles.js';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
@@ -17,7 +17,7 @@
   This example uses a FillExtrusionLayer to show a 3D view of buildings, with shorter buildings in
   green and taller buildings in red.<br /> Hold down Ctrl and drag the mouse to rotate on a computer.
 </p>
-<Map
+<MapLibre
   style={streetsStyle}
   class={mapClasses}
   standardControls
@@ -73,6 +73,6 @@
       'fill-extrusion-opacity': 0.6,
     }}
   />
-</Map>
+</MapLibre>
 
 <CodeSample {code} />

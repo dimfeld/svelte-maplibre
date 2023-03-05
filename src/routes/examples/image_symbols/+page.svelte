@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Map from '$lib/Map.svelte';
+  import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
@@ -23,7 +23,7 @@
   >
 </p>
 
-<Map
+<MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
   standardControls
@@ -99,7 +99,7 @@
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     />
   </GeoJSON>
-</Map>
+</MapLibre>
 
 {#if clickedFeature}
   {#if clickedFeature.cluster}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Map from '$lib/Map.svelte';
+  import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import { mapClasses } from '../styles.js';
   import code from './+page.svelte?raw';
@@ -9,7 +9,7 @@
   import Popup from '$lib/Popup.svelte';
 </script>
 
-<Map
+<MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
   standardControls
@@ -26,6 +26,6 @@
       </Popup>
     </MarkerLayer>
   </GeoJSON>
-</Map>
+</MapLibre>
 
 <CodeSample {code} />

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Map from '$lib/Map.svelte';
+  import MapLibre from '$lib/MapLibre.svelte';
   import { mapClasses } from '../styles.js';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
@@ -15,7 +15,7 @@
 
 <p>Click the controls in the upper right corner to fly to a location.</p>
 
-<Map
+<MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
   center={[-120, 50]}
@@ -68,6 +68,6 @@
       <ControlButton on:click={() => alert('!')}>!</ControlButton>
     </ControlGroup>
   </Control>
-</Map>
+</MapLibre>
 
 <CodeSample {code} />

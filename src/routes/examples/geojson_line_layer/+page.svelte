@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Map from '$lib/Map.svelte';
+  import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import type { Feature } from 'geojson';
   import LineLayer from '$lib/LineLayer.svelte';
@@ -42,7 +42,7 @@
   };
 </script>
 
-<Map
+<MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
   standardControls
@@ -60,6 +60,6 @@
       }}
     />
   </GeoJSON>
-</Map>
+</MapLibre>
 
 <CodeSample {code} />
