@@ -3,8 +3,8 @@
 
   export let code: string;
   export let filename = '';
-  export let startBoundary = '<Map';
-  export let endBoundary = '</Map>';
+  export let startBoundary = '<MapLibre';
+  export let endBoundary = '</MapLibre>';
   export let omitStartBoundary = false;
   export let omitEndBoundary = false;
 

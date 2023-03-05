@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Map from '$lib/Map.svelte';
+  import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import type { Feature } from 'geojson';
   import FillLayer from '$lib/FillLayer.svelte';
@@ -41,7 +41,7 @@
   <label><input type="color" bind:value={borderColor} /> Border Color </label>
 </div>
 
-<Map
+<MapLibre
   bind:map
   bind:loaded
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
@@ -68,7 +68,7 @@
       />
     {/if}
   </GeoJSON>
-</Map>
+</MapLibre>
 
 <CodeSample
   {code}

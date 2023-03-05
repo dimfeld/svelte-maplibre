@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Map from '$lib/Map.svelte';
+  import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
@@ -33,7 +33,7 @@
   <label><input type="radio" bind:group={openOn} value="click" />Click</label>
 </fieldset>
 
-<Map
+<MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
   standardControls
@@ -89,7 +89,7 @@
       </Popup>
     </MarkerLayer>
   </GeoJSON>
-</Map>
+</MapLibre>
 
 {#if clickedFeature}
   {#if clickedFeature.cluster}
