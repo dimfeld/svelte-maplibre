@@ -1,25 +1,10 @@
 <script lang="ts">
 </script>
 
-<div class="p-2">
-  <h1>Examples</h1>
+<h1>Svelte MapLibre</h1>
 
-  <ul>
-    <li><a href="/examples/basic">Plain Map</a></li>
-    <li><a href="/examples/custom_marker">Custom Marker</a></li>
-    <li><a href="/examples/geojson_polygon">GeoJSON Filled Polygon</a></li>
-    <li><a href="/examples/geojson_line_layer">Styled Line</a></li>
-    <li><a href="/examples/heatmap">Heatmap</a></li>
-    <li><a href="/examples/controls">Controls</a></li>
-    <li><a href="/examples/clusters">Clusters and Popups</a></li>
-    <li><a href="/examples/custom_marker_clusters">Custom Markers and Clusters</a></li>
-    <li><a href="/examples/image_symbols">Images in a Symbol Layer</a></li>
-    <li><a href="/examples/marker_layer">Layer Consisting of Markers</a></li>
-    <li><a href="/examples/3d_buildings">3D Buildings</a></li>
-    <li><a href="/examples/geojson_extrusion">GeoJSON Extrusion</a></li>
-    <li><a href="/examples/zoom_transition">Transition Layers with Zoom</a></li>
-    <li><a href="/examples/deckgl-arcs">Deck.gl Arc Layers</a></li>
-  </ul>
-
-  <p class="mt-4"><a href="https://github.com/dimfeld/svelte-maplibre">Github</a></p>
-</div>
+<p>
+  Svelte MapLibre is a library offering idiomatic Svelte support for the MapLibre GL mapping
+  software. Full documentation is coming soon, but in the meantime please check out the examples in
+  the menu.
+</p>
