@@ -57,7 +57,7 @@
   $: actualMaxZoom = maxzoom ?? $maxZoomContext;
 
   onDestroy(() => {
-    if ($layer && $map?.loaded()) {
+    if ($layer && $map) {
       $map?.removeLayer($layer);
     }
   });
