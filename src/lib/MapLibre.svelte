@@ -37,6 +37,9 @@
   export let filterLayers: ((layer: maplibregl.LayerSpecification) => boolean) | undefined =
     undefined;
 
+  /** Function that modifies requests, such as by adding an API key. **/
+  export let transformRequest: maplibregl.RequestTransformFunction | undefined = undefined;
+
   $: standardControlsPosition =
     typeof standardControls === 'boolean' ? undefined : standardControls;
 
@@ -104,6 +107,7 @@
       maxBounds,
       bounds,
       attributionControl,
+      transformRequest
     });
 
     $mapInstance.on('load', (e) => {
