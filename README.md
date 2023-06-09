@@ -22,6 +22,10 @@ If you don't have one, you can set this to a blank value to use the other exampl
 
 ## Changelog
 
+### 0.2.2
+
+- Support `transformRequest` property on Map component.
+
 ### 0.2.1
 
 - Fix layers not removing while data sources elsewhere in the map are loading
