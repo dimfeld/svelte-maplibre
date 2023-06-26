@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy } from 'svelte';
+  import { createEventDispatcher, onMount, onDestroy } from 'svelte';
   import {
     getId,
     mapContext,
@@ -7,7 +7,6 @@
     updatedLayerContext,
     type DeckGlMouseEvent,
   } from './context';
-  import { MapboxLayer } from '@deck.gl/mapbox';
   import { readable, writable } from 'svelte/store';
 
   export let id = getId('deckgl-layer');
@@ -29,6 +28,11 @@
 
   const context = mapContext();
   const { map, minzoom: minZoomContext, maxzoom: maxZoomContext } = context;
+
+  let deckgl: typeof import('@deck.gl/mapbox');
+  onMount(async () => {
+    deckgl = await import('@deck.gl/mapbox');
+  });
 
   let layerEvent = writable<DeckGlMouseEvent | null>(null);
   let layerId = writable(id);
@@ -87,13 +91,13 @@
     };
   }
 
-  let layer: MapboxLayer;
-  $: if ($map && !layer) {
+  let layer: typeof import('@deck.gl/mapbox').MapboxLayer;
+  $: if ($map && deckgl && !layer) {
     $map.on('zoom', handleZoom);
     $map.on('zoomend', handleZoom);
     handleZoom();
 
-    layer = new MapboxLayer({
+    layer = new deckgl.MapboxLayer({
       id,
       type,
       ...options,

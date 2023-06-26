@@ -1,8 +1,7 @@
-import type { Map, Marker, MapMouseEvent } from 'maplibre-gl';
-import type { Feature } from 'geojson';
+import type { Map, Marker } from 'maplibre-gl';
 import { getContext, setContext } from 'svelte';
 import { readable, writable, type Readable, type Writable } from 'svelte/store';
-import type { ClusterOptions, LayerClickInfo, MarkerClickInfo } from './types';
+import type { ClusterOptions, MarkerClickInfo } from './types';
 
 // Choose current time instead of 0 to avoid possible reuse during HMR.
 export let nextId = Date.now();
@@ -146,7 +145,7 @@ export function updatedZoomRangeContext(
 ) {
   let currentContext = mapContext();
   let minzoom = writable(initialMinZoom);
-  let maxzoom = writable();
+  let maxzoom = writable(initialMaxZoom);
   setContext(MAP_CONTEXT_KEY, {
     ...currentContext,
     minzoom: readableFromWritable(minzoom),
