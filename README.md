@@ -22,6 +22,11 @@ If you don't have one, you can set this to a blank value to use the other exampl
 
 ## Changelog
 
+### 0.3.0
+
+- Support Svelte 4
+- Upgrade to fully-released version of MapLibre GL 3.0
+
 ### 0.2.2
 
 - Support `transformRequest` property on Map component.
