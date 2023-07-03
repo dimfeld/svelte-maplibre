@@ -147,7 +147,7 @@
       let featureId = features[0]?.id;
       if (featureId !== hoverFeatureId) {
         if (manageHoverState) {
-          if (hoverFeatureId) {
+          if (hoverFeatureId !== undefined) {
             $map?.setFeatureState({ source: actualSource!, id: hoverFeatureId }, { hover: false });
           }
 
@@ -178,7 +178,7 @@
       }
 
       hovered = null;
-      if (manageHoverState && hoverFeatureId) {
+      if (manageHoverState && hoverFeatureId !== undefined) {
         $map?.setFeatureState({ source: actualSource!, id: hoverFeatureId }, { hover: false });
         hoverFeatureId = undefined;
       }
