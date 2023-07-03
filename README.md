@@ -22,6 +22,10 @@ If you don't have one, you can set this to a blank value to use the other exampl
 
 ## Changelog
 
+### 0.3.2
+
+- Properly manage hover state on features with ID `0`
+
 ### 0.3.1
 
 - Lazily load deck.gl library so that the rest of the package can be used without including it.
