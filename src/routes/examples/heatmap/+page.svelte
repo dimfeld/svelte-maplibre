@@ -6,6 +6,8 @@
   import CodeSample from '$site/CodeSample.svelte';
   import HeatmapLayer from '$lib/HeatmapLayer.svelte';
   import CircleLayer from '$lib/CircleLayer.svelte';
+
+  import earthquakes from '$site/earthquakes.geojson?url';
 </script>
 
 <p>
@@ -22,10 +24,7 @@
   center={[-120, 50]}
   zoom={2}
 >
-  <GeoJSON
-    id="earthquakes"
-    data="https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson"
-  >
+  <GeoJSON id="earthquakes" data={earthquakes}>
     <HeatmapLayer
       maxzoom={9}
       paint={{

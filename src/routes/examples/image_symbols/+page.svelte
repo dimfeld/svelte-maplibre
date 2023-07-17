@@ -11,8 +11,7 @@
 
   import quakeImageUrl from '$site/earthquake.png';
   import tsunamiImageUrl from '$site/tsunami.png';
-
-  const source = 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson';
+  import earthquakes from '$site/earthquakes.geojson?url';
 
   let clickedFeature: Record<string, any> | null = null;
 </script>
@@ -35,7 +34,7 @@
 >
   <GeoJSON
     id="earthquakes"
-    data={source}
+    data={earthquakes}
     cluster={{
       radius: 500,
       maxZoom: 14,

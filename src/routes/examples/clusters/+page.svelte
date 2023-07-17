@@ -11,7 +11,7 @@
   import ClusterPopup from '../ClusterPopup.svelte';
   import clusterPopupCode from '../ClusterPopup.svelte?raw';
 
-  const source = 'https://maplibre.org/maplibre-gl-js-docs/assets/earthquakes.geojson';
+  import earthquakes from '$site/earthquakes.geojson?url';
 
   let clickedFeature: Record<string, any> | null = null;
 
@@ -37,7 +37,7 @@
 >
   <GeoJSON
     id="earthquakes"
-    data={source}
+    data={earthquakes}
     cluster={{
       radius: 500,
       maxZoom: 14,
