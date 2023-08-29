@@ -10,16 +10,37 @@
   /** If interactive is true (default), it will render as a `button`. If not,
    * it will render as a `div` element. */
   export let interactive = true;
+  export let draggable = false;
   export let feature: GeoJSON.Feature | null = null;
 
   const dispatch = createEventDispatcher();
   const { map, layerEvent, self: marker } = updatedMarkerContext();
 
   function addMarker(node: HTMLDivElement) {
-    $marker = new maplibre.Marker({ element: node }).setLngLat(lngLat).addTo($map);
+    $marker = new maplibre.Marker({
+      element: node,
+      draggable,
+    })
+      .setLngLat(lngLat)
+      .addTo($map);
+
+    const dragStartListener = () => sendEvent('dragstart');
+    const dragListener = () => sendEvent('drag');
+    const dragEndListener = () => sendEvent('dragend');
+
+    if (draggable) {
+      $marker.on('dragstart', dragStartListener);
+      $marker.on('drag', dragListener);
+      $marker.on('dragend', dragEndListener);
+    }
 
     return {
       destroy() {
+        if (draggable) {
+          $marker?.off('dragstart', dragStartListener);
+          $marker?.off('drag', dragListener);
+          $marker?.off('dragend', dragEndListener);
+        }
         $marker?.remove();
       },
     };

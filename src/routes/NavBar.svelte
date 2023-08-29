@@ -12,6 +12,7 @@
   const examples = [
     { href: '/examples/basic', title: `Plain Map` },
     { href: '/examples/custom_marker', title: `Custom Marker` },
+    { href: '/examples/draggable_custom_marker', title: `Custom draggable Marker` },
     { href: '/examples/geojson_polygon', title: `GeoJSON Filled Polygon` },
     { href: '/examples/geojson_line_layer', title: `Styled Line` },
     { href: '/examples/heatmap', title: `Heatmap` },
