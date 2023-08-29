@@ -107,7 +107,7 @@
       maxBounds,
       bounds,
       attributionControl,
-      transformRequest
+      transformRequest,
     });
 
     $mapInstance.on('load', (e) => {

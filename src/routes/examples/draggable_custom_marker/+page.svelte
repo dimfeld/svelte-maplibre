@@ -7,7 +7,7 @@
   import type { MarkerClickInfo } from '$lib';
 
   let markerPos = [-122.2993, 47.4464];
-  const handleDrag = (event: CustomEvent<MarkerClickInfo>) => markerPos = event.detail.lngLat;
+  const handleDrag = (event: CustomEvent<MarkerClickInfo>) => (markerPos = event.detail.lngLat);
 </script>
 
 <p>
