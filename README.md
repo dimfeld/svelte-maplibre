@@ -22,6 +22,10 @@ If you don't have one, you can set this to a blank value to use the other exampl
 
 ## Changelog
 
+### 0.3.3
+
+- Support `draggable` on `Marker`
+
 ### 0.3.2
 
 - Properly manage hover state on features with ID `0`
