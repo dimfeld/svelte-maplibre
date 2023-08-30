@@ -25,6 +25,7 @@
   export let hoverCursor: string | undefined = undefined;
   export let manageHoverState = false;
   export let hovered: Feature | null = null;
+  export let eventsIfTopMost = false;
 </script>
 
 <Layer
@@ -41,6 +42,7 @@
   {maxzoom}
   {hoverCursor}
   {manageHoverState}
+  {eventsIfTopMost}
   bind:hovered
   on:click
   on:mouseenter

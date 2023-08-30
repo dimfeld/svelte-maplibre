@@ -1,4 +1,4 @@
-import type { Map, Marker } from 'maplibre-gl';
+import type { Map, MapMouseEvent, Marker } from 'maplibre-gl';
 import { getContext, setContext } from 'svelte';
 import { readable, writable, type Readable, type Writable } from 'svelte/store';
 import type { ClusterOptions, MarkerClickInfo } from './types';
@@ -21,6 +21,8 @@ export interface MapContext {
   loadedImages: Writable<Set<string>>;
   minzoom: Writable<number>;
   maxzoom: Writable<number>;
+
+  eventTopMost: (event: MapMouseEvent) => string;
 
   layerEvent: Writable<LayerEvent | null>;
 }
@@ -52,6 +54,23 @@ export function setMapContext(context: MapContext): MapContext {
   return setContext(MAP_CONTEXT_KEY, context);
 }
 
+function eventTopMost(): (event: MapMouseEvent) => string {
+  let tracker = new WeakMap<Event, string>();
+  return (event: MapMouseEvent) => {
+    let id = tracker.get(event.originalEvent);
+    if (id !== undefined) {
+      return id;
+    }
+
+    let features = event.target.queryRenderedFeatures(event.point);
+    let topId = features[0]?.layer.id;
+
+    tracker.set(event.originalEvent, topId);
+
+    return topId;
+  };
+}
+
 export function createMapContext(): MapContext {
   return setContext(MAP_CONTEXT_KEY, {
     map: writable<Map | null>(null),
@@ -63,6 +82,7 @@ export function createMapContext(): MapContext {
     minzoom: writable(0),
     maxzoom: writable(24),
     layerEvent: writable(null),
+    eventTopMost: eventTopMost(),
   });
 }
 
