@@ -22,6 +22,11 @@ If you don't have one, you can set this to a blank value to use the other exampl
 
 ## Changelog
 
+### 0.3.4
+
+- Support 2-way binding for `latLng` on draggable markers.
+- Add `eventsIfTopMost` to Layers, to only fire mouse events if the layer is the top-most layer under the mouse pointer.
+
 ### 0.3.3
 
 - Support `draggable` on `Marker`
