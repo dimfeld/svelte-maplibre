@@ -1,5 +1,5 @@
 <script lang="ts">
-  import maplibre, { type LngLatLike } from 'maplibre-gl';
+  import maplibre, { LngLat, type LngLatLike } from 'maplibre-gl';
   import { createEventDispatcher } from 'svelte';
   import { updatedMarkerContext } from './context';
   import type { MarkerClickInfo } from './types';
@@ -11,6 +11,8 @@
    * it will render as a `div` element. */
   export let interactive = true;
   export let draggable = false;
+  /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
+   * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
   export let feature: GeoJSON.Feature | null = null;
 
   const dispatch = createEventDispatcher();
@@ -25,8 +27,14 @@
       .addTo($map);
 
     const dragStartListener = () => sendEvent('dragstart');
-    const dragListener = () => sendEvent('drag');
-    const dragEndListener = () => sendEvent('dragend');
+    const dragListener = () => {
+      propagateLngLatChange();
+      sendEvent('drag');
+    };
+    const dragEndListener = () => {
+      propagateLngLatChange();
+      sendEvent('dragend');
+    };
 
     if (draggable) {
       $marker.on('dragstart', dragStartListener);
@@ -47,6 +55,22 @@
   }
 
   $: $marker?.setLngLat(lngLat);
+
+  function propagateLngLatChange() {
+    let newPos = $marker?.getLngLat();
+    if (!newPos) {
+      return;
+    }
+
+    // Update the props using the same format they are already in.
+    if (Array.isArray(lngLat)) {
+      lngLat = [newPos.lng, newPos.lat];
+    } else if (lngLat && 'lon' in lngLat) {
+      lngLat = { lon: newPos.lng, lat: newPos.lat };
+    } else {
+      lngLat = newPos;
+    }
+  }
 
   function handleKeyDown(e: KeyboardEvent) {
     if (e.key === ' ') {
@@ -70,6 +94,7 @@
       features: [
         {
           type: 'Feature',
+
           properties: feature?.properties ?? {},
           geometry: {
             type: 'Point',
