@@ -31,9 +31,11 @@
   export let maxzoom: number | undefined = undefined;
   export let manageHoverState = true;
   /** The feature currently being hovered. */
-  export let hovered: Feature | null = null;
+  export let hovered: GeoJSON.Feature | null = null;
 
   export let hoverCursor: string | undefined = undefined;
+
+  export let eventsIfTopMost = false;
 
   const dispatch = createEventDispatcher<{
     click: LayerClickInfo;
@@ -51,6 +53,7 @@
     self: layer,
     minzoom: minZoomContext,
     maxzoom: maxZoomContext,
+    eventTopMost,
   } = updatedLayerContext();
 
   $: actualMinZoom = minzoom ?? $minZoomContext;
@@ -101,6 +104,10 @@
         return;
       }
 
+      if (eventsIfTopMost && eventTopMost(e) !== $layer) {
+        return;
+      }
+
       let features = e.features ?? [];
       let clusterId = features[0]?.properties?.cluster_id;
       let eventData: LayerClickInfo = {
@@ -117,6 +124,10 @@
 
     $map.on('mouseenter', $layer, (e) => {
       if (!$layer || !$map) {
+        return;
+      }
+
+      if (eventsIfTopMost && eventTopMost(e) !== $layer) {
         return;
       }
 
@@ -141,6 +152,10 @@
     });
 
     $map.on('mousemove', $layer, (e) => {
+      if (eventsIfTopMost && eventTopMost(e) !== $layer) {
+        return;
+      }
+
       let features = e.features ?? [];
       let clusterId = features[0]?.properties?.cluster_id;
 
@@ -168,7 +183,7 @@
       });
     });
 
-    $map.on('mouseleave', $layer, () => {
+    $map.on('mouseleave', $layer, (e) => {
       if (!$layer || !$map) {
         return;
       }

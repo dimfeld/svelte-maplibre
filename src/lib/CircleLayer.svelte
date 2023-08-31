@@ -25,6 +25,7 @@
   /** Set the cursor style to this value when the mouse is over the layer. */
   export let hoverCursor: string | undefined = undefined;
   export let hovered: Feature | null = null;
+  export let eventsIfTopMost = false;
 </script>
 
 <Layer
@@ -41,6 +42,7 @@
   {minzoom}
   {maxzoom}
   {hoverCursor}
+  {eventsIfTopMost}
   bind:hovered
   on:click
   on:mouseenter
