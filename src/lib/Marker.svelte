@@ -56,19 +56,13 @@
 
   function manageClasses(node: HTMLDivElement, initialAddedClasses: string | undefined) {
     // These classes are added by MapLibre and we don't want to mess with them.
-    const frozenClasses = new Set(node.classList.values());
+    const frozenClasses = node.className;
 
     function updateClasses(newClassNames: string | undefined) {
-      const classes = newClassNames?.split(' ') ?? [];
-
-      for (const className of node.classList.values()) {
-        if (!frozenClasses.has(className) && !classes.includes(className)) {
-          node.classList.remove(className);
-        }
-      }
-
-      for (const className of classes) {
-        node.classList.add(className);
+      if (newClassNames) {
+        node.className = `${frozenClasses} ${newClassNames}`;
+      } else {
+        node.className = frozenClasses;
       }
     }
 

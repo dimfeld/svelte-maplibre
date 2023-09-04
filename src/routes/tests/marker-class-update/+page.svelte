@@ -9,7 +9,11 @@
 
   export let data: PageData;
 
-  let colors = ['bg-gray-200', 'bg-red-200', 'bg-teal-200'];
+  let colors = [
+    'bg-gray-200 text-gray-800',
+    'bg-red-200 text-red-800',
+    'bg-teal-200 text-teal-800',
+  ];
 
   function swapColor() {
     colors = [...colors.slice(1), colors[0]];
