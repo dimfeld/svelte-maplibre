@@ -159,6 +159,12 @@
     };
   }
 
+  let lastStyle = style;
+  $: if ($mapInstance && !compare(style, lastStyle)) {
+    lastStyle = style;
+    $mapInstance.setStyle(style, { diff: true });
+  }
+
   $: if (center && !compare(center, $mapInstance?.getCenter())) $mapInstance?.panTo(center);
   $: if (zoom && !compare(zoom, $mapInstance?.getZoom())) $mapInstance?.zoomTo(zoom);
   $: if (bounds && !compare(bounds, $mapInstance?.getBounds())) $mapInstance?.fitBounds(bounds);
