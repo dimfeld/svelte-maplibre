@@ -27,6 +27,7 @@
   export let loaded = false;
   export let minZoom = 0;
   export let maxZoom = 22;
+  export let zoomOnDoubleClick = true;
   export let interactive = true;
   /** Set false to hide the default attribution control, so you can add your own. */
   export let attributionControl = true;
@@ -172,6 +173,9 @@
   $: if (center && !compare(center, $mapInstance?.getCenter())) $mapInstance?.panTo(center);
   $: if (zoom && !compare(zoom, $mapInstance?.getZoom())) $mapInstance?.zoomTo(zoom);
   $: if (bounds && !compare(bounds, $mapInstance?.getBounds())) $mapInstance?.fitBounds(bounds);
+  $: zoomOnDoubleClick
+    ? $mapInstance?.doubleClickZoom.enable()
+    : $mapInstance?.doubleClickZoom.disable();
 </script>
 
 <div class={classNames} class:expand-map={!classNames} use:createMap>
