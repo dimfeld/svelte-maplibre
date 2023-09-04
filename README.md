@@ -20,39 +20,6 @@ necessary settings.
 Currently the only environment variable is a MapTiler API key, required for the 3D Buildings example.
 If you don't have one, you can set this to a blank value to use the other examples.
 
-## Changelog
-
-### 0.3.4
-
-- Support 2-way binding for `latLng` on draggable markers.
-- Add `eventsIfTopMost` to Layers, to only fire mouse events if the layer is the top-most layer under the mouse pointer.
-
-### 0.3.3
-
-- Support `draggable` on `Marker`
-
-### 0.3.2
-
-- Properly manage hover state on features with ID `0`
-
-### 0.3.1
-
-- Lazily load deck.gl library so that the rest of the package can be used without including it.
-
-### 0.3.0
-
-- Support Svelte 4
-- Upgrade to fully-released version of MapLibre GL 3.0
-
-### 0.2.2
-
-- Support `transformRequest` property on Map component.
-
-### 0.2.1
-
-- Fix layers not removing while data sources elsewhere in the map are loading
-
-
 ## Credits
 
 Logo created by [Bruce Wayyn](https://github.com/brucewayyn)
