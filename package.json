@@ -31,6 +31,7 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "test:unit": "vitest",
+    "generate-changelog": "source ghtoken; GITHUB_TOKEN=${GITHUB_TOKEN} changeset version",
     "lint": "prettier --plugin-search-dir . --check src && eslint .",
     "format": "prettier --plugin-search-dir . --write src"
   },
@@ -56,6 +57,7 @@
     "svelte": "^3.54.0 || ^4.0.0"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.2",
     "@deck.gl/core": "^8.8.0",
     "@deck.gl/layers": "^8.8.0",
