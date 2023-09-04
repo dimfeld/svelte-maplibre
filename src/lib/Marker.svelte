@@ -54,6 +54,31 @@
     };
   }
 
+  function manageClasses(node: HTMLDivElement, initialAddedClasses: string | undefined) {
+    // These classes are added by MapLibre and we don't want to mess with them.
+    const frozenClasses = new Set(node.classList.values());
+
+    function updateClasses(newClassNames: string | undefined) {
+      const classes = newClassNames?.split(' ') ?? [];
+
+      for (const className of node.classList.values()) {
+        if (!frozenClasses.has(className) && !classes.includes(className)) {
+          node.classList.remove(className);
+        }
+      }
+
+      for (const className of classes) {
+        node.classList.add(className);
+      }
+    }
+
+    updateClasses(initialAddedClasses);
+
+    return {
+      update: updateClasses,
+    };
+  }
+
   $: $marker?.setLngLat(lngLat);
 
   function propagateLngLatChange() {
@@ -117,7 +142,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 <div
   use:addMarker
-  class={classNames}
+  use:manageClasses={classNames}
   tabindex={interactive ? 0 : undefined}
   role={interactive ? 'button' : undefined}
   on:click={() => sendEvent('click')}
