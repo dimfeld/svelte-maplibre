@@ -22,6 +22,9 @@
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
   export let hovered: Feature | null = null;
+  /** CSS classes to apply to each marker */
+  let className: string | undefined = undefined;
+  export { className as class };
 
   $: actualMinZoom = minzoom ?? $minZoomContext;
   $: actualMaxZoom = maxzoom ?? $maxZoomContext;
@@ -128,6 +131,7 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
     {@const c = markerLngLat(feature)}
     <Marker
       {interactive}
+      class={className}
       lngLat={c}
       on:mouseenter={() => {
         hovered = feature;
