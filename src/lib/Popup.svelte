@@ -20,7 +20,7 @@
 
   /** Define when to open the popup. If set to manual, you can open the popup programmatically by
    * setting the `open` attribute. */
-  export let openOn: 'hover' | 'click' | 'manual' = 'click';
+  export let openOn: 'hover' | 'click' | 'dblclick' | 'contextmenu' | 'manual' = 'click';
 
   export let focusAfterOpen = true;
   export let anchor: maplibregl.PositionAnchor | undefined = undefined;
@@ -39,6 +39,8 @@
   export let open = false;
 
   const { map, popupTarget, layerEvent } = mapContext();
+
+  const clickEvents = ['click', 'dblclick', 'contextmenu'];
 
   $: actualCloseButton = closeButton ?? (!closeOnClickOutside && !closeOnClickInside);
 
@@ -131,6 +133,8 @@
     $map.on('click', globalClickHandler);
     if (typeof $popupTarget === 'string') {
       $map.on('click', $popupTarget, handleLayerClick);
+      $map.on('dblclick', $popupTarget, handleLayerClick);
+      $map.on('contextmenu', $popupTarget, handleLayerClick);
       $map.on('mousemove', $popupTarget, handleLayerMouseMove);
       $map.on('mouseleave', $popupTarget, handleLayerMouseLeave);
       $map.on('touchstart', $popupTarget, handleLayerTouchStart);
@@ -148,6 +152,8 @@
           }
         } else if (typeof $popupTarget === 'string') {
           $map.off('click', $popupTarget, handleLayerClick);
+          $map.off('dblclick', $popupTarget, handleLayerClick);
+          $map.off('contextmenu', $popupTarget, handleLayerClick);
           $map.off('mousemove', $popupTarget, handleLayerMouseMove);
           $map.off('mouseleave', $popupTarget, handleLayerMouseLeave);
           $map.off('touchstart', $popupTarget, handleLayerTouchStart);
@@ -160,9 +166,10 @@
   let features: Feature[] | null = null;
   let touchOpenState: 'normal' | 'opening' | 'justOpened' = 'normal';
   function handleLayerClick(e: MapLayerMouseEvent | LayerEvent) {
-    if (openOn !== 'click') {
+    if (e.type !== openOn) {
       return;
     }
+
     if ('layerType' in e) {
       if (e.layerType === 'deckgl') {
         lngLat = e.coordinate;
@@ -249,7 +256,7 @@
     }
   }
 
-  $: if (openOn === 'click' && $layerEvent?.type === 'click') {
+  $: if (clickEvents.includes(openOn) && $layerEvent?.type === openOn) {
     handleLayerClick($layerEvent);
     $layerEvent = null;
   }

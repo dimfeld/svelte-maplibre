@@ -17,7 +17,7 @@
 
   let clickedFeature: Record<string, any> | null = null;
 
-  let openOn: 'click' | 'hover' = 'hover';
+  let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = 'hover';
 </script>
 
 <p>
@@ -28,13 +28,18 @@
 
 <fieldset class="border border-gray-300 self-start px-2 flex gap-x-4 mb-2">
   <legend>Show popup on</legend>
-  <label><input type="radio" bind:group={openOn} value="hover" />Hover</label>
-  <label><input type="radio" bind:group={openOn} value="click" />Click</label>
+  <label><input type="radio" bind:group={openOn} value="hover" /> Hover</label>
+  <label><input type="radio" bind:group={openOn} value="click" /> Click</label>
+  <label><input type="radio" bind:group={openOn} value="dblclick" /> Double Click</label>
+  <label
+    ><input type="radio" bind:group={openOn} value="contextmenu" /> Context Menu (right-click)</label
+  >
 </fieldset>
 
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
+  zoomOnDoubleClick={openOn !== 'dblclick'}
   standardControls
 >
   <GeoJSON

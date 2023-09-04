@@ -138,6 +138,8 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
         }
       }}
       on:click={(e) => dispatch('click', { ...e, feature })}
+      on:dblclick={(e) => dispatch('dblclick', { ...e, feature })}
+      on:contextmenu={(e) => dispatch('contextmenu', { ...e, feature })}
     >
       <slot {feature} position={c} />
     </Marker>
