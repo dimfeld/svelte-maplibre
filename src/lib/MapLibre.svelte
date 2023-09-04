@@ -15,6 +15,10 @@
   export { classNames as class };
   /** The style to use for the map. */
   export let style: string | maplibregl.StyleSpecification;
+  /** Tell MapLibre to update the map in place when changing the style, diffing the old style against the new one to
+   * make minimal changes. If you enable this, be aware of https://github.com/maplibre/maplibre-gl-js/issues/2651,
+   * which may prevent some style changes from becoming visible when diffing is enabled. */
+  export let diffStyleUpdates = false;
   export let center: LngLatLike = [0, 0];
   export let zoom = 1;
   export let pitch = 0;
@@ -157,6 +161,12 @@
         $mapInstance = null;
       },
     };
+  }
+
+  let lastStyle = style;
+  $: if ($mapInstance && !compare(style, lastStyle)) {
+    lastStyle = style;
+    $mapInstance.setStyle(style, { diff: diffStyleUpdates });
   }
 
   $: if (center && !compare(center, $mapInstance?.getCenter())) $mapInstance?.panTo(center);
