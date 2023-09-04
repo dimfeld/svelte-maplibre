@@ -30,7 +30,7 @@
   standardControls
 >
   <GeoJSON id="states" data={states} promoteId="STATEFP">
-    <MarkerLayer let:feature class="rounded-full p-2 shadow {colors[0]}">
+    <MarkerLayer draggable let:feature class="rounded-full p-2 shadow {colors[0]}">
       <div class="text-sm font-bold">{feature.properties.NAME}</div>
     </MarkerLayer>
   </GeoJSON>

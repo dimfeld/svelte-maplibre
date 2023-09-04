@@ -19,6 +19,7 @@
   /** If interactive is true (default), the markers will render as `button`. If not,
    * they will render as `div` elements. */
   export let interactive = false;
+  export let draggable = false;
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
   export let hovered: Feature | null = null;
@@ -123,7 +124,7 @@
 the map as a layer. Markers for non-point features are placed at the geometry's center.
 -->
 
-<!-- Set up an invisible layer so that querySourceFeatures has something search through. -->
+<!-- Set up an invisible layer so that querySourceFeatures has something to search through. -->
 <FillLayer {minzoom} {maxzoom} paint={{ 'fill-opacity': 0 }} beforeLayerType="symbol" />
 
 {#if zoom >= actualMinZoom && zoom <= actualMaxZoom}
@@ -131,6 +132,7 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
     {@const c = markerLngLat(feature)}
     <Marker
       {interactive}
+      {draggable}
       class={className}
       lngLat={c}
       on:mouseenter={() => {
@@ -141,6 +143,9 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
           hovered = null;
         }
       }}
+      on:dragstart={(e) => dispatch('dragstart', { ...e, feature })}
+      on:drag={(e) => dispatch('drag', { ...e, feature })}
+      on:dragend={(e) => dispatch('dragend', { ...e, feature })}
       on:click={(e) => dispatch('click', { ...e, feature })}
       on:dblclick={(e) => dispatch('dblclick', { ...e, feature })}
       on:contextmenu={(e) => dispatch('contextmenu', { ...e, feature })}
