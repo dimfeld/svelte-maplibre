@@ -121,6 +121,8 @@
   tabindex={interactive ? 0 : undefined}
   role={interactive ? 'button' : undefined}
   on:click={() => sendEvent('click')}
+  on:dblclick={() => sendEvent('dblclick')}
+  on:contextmenu={() => sendEvent('contextmenu')}
   on:mouseenter={(e) => {
     sendEvent('mouseenter');
   }}

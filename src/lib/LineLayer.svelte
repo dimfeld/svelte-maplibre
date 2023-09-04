@@ -45,6 +45,8 @@
   {eventsIfTopMost}
   bind:hovered
   on:click
+  on:dblclick
+  on:contextmenu
   on:mouseenter
   on:mousemove
   on:mouseleave

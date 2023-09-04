@@ -5,6 +5,7 @@
   import type { LayerClickInfo } from './types.js';
   import flush from 'just-flush';
   import { onDestroy, createEventDispatcher } from 'svelte';
+  import { MapMouseEvent, type MapGeoJSONFeature } from 'maplibre-gl';
 
   export let id = getId('layer');
   /** Set the source for this layer. This can be omitted when the Layer is created in the slot
@@ -39,6 +40,8 @@
 
   const dispatch = createEventDispatcher<{
     click: LayerClickInfo;
+    dblclick: LayerClickInfo;
+    contextmenu: LayerClickInfo;
     mouseenter: LayerClickInfo;
     mousemove: LayerClickInfo;
     mouseleave: Pick<LayerClickInfo, 'map' | 'layer' | 'source'>;
@@ -99,7 +102,7 @@
       actualBeforeId
     );
 
-    $map.on('click', $layer, (e) => {
+    function handleClick(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
       if (!$layer || !$map) {
         return;
       }
@@ -119,8 +122,12 @@
         features,
       };
 
-      dispatch('click', eventData);
-    });
+      dispatch(e.type as 'click' | 'dblclick' | 'contextmenu', eventData);
+    }
+
+    $map.on('click', $layer, handleClick);
+    $map.on('dblclick', $layer, handleClick);
+    $map.on('contextmenu', $layer, handleClick);
 
     $map.on('mouseenter', $layer, (e) => {
       if (!$layer || !$map) {
