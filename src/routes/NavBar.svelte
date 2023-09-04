@@ -31,7 +31,10 @@
 
   // Examples which don't really warrant showing on the docs site, but ensure that
   // certain functionality works properly.
-  const tests = [{ href: '/tests/map-style-update', title: `Map Style Update` }];
+  const tests = [
+    { href: '/tests/map-style-update', title: `Map Style Update` },
+    { href: '/tests/marker-class-update', title: `Marker Class Update` },
+  ];
 
   beforeNavigate(() => {
     drawerStore.close();
