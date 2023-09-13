@@ -14,6 +14,33 @@ This library is functional, but I'm still experimenting with extra features to m
 
 [Changelog](./CHANGELOG.md)
 
+## Installation
+
+```
+npm install svelte-map-libre
+```
+
+## Usage
+
+```svelte
+<script>
+  import { MapLibre } from 'svelte-maplibre';
+</script>
+
+<style>
+	:global(.map) {
+		height: 500px;
+	}
+</style>
+
+<MapLibre 
+  center={[50,20]}
+  zoom={7}
+  class="map"
+  standardControls
+  style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" />
+```
+
 ## Developing
 
 You should create a `.env` file to configure the environment. See the `.env.example` file for the
