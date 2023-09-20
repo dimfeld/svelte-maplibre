@@ -27,6 +27,8 @@
     { href: '/examples/zoom_transition', title: `Transition Layers with Zoom` },
     { href: '/examples/overlapping_layer_events', title: `Overlapping Layer Events` },
     { href: '/examples/deckgl-arcs', title: `Deck.gl Arc Layers` },
+    { href: '/examples/vector_source', title: `Vector Tile Source` },
+    { href: '/examples/pmtile_source', title: `PMTiles Source` },
   ];
 
   // Examples which don't really warrant showing on the docs site, but ensure that
