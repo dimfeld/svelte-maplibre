@@ -16,8 +16,6 @@
     }
   }
 
-  /** Generate a unique id for each feature. This will overwrite existing IDs. */
-
   const { map, self: source } = updatedSourceContext();
 
   $: if ($map && $source !== id) {
