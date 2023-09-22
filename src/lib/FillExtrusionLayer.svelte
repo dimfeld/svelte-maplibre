@@ -23,6 +23,7 @@
   export let maxzoom: number | undefined = undefined;
   /** Set the cursor style to this value when the mouse is over the layer. */
   export let hoverCursor: string | undefined = undefined;
+  export let manageHoverState = false;
   export let hovered: Feature | null = null;
   export let eventsIfTopMost = false;
 </script>
@@ -40,6 +41,7 @@
   {minzoom}
   {maxzoom}
   {hoverCursor}
+  {manageHoverState}
   {eventsIfTopMost}
   bind:hovered
   on:click

@@ -30,7 +30,8 @@
   export let applyToClusters: boolean | undefined = undefined;
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
-  export let manageHoverState = true;
+  /** Enable to use hoverStateFilter. */
+  export let manageHoverState = false;
   /** The feature currently being hovered. */
   export let hovered: GeoJSON.Feature | null = null;
 
