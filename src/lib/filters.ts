@@ -41,7 +41,7 @@ export function isClusterFilter(
     : undefined;
 }
 
-/** Return an expression that returns a value based on whether the feature is hovered. */
+/** Return an expression that returns a value based on whether the feature is hovered. Requires manageHoverState to be enabled for the layer. */
 export function hoverStateFilter(
   defaultValue: string | number | boolean,
   hoverValue: string | number | boolean

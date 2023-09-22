@@ -58,6 +58,7 @@
           'fill-opacity': 0.5,
         }}
         beforeLayerType="symbol"
+        manageHoverState
       />
     {/if}
     {#if showBorder}

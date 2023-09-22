@@ -87,6 +87,7 @@
         'fill-color': '#000',
         'fill-opacity': mode === 'showOne' ? hoverStateFilter(0, 0.1) : 0,
       }}
+      manageHoverState
       on:mousemove={(e) => {
         if (mode === 'showOne') {
           let newGeoId = e.detail.features[0]?.properties?.STATEFP;

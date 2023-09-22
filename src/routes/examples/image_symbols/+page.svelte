@@ -59,6 +59,7 @@
         'circle-stroke-width': 1,
         'circle-stroke-opacity': hoverStateFilter(0, 1),
       }}
+      manageHoverState
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     />
 
