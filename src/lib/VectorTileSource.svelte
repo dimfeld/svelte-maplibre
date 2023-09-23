@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy, tick } from 'svelte';
   import { getId, updatedSourceContext } from './';
-  import { Protocol } from 'pmtiles';
+  import * as pmtiles from 'pmtiles';
   import maplibregl from 'maplibre-gl';
   import flush from 'just-flush';
 
@@ -11,7 +11,7 @@
 
   if (url && url.includes('pmtiles://')) {
     if (!maplibregl.config.REGISTERED_PROTOCOLS.hasOwnProperty('pmtiles')) {
-      let protocol = new Protocol();
+      let protocol = new pmtiles.Protocol();
       maplibregl.addProtocol('pmtiles', protocol.tile);
     }
   }
