@@ -173,7 +173,7 @@
         }
         if (layersToReAddAfterStyleChange) {
           for (const layer of layersToReAddAfterStyleChange) {
-            $mapInstance?.addLayer(layer);
+            $mapInstance.addLayer(layer);
           }
         }
       }
