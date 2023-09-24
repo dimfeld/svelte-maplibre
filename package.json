@@ -33,7 +33,8 @@
     "test:unit": "vitest",
     "generate-changelog": "source ghtoken; GITHUB_TOKEN=${GITHUB_TOKEN} changeset version",
     "lint": "prettier --plugin-search-dir . --check src && eslint .",
-    "format": "prettier --plugin-search-dir . --write src"
+    "format": "prettier --plugin-search-dir . --write src",
+    "prepare":"npm build"
   },
   "exports": {
     ".": {
