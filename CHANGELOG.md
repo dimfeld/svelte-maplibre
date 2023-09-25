@@ -1,5 +1,17 @@
 # svelte-maplibre
 
+## 0.4.0
+
+### Minor Changes
+
+- [#61](https://github.com/dimfeld/svelte-maplibre/pull/61) Thanks [@dabreegster](https://github.com/dabreegster)! - Consistent default values for manageHoverState
+
+### Patch Changes
+
+- [#60](https://github.com/dimfeld/svelte-maplibre/pull/60) [`ffd53aa`](https://github.com/dimfeld/svelte-maplibre/commit/ffd53aafb462677e12b3aa4f6ce4d3233e185f83) Thanks [@stuartlynn](https://github.com/stuartlynn)! - Preserve sources and layers added by the user when changing the base map style
+
+- [#59](https://github.com/dimfeld/svelte-maplibre/pull/59) [`721b0a0`](https://github.com/dimfeld/svelte-maplibre/commit/721b0a0929a23a5308e4bd2e91365500ab2b0fa4) Thanks [@stuartlynn](https://github.com/stuartlynn)! - Add support for vector tile sources
+
 ## 0.3.5
 
 ### Patch Changes
