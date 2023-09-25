@@ -6,7 +6,6 @@
   import { mapClasses } from '../styles';
   import CircleLayer from '$lib/CircleLayer.svelte';
   import SymbolLayer from '$lib/SymbolLayer.svelte';
-  import { hoverStateFilter } from '$lib/filters';
   import Popup from '$lib/Popup.svelte';
   import ClusterPopup from '../ClusterPopup.svelte';
   import clusterPopupCode from '../ClusterPopup.svelte?raw';
