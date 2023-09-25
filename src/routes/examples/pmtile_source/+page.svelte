@@ -9,7 +9,7 @@
 
 <p>
   This map shows how to use <a href="https://protomaps.com/docs/pmtiles" target="__blank">PMTile</a>
-  souces on a map.
+  sources on a map.
 </p>
 
 <MapLibre
