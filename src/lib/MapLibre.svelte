@@ -1,7 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import { createMapContext } from './context.js';
-  import maplibre, { type LngLatBoundsLike, type LngLatLike } from 'maplibre-gl';
+  import maplibre, {
+    type LayerSpecification,
+    type LngLatBoundsLike,
+    type LngLatLike,
+    type SourceSpecification,
+  } from 'maplibre-gl';
   import compare from 'just-compare';
   import 'maplibre-gl/dist/maplibre-gl.css';
   import type { CustomImageSpec } from './types.js';
@@ -97,6 +102,17 @@
 
   $: allImagesLoaded = images.every((image) => $loadedImages.has(image.id));
 
+  // These variables are used to keep track of what sources / layers
+  // are part of the basemap style vs those that are part of the
+  // user defined sources and layers. This is so we can reconstruct the
+  // user defined sources and layers after a basemap style change which
+  // overwrites all previous sources and layers
+
+  let lastStyleLayerIds: Array<string> | undefined = undefined;
+  let lastStyleSourceIds: Array<string> | undefined = undefined;
+  let layersToReAddAfterStyleChange: Array<LayerSpecification> | undefined = undefined;
+  let sourcesToReAddAfterStyleChange: Record<string, SourceSpecification> | undefined = undefined;
+
   function createMap(element: HTMLDivElement) {
     $mapInstance = new maplibre.Map({
       container: element,
@@ -140,6 +156,29 @@
       dispatch('zoomend', { ...ev, map: $mapInstance });
     });
 
+    // When the basemap style is changed, it nukes all existing layers and sources
+    // Here we listen for style.load events, store the layers and sources that
+    // have come from the new basemap style and then add back in any layers and
+    // styles that where added by the user as sub elements
+
+    $mapInstance.on('style.load', () => {
+      if ($mapInstance) {
+        const mapStyle = $mapInstance.getStyle();
+        lastStyleLayerIds = mapStyle.layers.map((l) => l.id);
+        lastStyleSourceIds = Object.keys(mapStyle.sources);
+        if (sourcesToReAddAfterStyleChange) {
+          for (const [id, source] of Object.entries(sourcesToReAddAfterStyleChange)) {
+            $mapInstance.addSource(id, source);
+          }
+        }
+        if (layersToReAddAfterStyleChange) {
+          for (const layer of layersToReAddAfterStyleChange) {
+            $mapInstance.addLayer(layer);
+          }
+        }
+      }
+    });
+
     $mapInstance.on('styledata', (ev) => {
       if ($mapInstance && filterLayers) {
         const layers = $mapInstance.getStyle().layers;
@@ -165,7 +204,33 @@
   }
 
   let lastStyle = style;
+
+  // If the last style is different from the current one
+  // we grab a list of the currrent layers and sources
+  // compare this with the stored list of layer and source ids
+  // to pick out the layers / sources which are not part of the current
+  // basemaps.
+  // We then update the style which will trigger the style.load event on
+  // map which will in turn add the user defined sources and layers back
+  // on to the map
+
   $: if ($mapInstance && !compare(style, lastStyle)) {
+    const oldMapStyle = $mapInstance.getStyle();
+
+    if (lastStyleLayerIds) {
+      layersToReAddAfterStyleChange = oldMapStyle.layers.filter(
+        (l) => !lastStyleLayerIds!.includes(l.id)
+      );
+    }
+    if (lastStyleSourceIds) {
+      const nonStyleSourceIds = Object.keys(oldMapStyle.sources).filter(
+        (sourceId) => !lastStyleSourceIds!.includes(sourceId)
+      );
+      sourcesToReAddAfterStyleChange = {};
+      for (const id of nonStyleSourceIds) {
+        sourcesToReAddAfterStyleChange[id] = oldMapStyle.sources[id];
+      }
+    }
     lastStyle = style;
     $mapInstance.setStyle(style, { diff: diffStyleUpdates });
   }
