@@ -2,9 +2,9 @@
 
 ## 0.4.0
 
-### Minor Changes
+### Major Changes
 
-- [#61](https://github.com/dimfeld/svelte-maplibre/pull/61) Thanks [@dabreegster](https://github.com/dabreegster)! - Consistent default values for manageHoverState
+- [#61](https://github.com/dimfeld/svelte-maplibre/pull/61) Thanks [@dabreegster](https://github.com/dabreegster)! - Consistent default values for manageHoverState. The default value for `manageHoverState` on all Layer types is now `false`, which is a breaking change.
 
 ### Patch Changes
 
