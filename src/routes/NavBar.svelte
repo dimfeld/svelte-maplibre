@@ -30,6 +30,7 @@
     { href: '/examples/changing_basemap_style', title: `Changing basemap style` },
     { href: '/examples/vector_source', title: `Vector Tile Source` },
     { href: '/examples/pmtile_source', title: `PMTiles Source` },
+    { href: '/examples/data_join', title: `Client Side Data Join` },
   ];
 
   // Examples which don't really warrant showing on the docs site, but ensure that
