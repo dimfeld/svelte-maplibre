@@ -77,6 +77,7 @@
   }
 
   $: $marker?.setLngLat(lngLat);
+  $: $marker?.setOffset(offset ?? [0, 0]);
 
   function propagateLngLatChange() {
     let newPos = $marker?.getLngLat();
