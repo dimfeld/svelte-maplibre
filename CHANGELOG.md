@@ -1,5 +1,17 @@
 # svelte-maplibre
 
+## 0.4.2
+
+### Minor Changes
+
+- [#66](https://github.com/dimfeld/svelte-maplibre/pull/66) [`6505882`](https://github.com/dimfeld/svelte-maplibre/commit/650588281c4bd0d90d81079071d187d82eec319d) Thanks [@knd775](https://github.com/knd775)! - Support setting `offset` on markers
+
+## 0.4.1
+
+### Minor Changes
+
+Added missing export for `VectorTileSource`.
+
 ## 0.4.0
 
 ### Major Changes
