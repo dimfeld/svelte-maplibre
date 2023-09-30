@@ -46,8 +46,7 @@
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
   standardControls
-  center={[-68.137, 45.137]}
-  zoom={5}
+  bounds={[-83.619, 36.764, -51.297, 49.915]}
 >
   <GeoJSON id="maine" {data}>
     <LineLayer
