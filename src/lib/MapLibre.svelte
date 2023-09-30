@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import { createMapContext } from './context.js';
+  import { getViewportHash, parseViewportHash } from './hash.js';
   import maplibre, {
     type LayerSpecification,
     type LngLatBoundsLike,
@@ -29,6 +30,8 @@
   export let pitch = 0;
   export let bearing = 0;
   export let bounds: LngLatBoundsLike | undefined = undefined;
+  /** Set to true to track the map viewport in the URL hash. If the URL hash is set, that overrides initial viewport settings. */
+  export let hash = false;
   export let loaded = false;
   export let minZoom = 0;
   export let maxZoom = 22;
@@ -114,6 +117,18 @@
   let sourcesToReAddAfterStyleChange: Record<string, SourceSpecification> | undefined = undefined;
 
   function createMap(element: HTMLDivElement) {
+    if (hash) {
+      let parts = parseViewportHash(window.location.hash);
+      if (parts.length >= 3) {
+        zoom = parts[0];
+        center = [parts[2], parts[1]];
+      }
+      if (parts.length == 5) {
+        bearing = parts[3];
+        pitch = parts[4];
+      }
+    }
+
     $mapInstance = new maplibre.Map({
       container: element,
       style,
@@ -144,6 +159,10 @@
       zoom = ev.target.getZoom();
       bounds = ev.target.getBounds();
       dispatch('moveend', { ...ev, map: $mapInstance });
+      if (hash) {
+        let location = window.location.href.replace(/(#.+)?$/, getViewportHash($mapInstance));
+        window.history.replaceState(window.history.state, '', location);
+      }
     });
 
     $mapInstance.on('zoomstart', (ev) => dispatch('zoomstart', { ...ev, map: $mapInstance }));

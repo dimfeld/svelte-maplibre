@@ -48,6 +48,7 @@
   standardControls
   center={[-68.137, 45.137]}
   zoom={5}
+  hash
 >
   <GeoJSON id="maine" {data}>
     <LineLayer
