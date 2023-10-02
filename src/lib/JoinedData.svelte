@@ -35,9 +35,17 @@
       }
     }
 
-    for (const id of lastSeenIds) {
-      const featureSelector = { id, source: $source, sourceLayer };
-      $map.setFeatureState(featureSelector, {});
+    for (const removeId of lastSeenIds) {
+      const featureSelector = { id:removeId, source: $source, sourceLayer };
+
+      // This is needed because there is a bug(?) in MapLibre which means that
+      // setting the featureState to null or an empty object doesn't unset 
+      // properties. We need to manually set them to null by key
+
+      const oldState = $map.getFeatureState(featureSelector)
+      const nullState = Object.keys(oldState).reduce((state,os)=>({...state,[os]:null}),{} )
+    
+      $map.setFeatureState(featureSelector, nullState);
     }
 
     lastSeenIds = seenIds;
