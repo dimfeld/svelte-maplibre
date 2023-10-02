@@ -29,7 +29,10 @@
   in the case you are trying to join to PMTiles or MVT tiles.
 </p>
 
-<button on:click={changeData}>Change Data</button>
+<button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" on:click={changeData}>
+  Change Data
+</button>
+
 <p>Showing data set {dataSet}</p>
 
 <MapLibre
