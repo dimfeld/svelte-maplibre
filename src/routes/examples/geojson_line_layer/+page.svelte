@@ -42,11 +42,15 @@
   };
 </script>
 
+<p>This example also uses the <code>hash</code> property to sync the map's location with the address bar.</p>
+
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
   standardControls
-  bounds={[-83.619, 36.764, -51.297, 49.915]}
+  center={[-68.137, 45.137]}
+  zoom={5}
+  hash
 >
   <GeoJSON id="maine" {data}>
     <LineLayer
