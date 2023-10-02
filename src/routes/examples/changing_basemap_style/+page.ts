@@ -4,4 +4,4 @@ export const load: PageLoad = () => {
   return {
     title: 'Changing the basemap style',
   };
-}
+};
