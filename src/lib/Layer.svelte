@@ -210,7 +210,7 @@
       hovered = null;
       if (manageHoverState && hoverFeatureId !== undefined) {
         const featureSelector = { source: actualSource!, id: hoverFeatureId, sourceLayer };
-        $map?.setFeatureState(featureSelector, { hover: null });
+        $map?.setFeatureState(featureSelector, { hover: false })
         hoverFeatureId = undefined;
       }
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import flush from 'just-flush';
   import { createEventDispatcher } from 'svelte';
   import { createMapContext } from './context.js';
   import maplibre, {
@@ -24,8 +25,8 @@
    * make minimal changes. If you enable this, be aware of https://github.com/maplibre/maplibre-gl-js/issues/2651,
    * which may prevent some style changes from becoming visible when diffing is enabled. */
   export let diffStyleUpdates = false;
-  export let center: LngLatLike = [0, 0];
-  export let zoom = 1;
+  export let center: LngLatLike | undefined = undefined;
+  export let zoom: number | undefined = undefined;
   export let pitch = 0;
   export let bearing = 0;
   export let bounds: LngLatBoundsLike | undefined = undefined;
@@ -114,22 +115,24 @@
   let sourcesToReAddAfterStyleChange: Record<string, SourceSpecification> | undefined = undefined;
 
   function createMap(element: HTMLDivElement) {
-    $mapInstance = new maplibre.Map({
-      container: element,
-      style,
-      center,
-      zoom,
-      pitch,
-      bearing,
-      minZoom,
-      maxZoom,
-      interactive,
-      preserveDrawingBuffer,
-      maxBounds,
-      bounds,
-      attributionControl,
-      transformRequest,
-    });
+    $mapInstance = new maplibre.Map(
+      flush({
+        container: element,
+        style,
+        center,
+        zoom,
+        pitch,
+        bearing,
+        minZoom,
+        maxZoom,
+        interactive,
+        preserveDrawingBuffer,
+        maxBounds,
+        bounds,
+        attributionControl,
+        transformRequest,
+      })
+    );
 
     $mapInstance.on('load', (e) => {
       loaded = true;

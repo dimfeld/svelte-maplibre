@@ -1,0 +1,5 @@
+{
+  "*.svelte": "prettier --plugin-search-dir . --write",
+  "*.js": "prettier --plugin-search-dir . --write",
+  "*.ts": "prettier --plugin-search-dir  --write."
+}

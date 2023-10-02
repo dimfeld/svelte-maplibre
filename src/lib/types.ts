@@ -1,6 +1,20 @@
 import type { Feature, Point } from 'geojson';
 import type { MapMouseEvent, Marker } from 'maplibre-gl';
 
+export type {
+  ControlPosition,
+  ExpressionSpecification,
+  Feature,
+  LayerSpecification,
+  LngLatBoundsLike,
+  LngLatLike,
+  Map,
+  Offset,
+  PointLike,
+  PositionAnchor,
+  StyleSpecification,
+} from 'maplibre-gl';
+
 export interface ClusterOptions {
   /** The minimum number of points required to form a cluster.
    * This can not be changed after the source is created.
