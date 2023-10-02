@@ -6,6 +6,16 @@
   import CodeSample from '$site/CodeSample.svelte';
   import FillLayer from '$lib/FillLayer.svelte';
   import JoinedData from '$lib/JoinedData.svelte';
+  import { hoverStateFilter } from '$lib';
+  let dataSet = 0;
+  function changeData(){
+    if(dataSet ===0){
+      dataSet =1 
+    }
+    else{
+      dataSet=0
+    }
+  }
 </script>
 
 <p>
@@ -18,6 +28,9 @@
   Just ensure that you use promoteId to set the id of the feature in the source that you are trying to target and provide a sourceLayer 
   in the case you are trying to join to PMTiles or MVT tiles.
 </p>
+
+<button on:click={changeData}>Change Data</button>
+<p>Showing data set {dataSet}</p>
 
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
@@ -32,20 +45,26 @@
   >
     <FillLayer
       paint={{
-        'fill-opacity': 0.6,
+        'fill-opacity': hoverStateFilter(0.7,0.4),
         'fill-color': ['coalesce', ['feature-state', 'color'], "#102020"]
       }}
       sourceLayer={'zcta'}
+      manageHoverState
     />
     <JoinedData 
-      data={[{
+      data={ dataSet === 1 ?  [{
         "color":"#ff0000",
         "geoid" : 60628
       },{
         "color":"#00fF00",
         "geoid" : 60608
       }
-      ]} 
+      ]
+      :[{
+        "color":"#ff0000",
+        "geoid" : 60628
+      }]
+      } 
       idCol="geoid"  
       sourceLayer="zcta"
     />
