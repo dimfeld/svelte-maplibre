@@ -42,6 +42,8 @@
   };
 </script>
 
+<p>This example also uses the <code>hash</code> property to sync the map's location with the address bar.</p>
+
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
