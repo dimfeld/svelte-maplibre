@@ -8,6 +8,7 @@
   export let id: string = getId('vector');
   export let url: string | null = null;
   export let tiles: Array<string> | null = null;
+  export let promoteId: string | null = null;
 
   if (url && url.includes('pmtiles://')) {
     if (!maplibregl.config.REGISTERED_PROTOCOLS.hasOwnProperty('pmtiles')) {
@@ -30,6 +31,7 @@
         type: 'vector',
         url,
         tiles,
+        promoteId,
       })
     );
   }

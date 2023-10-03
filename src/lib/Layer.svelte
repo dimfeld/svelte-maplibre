@@ -165,20 +165,21 @@
       }
 
       let features = e.features ?? [];
+
       let clusterId = features[0]?.properties?.cluster_id;
 
       let featureId = features[0]?.id;
+
       if (featureId !== hoverFeatureId) {
         if (manageHoverState) {
           if (hoverFeatureId !== undefined) {
             $map?.setFeatureState(
-              { source: actualSource!, sourceLayer, id: hoverFeatureId },
+              { source: actualSource!, id: hoverFeatureId, sourceLayer },
               { hover: false }
             );
           }
-
           $map?.setFeatureState(
-            { source: actualSource!, sourceLayer, id: featureId },
+            { source: actualSource!, id: featureId, sourceLayer },
             { hover: true }
           );
         }
@@ -208,10 +209,8 @@
 
       hovered = null;
       if (manageHoverState && hoverFeatureId !== undefined) {
-        $map?.setFeatureState(
-          { source: actualSource!, sourceLayer, id: hoverFeatureId },
-          { hover: false }
-        );
+        const featureSelector = { source: actualSource!, id: hoverFeatureId, sourceLayer };
+        $map?.setFeatureState(featureSelector, { hover: false })
         hoverFeatureId = undefined;
       }
 
