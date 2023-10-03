@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { updatedLayerContext } from './';
+  import { updatedLayerContext } from './context';
   export let data: Array<Record<string, string | number | undefined>>;
   export let idCol: string;
   export let sourceLayer: string;
@@ -31,21 +31,19 @@
       }
 
       if (needsUpdate) {
-        $map.setFeatureState(featureSelector, { hover: oldState['hover'], ...row });
+        $map.setFeatureState(featureSelector, row);
       }
     }
 
     for (const removeId of lastSeenIds) {
       const featureSelector = { id: removeId, source: $source, sourceLayer };
 
-      // This is needed because there is a bug(?) in MapLibre which means that
-      // setting the featureState to null or an empty object doesn't unset
-      // properties. We need to manually set them to null by key
-
+      // MapLibre manages each key in the feature state independently, and we don't want to
+      // clear state set from elsewhere such as hover state, so we need to clear each key explicitly.
       const oldState = $map.getFeatureState(featureSelector);
-      const nullState = Object.keys(oldState).reduce((state, os) => ({ ...state, [os]: null }), {});
-
-      $map.setFeatureState(featureSelector, nullState);
+      for (const property of Object.keys(oldState)) {
+        $map.removeFeatureState(featureSelector, property);
+      }
     }
 
     lastSeenIds = seenIds;

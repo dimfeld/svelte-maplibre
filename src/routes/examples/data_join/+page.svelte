@@ -7,6 +7,7 @@
   import FillLayer from '$lib/FillLayer.svelte';
   import JoinedData from '$lib/JoinedData.svelte';
   import { hoverStateFilter } from '$lib';
+
   let dataSet = 0;
   function changeData() {
     if (dataSet === 0) {
@@ -18,18 +19,22 @@
 </script>
 
 <p>
-  This map shows how to join data to a vector tile layer on the map. The JoinedData tag takes an
-  array of records and joins them using the provided idCol to the source at run time. These can then
-  be accessed in styling using the ['feature-state', colName] function.
+  This map shows how to join data to a vector tile layer on the map. The <code>JoinedData</code>
+  component takes an array of records and joins them using the provided <code>idCol</code> to the
+  source at run time. These can then be accessed in styling using the
+  <code>['feature-state', colName]</code>
+  syntax.
   <br />
-  This should work on PMTiles, MVT and GeoJSON sources
+  This should work on PMTiles, MVT and GeoJSON sources.
   <br />
-  Just ensure that you use promoteId to set the id of the feature in the source that you are trying to
-  target and provide a sourceLayer in the case you are trying to join to PMTiles or MVT tiles.
+  Ensure that you use <code>promoteId</code> to indicated which column to use to get the id of the
+  feature in the source that you are trying to target, and provide a <code>sourceLayer</code> if you
+  are trying to join to PMTiles or MVT tiles.
 </p>
 
 <button
   class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+  type="button"
   on:click={changeData}
 >
   Change Data
@@ -41,7 +46,7 @@
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
   standardControls
-  center={[-87.622088, 41.878781]}
+  center={[-87.622088, 41.778781]}
   zoom={10}
 >
   <VectorTileSource
@@ -57,7 +62,7 @@
       manageHoverState
     />
     <JoinedData
-      data={dataSet === 1
+      data={dataSet === 0
         ? [
             {
               color: '#ff0000',
