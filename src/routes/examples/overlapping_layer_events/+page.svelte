@@ -5,6 +5,8 @@
   import type { PageData } from './$types';
   import GeoJson from '$lib/GeoJSON.svelte';
   import CircleLayer from '$lib/CircleLayer.svelte';
+  import { hoverStateFilter } from '$lib/filters';
+  import Popup from '$lib/Popup.svelte';
 
   export let data: PageData;
 
@@ -46,12 +48,29 @@
   }
 
   let eventsIfTopMost = true;
+  let openIfTopMost = true;
+  let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = 'hover';
 </script>
 
 <label>
   <input type="checkbox" bind:checked={eventsIfTopMost} />
   When layers overlap, only fire events for top-most layer
 </label>
+
+<label>
+  <input type="checkbox" bind:checked={openIfTopMost} />
+  When layers overlap, only activate the popup for top-most layer
+</label>
+
+<fieldset class="border border-gray-300 self-start px-2 flex gap-x-4 mb-2">
+  <legend>Show popup on</legend>
+  <label><input type="radio" bind:group={openOn} value="hover" /> Hover</label>
+  <label><input type="radio" bind:group={openOn} value="click" /> Click</label>
+  <label><input type="radio" bind:group={openOn} value="dblclick" /> Double Click</label>
+  <label
+    ><input type="radio" bind:group={openOn} value="contextmenu" /> Context Menu (right-click)</label
+  >
+</fieldset>
 
 <div class="grid grid-cols-[auto_1fr] gap-x-2">
   {#each layers as layer, i}
@@ -66,12 +85,14 @@
   standardControls
 >
   {#each layers as { data, color }, i}
-    <GeoJson id="layer{i + 1}" data={{ type: 'FeatureCollection', features: data }}>
+    <GeoJson id="layer{i + 1}" data={{ type: 'FeatureCollection', features: data }} generateId>
       <CircleLayer
         {eventsIfTopMost}
+        manageHoverState
         paint={{
           'circle-color': color,
           'circle-radius': ['get', 'radius'],
+          'circle-opacity': hoverStateFilter(1.0, 0.5),
         }}
         on:click={(e) => {
           lastEvent[i] = e.detail.features?.[0];
@@ -82,7 +103,20 @@
         on:mousemove={(e) => {
           lastEvent[i] = e.detail.features?.[0];
         }}
-      />
+      >
+        <Popup {openOn} {openIfTopMost} let:features>
+          <div style:background={color} style:color="white">
+            <p>{features.length} features from {color} layer</p>
+            {#if color == 'red'}
+              <p>extra padding for lowest red layer</p>
+              <p>extra padding for lowest red layer</p>
+            {/if}
+            {#if color == 'green'}
+              <p>extra padding for middle green layer</p>
+            {/if}
+          </div>
+        </Popup>
+      </CircleLayer>
     </GeoJson>
   {/each}
 </MapLibre>

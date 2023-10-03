@@ -161,6 +161,15 @@
 
     $map.on('mousemove', $layer, (e) => {
       if (eventsIfTopMost && eventTopMost(e) !== $layer) {
+        hovered = null;
+        if (manageHoverState && hoverFeatureId !== undefined) {
+          $map?.setFeatureState(
+            { source: actualSource!, sourceLayer, id: hoverFeatureId },
+            { hover: false }
+          );
+          hoverFeatureId = undefined;
+        }
+
         return;
       }
 
@@ -210,7 +219,7 @@
       hovered = null;
       if (manageHoverState && hoverFeatureId !== undefined) {
         const featureSelector = { source: actualSource!, id: hoverFeatureId, sourceLayer };
-        $map?.setFeatureState(featureSelector, { hover: false })
+        $map?.setFeatureState(featureSelector, { hover: false });
         hoverFeatureId = undefined;
       }
 

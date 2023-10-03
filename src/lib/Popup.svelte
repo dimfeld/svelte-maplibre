@@ -21,6 +21,8 @@
   /** Define when to open the popup. If set to manual, you can open the popup programmatically by
    * setting the `open` attribute. */
   export let openOn: 'hover' | 'click' | 'dblclick' | 'contextmenu' | 'manual' = 'click';
+  /** Only open the popup if there's no feature from a higher layer covering this one. */
+  export let openIfTopMost = false;
 
   export let focusAfterOpen = true;
   export let anchor: maplibregl.PositionAnchor | undefined = undefined;
@@ -38,7 +40,7 @@
   /** Whether the popup is open or not. Can be set to manualy open the popup at `lngLat`. */
   export let open = false;
 
-  const { map, popupTarget, layerEvent } = mapContext();
+  const { map, popupTarget, layerEvent, layer, eventTopMost } = mapContext();
 
   const clickEvents = ['click', 'dblclick', 'contextmenu'];
 
@@ -170,6 +172,10 @@
       return;
     }
 
+    if (openIfTopMost && eventTopMost(e) !== $layer) {
+      return;
+    }
+
     if ('layerType' in e) {
       if (e.layerType === 'deckgl') {
         lngLat = e.coordinate;
@@ -224,6 +230,12 @@
 
   function handleLayerMouseMove(e: MapLayerMouseEvent) {
     if (openOn !== 'hover' || touchStartCoords || touchOpenState !== 'normal') {
+      return;
+    }
+
+    if (openIfTopMost && eventTopMost(e) !== $layer) {
+      open = false;
+      features = null;
       return;
     }
 
