@@ -7,7 +7,7 @@
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import states from '$site/states.json?url';
-  import { hoverStateFilter } from '$lib/filters.js';
+  import type { FeatureCollection } from 'geojson';
 
   let showBorder = true;
   let showFill = true;
@@ -19,16 +19,46 @@
       ? 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json'
       : 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
-  console.log('selected ', selected, ' style ', style);
+  const coloradoPolygon = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Polygon',
+          coordinates: [
+            [
+              [-109, 37],
+              [-102, 37],
+              [-102, 41],
+              [-109, 41],
+              [-109, 37],
+            ],
+          ],
+        },
+      },
+    ],
+  } as FeatureCollection;
+
+  let dataOption: 'states' | 'colorado' = 'states';
+  $: dataset = dataOption === 'states' ? states : coloradoPolygon;
 </script>
 
-<select class="basemap-select" bind:value={selected}>
-  <option value="light">Light</option>
-  <option value="dark">dark</option>
-</select>
+<div class="controls">
+  <select class="controls-select" bind:value={selected}>
+    <option value="light">Light</option>
+    <option value="dark">dark</option>
+  </select>
+
+  <select class="controls-select" bind:value={dataOption}>
+    <option value="states">States Dataset</option>
+    <option value="colorado">Colorado Dataset</option>
+  </select>
+</div>
 
 <MapLibre {style} class={mapClasses} standardControls center={[-98.137, 40.137]} zoom={4}>
-  <GeoJSON id="states" data={states} promoteId="STATEFP">
+  <GeoJSON id="states" data={dataset} promoteId="STATEFP">
     {#if showFill}
       <FillLayer
         paint={{
@@ -51,10 +81,14 @@
 <CodeSample {code} />
 
 <style>
-  .grid {
-    grid-template-columns: repeat(auto-fill, 150px);
+  .controls {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 0.5rem;
   }
-  .basemap-select {
+
+  .controls-select {
     box-sizing: border-box;
     padding: 10px 20px;
   }
