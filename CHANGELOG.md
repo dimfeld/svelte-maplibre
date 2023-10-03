@@ -1,5 +1,21 @@
 # svelte-maplibre
 
+## 0.4.3
+
+### Minor Changes
+
+- [#65](https://github.com/dimfeld/svelte-maplibre/pull/65) [`6e9a532`](https://github.com/dimfeld/svelte-maplibre/commit/6e9a532aa5b8de7e2aa90be6173bfb8743f232d4) Thanks [@stuartlynn](https://github.com/stuartlynn)! - Adds a JoinData component to allow data to be joined to vector features in the client
+
+- [#69](https://github.com/dimfeld/svelte-maplibre/pull/69) [`1ced5d7`](https://github.com/dimfeld/svelte-maplibre/commit/1ced5d7995b73ae6990a592a3135c16cd78be1ea) Thanks [@dabreegster](https://github.com/dabreegster)! - Add hash to track viewport in the URL
+
+### Patch Changes
+
+- [#68](https://github.com/dimfeld/svelte-maplibre/pull/68) [`d2459d5`](https://github.com/dimfeld/svelte-maplibre/commit/d2459d562c845e731337fa80595f62d97c4edb6c) Thanks [@dabreegster](https://github.com/dabreegster)! - Fix the map bounds property to work when initially set
+
+- [#72](https://github.com/dimfeld/svelte-maplibre/pull/72) [`f403ca0`](https://github.com/dimfeld/svelte-maplibre/commit/f403ca0250dd12957b43cf87721baaf171887b51) Thanks [@dabreegster](https://github.com/dabreegster)! - Fix hover state for vector tiles sources
+
+- [#73](https://github.com/dimfeld/svelte-maplibre/pull/73) [`c42b2cc`](https://github.com/dimfeld/svelte-maplibre/commit/c42b2ccbb47f37365a16c69169fb768592c8463e) Thanks [@knd775](https://github.com/knd775)! - Re-export common types from `maplibre-gl`
+
 ## 0.4.2
 
 ### Minor Changes
