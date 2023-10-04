@@ -22,7 +22,7 @@
    * setting the `open` attribute. */
   export let openOn: 'hover' | 'click' | 'dblclick' | 'contextmenu' | 'manual' = 'click';
   /** Only open the popup if there's no feature from a higher layer covering this one. */
-  export let openIfTopMost = false;
+  export let openIfTopMost = true;
 
   export let focusAfterOpen = true;
   export let anchor: maplibregl.PositionAnchor | undefined = undefined;
