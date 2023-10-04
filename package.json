@@ -76,6 +76,7 @@
     "@typescript-eslint/parser": "^5.45.0",
     "autoprefixer": "^10.4.7",
     "d3-color": "^3.1.0",
+    "dedent": "^1.5.1",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-svelte3": "^4.0.0",

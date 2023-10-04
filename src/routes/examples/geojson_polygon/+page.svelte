@@ -77,6 +77,7 @@
   endBoundary="// END EXTRACT"
   omitStartBoundary
   omitEndBoundary
+  language="javascript"
 />
 <CodeSample {code} />
 
