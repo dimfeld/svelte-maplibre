@@ -32,9 +32,9 @@
   const layer3 = Array.from({ length: 20 }, randomCircle);
 
   const layers = [
-    { data: layer1, color: 'red' },
-    { data: layer2, color: 'green' },
-    { data: layer3, color: 'blue' },
+    { data: layer1, color: 'red', hoverCursor: 'help' },
+    { data: layer2, color: 'green', hoverCursor: '' },
+    { data: layer3, color: 'blue', hoverCursor: 'not-allowed' },
   ];
 
   const lastEvent = [];
@@ -86,11 +86,12 @@
   class="relative w-full aspect-[9/16] max-h-[70vh] sm:max-h-full sm:aspect-video"
   standardControls
 >
-  {#each layers as { data, color }, i}
+  {#each layers as { data, color, hoverCursor }, i}
     <GeoJson id="layer{i + 1}" data={{ type: 'FeatureCollection', features: data }} generateId>
       <CircleLayer
         {eventsIfTopMost}
         manageHoverState
+        {hoverCursor}
         paint={{
           'circle-color': color,
           'circle-radius': ['get', 'radius'],

@@ -173,6 +173,9 @@
         return;
       }
 
+      // This may get out of sync, if this layer regains focus from a higher layer.
+      $map.getCanvas().style.cursor = hoverCursor;
+
       let features = e.features ?? [];
 
       let clusterId = features[0]?.properties?.cluster_id;
