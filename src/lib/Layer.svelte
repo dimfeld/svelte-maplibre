@@ -161,8 +161,20 @@
 
     $map.on('mousemove', $layer, (e) => {
       if (eventsIfTopMost && eventTopMost(e) !== $layer) {
+        hovered = null;
+        if (manageHoverState && hoverFeatureId !== undefined) {
+          $map?.setFeatureState(
+            { source: actualSource!, sourceLayer, id: hoverFeatureId },
+            { hover: false }
+          );
+          hoverFeatureId = undefined;
+        }
+
         return;
       }
+
+      // This may get out of sync, if this layer regains focus from a higher layer.
+      $map.getCanvas().style.cursor = hoverCursor;
 
       let features = e.features ?? [];
 
@@ -210,7 +222,7 @@
       hovered = null;
       if (manageHoverState && hoverFeatureId !== undefined) {
         const featureSelector = { source: actualSource!, id: hoverFeatureId, sourceLayer };
-        $map?.setFeatureState(featureSelector, { hover: false })
+        $map?.setFeatureState(featureSelector, { hover: false });
         hoverFeatureId = undefined;
       }
 
