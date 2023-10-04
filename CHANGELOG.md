@@ -1,5 +1,16 @@
 # svelte-maplibre
 
+## 0.5.0
+
+### Major Changes
+
+- [#71](https://github.com/dimfeld/svelte-maplibre/pull/71) [`821c3bd`](https://github.com/dimfeld/svelte-maplibre/commit/821c3bd7e14a761ff8c58a1a74feb2f8433d9071) Thanks [@dabreegster](https://github.com/dabreegster)! - Make eventsIfTopMost also work for manageHoverState, and introduce
+  openIfTopMost for Popups. `openIfTopMost` defaults to true, which changes the default behavior for overlapping popups.
+
+### Patch Changes
+
+- [#75](https://github.com/dimfeld/svelte-maplibre/pull/75) [`accb09d`](https://github.com/dimfeld/svelte-maplibre/commit/accb09da27971efade03fa9a211679c08334698f) Thanks [@mhrgoldberg](https://github.com/mhrgoldberg)! - Fix GeoJSON component reactivity to data changes after map styles are updated.
+
 ## 0.4.3
 
 ### Minor Changes
