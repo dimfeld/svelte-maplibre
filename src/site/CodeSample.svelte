@@ -31,6 +31,9 @@
 
     let outputCode = code.slice(startIndex, endIndex);
 
+    // Dedent the snippet if every single nonblank line starts with whitespace. This is needed
+    // because dedent ignores non-indented lines when figuring out how much to dedent, but in this
+    // case we do want to account for that.
     const needsDedent = outputCode.split('\n').every((line) => {
       return !line || /^\s+/.test(line);
     });
