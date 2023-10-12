@@ -16,6 +16,8 @@
   export let feature: GeoJSON.Feature | null = null;
   /** An offset in pixels to apply to the marker. */
   export let offset: PointLike | undefined = undefined;
+  /** The z-index of the marker. This can also be set via CSS classes using the `class` prop */
+  export let zIndex: number | undefined = undefined;
 
   const dispatch = createEventDispatcher();
   const { map, layerEvent, self: marker } = updatedMarkerContext();
@@ -141,6 +143,7 @@
 <div
   use:addMarker
   use:manageClasses={classNames}
+  style:z-index={zIndex}
   tabindex={interactive ? 0 : undefined}
   role={interactive ? 'button' : undefined}
   on:click={() => sendEvent('click')}
