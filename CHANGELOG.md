@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.5.2
+
+### Minor Changes
+
+- [#82](https://github.com/dimfeld/svelte-maplibre/pull/82) [`8edfc1f`](https://github.com/dimfeld/svelte-maplibre/commit/8edfc1fe7dd4ad7399790e6c3408cccd6a0538fe) Thanks [@dimfeld](https://github.com/dimfeld)! - Allow setting z-index on Marker and MarkerLayer
+
 ## 0.5.1
 
 ### Patch Changes
