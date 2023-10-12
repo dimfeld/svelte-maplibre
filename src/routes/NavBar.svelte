@@ -38,6 +38,7 @@
   const tests = [
     { href: '/tests/map-style-update', title: `Map Style Update` },
     { href: '/tests/marker-class-update', title: `Marker Class Update` },
+    { href: '/tests/marker-z-index', title: `Marker Z-Index` },
   ];
 
   beforeNavigate(() => {
@@ -45,7 +46,7 @@
   });
 </script>
 
-<div class="p-4 w-full h-full overflow-y-auto {classNames}">
+<div class="h-full w-full overflow-y-auto p-4 {classNames}">
   <LogoAndMenu menuButton={inDrawer} />
 
   <h2 class="my-4">Examples</h2>
@@ -55,7 +56,7 @@
       <li>
         <a
           {href}
-          class="w-full rounded-lg btn btn-primary justify-start"
+          class="btn-primary btn w-full justify-start rounded-lg"
           class:variant-filled={href === $page.url.pathname}>{title}</a
         >
       </li>
@@ -70,7 +71,7 @@
         <li>
           <a
             {href}
-            class="w-full rounded-lg btn btn-primary justify-start"
+            class="btn-primary btn w-full justify-start rounded-lg"
             class:variant-filled={href === $page.url.pathname}>{title}</a
           >
         </li>
