@@ -175,6 +175,7 @@
     }
 
     if (openIfTopMost) {
+      // Marker clicks are always only on the top-most marker. Otherwise check for the top-most layer.
       if (!('marker' in e) && eventTopMost(e) !== $layer) {
         return;
       }
