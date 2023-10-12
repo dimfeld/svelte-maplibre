@@ -34,12 +34,12 @@
   standardControls
 >
   <GeoJson data={features}>
-    <MarkerLayer>
+    <MarkerLayer zIndex={10}>
       <div class="h-8 w-8 rounded-full bg-red-500" />
     </MarkerLayer>
   </GeoJson>
 
-  <Marker lngLat={[0, 0]} class="z-20">
+  <Marker lngLat={[0, 0]} zIndex={20}>
     <div class="h-4 w-4 rounded-full bg-green-500" />
   </Marker>
 </MapLibre>

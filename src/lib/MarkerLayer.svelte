@@ -23,6 +23,9 @@
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
   export let hovered: Feature | null = null;
+  /** The z-index of the markers. This can also be set via CSS classes using the `class` prop.
+   * If a function is provided, it will be called with each feature as an argument. */
+  export let zIndex: number | ((feature: GeoJSON.Feature) => number) | undefined = undefined;
   /** CSS classes to apply to each marker */
   let className: string | undefined = undefined;
   export { className as class };
@@ -130,10 +133,12 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
 {#if zoom >= actualMinZoom && zoom <= actualMaxZoom}
   {#each features as feature (feature.id)}
     {@const c = markerLngLat(feature)}
+    {@const z = typeof zIndex === 'function' ? zIndex(feature) : zIndex}
     <Marker
       {interactive}
       {draggable}
       class={className}
+      zIndex={z}
       lngLat={c}
       on:mouseenter={() => {
         hovered = feature;
