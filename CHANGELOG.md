@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.5.1
+
+### Patch Changes
+
+- [#78](https://github.com/dimfeld/svelte-maplibre/pull/78) [`b69ddb1`](https://github.com/dimfeld/svelte-maplibre/commit/b69ddb1fbd29ab669fd19501a7d0f68983d26889) Thanks [@dimfeld](https://github.com/dimfeld)! - Fix Marker popup click handler
+
 ## 0.5.0
 
 ### Major Changes
