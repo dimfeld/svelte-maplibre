@@ -133,6 +133,7 @@
     }
 
     $map.on('click', globalClickHandler);
+    $map.on('contextmenu', globalClickHandler);
     if (typeof $popupTarget === 'string') {
       $map.on('click', $popupTarget, handleLayerClick);
       $map.on('dblclick', $popupTarget, handleLayerClick);
@@ -147,6 +148,7 @@
       if ($map?.loaded()) {
         popup?.remove();
         $map.off('click', globalClickHandler);
+        $map.off('contextmenu', globalClickHandler);
 
         if ($popupTarget instanceof maplibregl.Marker) {
           if ($popupTarget.getPopup() === popup) {
@@ -172,8 +174,11 @@
       return;
     }
 
-    if (openIfTopMost && eventTopMost(e) !== $layer) {
-      return;
+    if (openIfTopMost) {
+      // Marker clicks are always only on the top-most marker. Otherwise check for the top-most layer.
+      if (!('marker' in e) && eventTopMost(e) !== $layer) {
+        return;
+      }
     }
 
     if ('layerType' in e) {
@@ -264,7 +269,9 @@
       popup.isOpen() &&
       !checkElements.some((el) => el?.contains(e.originalEvent.target as Node))
     ) {
-      open = false;
+      if ((e.type === 'contextmenu' && openOn === 'contextmenu') || e.type !== 'contextmenu') {
+        open = false;
+      }
     }
   }
 
