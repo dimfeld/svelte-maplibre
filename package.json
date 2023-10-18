@@ -57,6 +57,10 @@
       "types": "./dist/filters.d.ts",
       "default": "./dist/filters.js"
     },
+    "./source.js": {
+      "types": "./dist/source.d.ts",
+      "default": "./dist/source.js"
+    },
     "./types.js": {
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"

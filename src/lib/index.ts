@@ -31,4 +31,5 @@ export {
 } from './context.js';
 export * from './expressions.js';
 export * from './filters.js';
+export { addSource, removeSource } from './source.js';
 export * from './types.js';
