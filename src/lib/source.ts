@@ -64,7 +64,7 @@ export function addSource(
 
 /**
  * A helper function that removes a source from the map after all of the layers inside it have
- * had a change to remove themselves.
+ * had a chance to remove themselves.
  *
  * @param {Readable<Map|null>} mapStore - The store containing the Map instance
  * @param {string} sourceId - The ID of the source to remove
