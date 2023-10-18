@@ -44,7 +44,7 @@
         clusterRadius: cluster?.radius,
         clusterProperties: cluster?.properties,
       }),
-      (sourceId: string) => sourceId === $source,
+      (sourceId: string) => $map && sourceId === $source,
       () => {
         if (!$source) {
           return;
@@ -83,7 +83,7 @@
 
   onDestroy(() => {
     if ($source && sourceObj && $map) {
-      removeSource($map, $source, sourceObj);
+      removeSource(map, $source, sourceObj);
       $source = null;
       sourceObj = undefined;
     }

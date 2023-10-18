@@ -22,10 +22,6 @@
   let sourceObj: VectorTileSource | undefined;
 
   $: if ($map && $source !== id) {
-    if ($source) {
-      $map.removeSource($source);
-    }
-
     $source = id;
     addSource(
       $map,
@@ -36,7 +32,7 @@
         tiles,
         promoteId,
       }),
-      (sourceId) => sourceId === $source,
+      (sourceId) => $map && sourceId === $source,
       () => {
         if (!$source) {
           return;
@@ -54,7 +50,7 @@
 
   onDestroy(() => {
     if ($source && $map) {
-      removeSource($map, $source, sourceObj);
+      removeSource(map, $source, sourceObj);
       $source = null;
       sourceObj = undefined;
     }

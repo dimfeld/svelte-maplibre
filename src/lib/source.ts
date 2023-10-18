@@ -1,5 +1,6 @@
 import type { Map, SourceSpecification } from 'maplibre-gl';
 import { tick } from 'svelte';
+import { get, type Readable } from 'svelte/store';
 
 export function addSource(
   map: Map,
@@ -50,10 +51,16 @@ export function addSource(
   }
 }
 
-export function removeSource(map: Map, sourceId: string, sourceObj: unknown) {
+export function removeSource(mapStore: Readable<Map | null>, sourceId: string, sourceObj: unknown) {
   tick().then(() => {
     // Wait a tick so that the layers inside this source can all be removed.
     // But make sure that the source wasn't already replaced with another source with the same ID.
+    let map = get(mapStore);
+    if (!map) {
+      // Catch when map is unloaded
+      return;
+    }
+
     let remainingSource = map.getSource(sourceId);
     if (remainingSource === sourceObj) {
       map.removeSource(sourceId);
