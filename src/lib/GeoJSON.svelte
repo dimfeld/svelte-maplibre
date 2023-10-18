@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { onDestroy, tick } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { getId, updatedSourceContext } from './context';
   import type { GeoJSON } from 'geojson';
   import type { ClusterOptions } from './types.js';
+  import { addSource, removeSource } from './source.js';
   import flush from 'just-flush';
   import type { GeoJSONSource, ExpressionSpecification } from 'maplibre-gl';
 
@@ -26,12 +27,9 @@
 
   let first = true;
   $: if ($map && $source !== id) {
-    if ($source) {
-      $map.removeSource($source);
-    }
-
     $source = id;
-    $map.addSource(
+    addSource(
+      $map,
       $source,
       flush({
         type: 'geojson',
@@ -45,10 +43,19 @@
         clusterMaxZoom: cluster?.maxZoom,
         clusterRadius: cluster?.radius,
         clusterProperties: cluster?.properties,
-      })
+      }),
+      (sourceId: string) => $map && sourceId === $source,
+      () => {
+        if (!$source) {
+          return;
+        }
+
+        sourceObj = $map?.getSource($source) as GeoJSONSource;
+        first = true;
+      }
     );
-    sourceObj = $map.getSource($source) as GeoJSONSource | undefined;
-    first = true;
+
+    sourceObj;
   }
 
   // Don't set the data again after we've just created it.
@@ -75,17 +82,10 @@
   );
 
   onDestroy(() => {
-    if ($source) {
-      let sourceName = $source;
+    if ($source && sourceObj && $map) {
+      removeSource(map, $source, sourceObj);
       $source = null;
       sourceObj = undefined;
-      tick().then(() => {
-        // Check if the map is still loaded. If the entire map was being torn down
-        // then we don't want to call any other functions on it.
-        if ($map?.loaded()) {
-          $map?.removeSource(sourceName);
-        }
-      });
     }
   });
 </script>

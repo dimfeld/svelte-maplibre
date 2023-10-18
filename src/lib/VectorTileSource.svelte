@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onDestroy, tick } from 'svelte';
-  import { getId, updatedSourceContext } from './';
+  import { getId, updatedSourceContext } from './context.js';
+  import { addSource, removeSource } from './source.js';
   import * as pmtiles from 'pmtiles';
-  import maplibregl from 'maplibre-gl';
+  import maplibregl, { VectorTileSource } from 'maplibre-gl';
   import flush from 'just-flush';
 
   export let id: string = getId('vector');
@@ -18,35 +19,40 @@
   }
 
   const { map, self: source } = updatedSourceContext();
+  let sourceObj: VectorTileSource | undefined;
 
   $: if ($map && $source !== id) {
-    if ($source) {
-      $map.removeSource($source);
-    }
-
     $source = id;
-    $map.addSource(
+    addSource(
+      $map,
       $source,
       flush({
         type: 'vector',
         url,
         tiles,
         promoteId,
-      })
+      }),
+      (sourceId) => $map && sourceId === $source,
+      () => {
+        if (!$source) {
+          return;
+        }
+        sourceObj = $map?.getSource($source) as VectorTileSource;
+      }
     );
   }
 
+  $: $map?.on('style.load', () => {
+    // When the style changes the current sources are nuked and recreated. Because of this the
+    // source object no longer references the current source on the map so we update it here.
+    sourceObj = $map?.getSource(id) as VectorTileSource | undefined;
+  });
+
   onDestroy(() => {
-    if ($source) {
-      let sourceName = $source;
+    if ($source && $map) {
+      removeSource(map, $source, sourceObj);
       $source = null;
-      tick().then(() => {
-        // Check if the map is still loaded. If the entire map was being torn down
-        // then we don't want to call any other functions on it.
-        if ($map?.loaded()) {
-          $map?.removeSource(sourceName);
-        }
-      });
+      sourceObj = undefined;
     }
   });
 </script>
