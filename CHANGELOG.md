@@ -1,5 +1,17 @@
 # svelte-maplibre
 
+## 0.5.3
+
+### Minor Changes
+
+- [#90](https://github.com/dimfeld/svelte-maplibre/pull/90) [`44df623`](https://github.com/dimfeld/svelte-maplibre/commit/44df62373aa7d086a68aea5d8494994ee4e41338) Thanks [@dimfeld](https://github.com/dimfeld)! - Add all components to the export map. This allows importing like "svelte-maplibre/Maplibre.svelte" in addition to importing everything from the package root.
+
+### Patch Changes
+
+- [#88](https://github.com/dimfeld/svelte-maplibre/pull/88) [`8d03d54`](https://github.com/dimfeld/svelte-maplibre/commit/8d03d5421557bc046130d01b1ac777c50e8e11fe) Thanks [@dimfeld](https://github.com/dimfeld)! - Properly remove sources and handle the source being quickly replaced
+
+- [#89](https://github.com/dimfeld/svelte-maplibre/pull/89) [`23bc94a`](https://github.com/dimfeld/svelte-maplibre/commit/23bc94ad46a0c1ad549facec8f06041908619c90) Thanks [@dimfeld](https://github.com/dimfeld)! - Export JoinedData from index file, mark sourceLayer optional
+
 ## 0.5.2
 
 ### Minor Changes
