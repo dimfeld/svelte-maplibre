@@ -40,6 +40,26 @@
     ".": {
       "types": "./dist/index.d.ts",
       "svelte": "./dist/index.js"
+    },
+    "./*.svelte": {
+      "types": "./dist/*.d.ts",
+      "svelte": "./dist/*.svelte"
+    },
+    "./context.js": {
+      "types": "./dist/context.d.ts",
+      "default": "./dist/context.js"
+    },
+    "./expressions.js": {
+      "types": "./dist/expressions.d.ts",
+      "default": "./dist/expressions.js"
+    },
+    "./filters.js": {
+      "types": "./dist/filters.d.ts",
+      "default": "./dist/filters.js"
+    },
+    "./types.js": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
     }
   },
   "svelte": "./dist/index.js",
