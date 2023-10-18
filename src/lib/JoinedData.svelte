@@ -2,7 +2,7 @@
   import { updatedLayerContext } from './context';
   export let data: Array<Record<string, string | number | undefined>>;
   export let idCol: string;
-  export let sourceLayer: string;
+  export let sourceLayer: string | undefined = undefined;
 
   let lastSeenIds: Set<string | number> = new Set();
 
