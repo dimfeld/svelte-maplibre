@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- [#90](https://github.com/dimfeld/svelte-maplibre/pull/90) [`44df623`](https://github.com/dimfeld/svelte-maplibre/commit/44df62373aa7d086a68aea5d8494994ee4e41338) Thanks [@dimfeld](https://github.com/dimfeld)! - Add all components to the export map. This allows importing like "svelte-maplibre/Maplibre.svelte" in addition to importing everything from the package root.
+- [#90](https://github.com/dimfeld/svelte-maplibre/pull/90) [`44df623`](https://github.com/dimfeld/svelte-maplibre/commit/44df62373aa7d086a68aea5d8494994ee4e41338) Thanks [@dimfeld](https://github.com/dimfeld)! - Add all components to the export map. This allows importing like "svelte-maplibre/MapLibre.svelte" in addition to importing everything from the package root.
 
 ### Patch Changes
 
