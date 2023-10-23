@@ -13,7 +13,11 @@
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
   export let visible = true;
-  export let pickable = true;
+  /** Whether to handle mouse events on this layer.
+   * @deprecated Use `interactive` instead. */
+  export let pickable: boolean | undefined = undefined;
+  /** Handle mouse events on this layer. */
+  export let interactive = true;
 
   /** This indicates the currently hovered feature. Setting this attribute has no effect. */
   export let hovered: DATA | null = null;
@@ -55,7 +59,7 @@
     ...$$restProps,
     visible: visibility,
     data,
-    pickable,
+    pickable: pickable ?? interactive,
     onClick: handleClick,
     onHover: handleHover,
   };
@@ -66,12 +70,11 @@
     }
   }
 
-  // Need a way to pass events down to the popup.
-  // Don't set popupTarget and instead set some kind of event store
-  // that will set the event the popup is handling. Consider moving
-  // all popup event handling to this model.
-  // Convert marker to use layer event instead of special hover store
   function handleClick(e: DeckGlMouseEvent<DATA>) {
+    if (!interactive) {
+      return;
+    }
+
     dispatch('click', e);
     $layerEvent = {
       ...e,
@@ -81,6 +84,10 @@
   }
 
   function handleHover(e: DeckGlMouseEvent<DATA>) {
+    if (!interactive) {
+      return;
+    }
+
     const type = e.index !== -1 ? 'mousemove' : 'mouseleave';
     hovered = e.object ?? null;
     dispatch(type, e);

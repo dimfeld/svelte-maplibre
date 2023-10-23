@@ -1,4 +1,4 @@
-import type { Map, MapMouseEvent, Marker } from 'maplibre-gl';
+import type { Map as MapLibre, MapMouseEvent, Marker } from 'maplibre-gl';
 import { getContext, setContext } from 'svelte';
 import { readable, writable, type Readable, type Writable } from 'svelte/store';
 import type { ClusterOptions, MarkerClickInfo } from './types';
@@ -11,8 +11,12 @@ export function getId(prefix: string) {
   return `${prefix}-${nextId++}`;
 }
 
+export interface LayerInfo {
+  interactive: boolean;
+}
+
 export interface MapContext {
-  map: Readable<Map | null>;
+  map: Readable<MapLibre | null>;
   source: Readable<string | null>;
   layer: Readable<string | null>;
   cluster: Writable<ClusterOptions | undefined>;
@@ -21,6 +25,9 @@ export interface MapContext {
   loadedImages: Writable<Set<string>>;
   minzoom: Writable<number>;
   maxzoom: Writable<number>;
+
+  // Information about every layer in the system.
+  layerInfo: Map<string, LayerInfo>;
 
   eventTopMost: (event: MapMouseEvent) => string;
 
@@ -54,8 +61,8 @@ export function setMapContext(context: MapContext): MapContext {
   return setContext(MAP_CONTEXT_KEY, context);
 }
 
-function eventTopMost(): (event: MapMouseEvent) => string {
-  let tracker = new WeakMap<Event, string>();
+function eventTopMost(layerInfo: Map<string, LayerInfo>): (event: MapMouseEvent) => string {
+  let tracker = new WeakMap<Event, string | undefined>();
   return (event: MapMouseEvent) => {
     let id = tracker.get(event.originalEvent);
     if (id !== undefined) {
@@ -63,7 +70,7 @@ function eventTopMost(): (event: MapMouseEvent) => string {
     }
 
     let features = event.target.queryRenderedFeatures(event.point);
-    let topId = features[0]?.layer.id;
+    let topId = features.find((f) => layerInfo.get(f.layer.id)?.interactive)?.layer.id;
 
     tracker.set(event.originalEvent, topId);
 
@@ -72,8 +79,9 @@ function eventTopMost(): (event: MapMouseEvent) => string {
 }
 
 export function createMapContext(): MapContext {
+  let layerInfo = new Map();
   return setContext(MAP_CONTEXT_KEY, {
-    map: writable<Map | null>(null),
+    map: writable<MapLibre | null>(null),
     source: readable(null),
     layer: readable(null),
     popupTarget: readable(null),
@@ -82,7 +90,8 @@ export function createMapContext(): MapContext {
     minzoom: writable(0),
     maxzoom: writable(24),
     layerEvent: writable(null),
-    eventTopMost: eventTopMost(),
+    layerInfo,
+    eventTopMost: eventTopMost(layerInfo),
   });
 }
 
@@ -147,8 +156,12 @@ export function updatedSourceContext(): UpdatedContext<string> {
   return updatedContext<string>({ key: 'source', setCluster: true });
 }
 
-export function updatedLayerContext(): UpdatedContext<string> {
-  return updatedContext<string>({ key: 'layer', setPopupTarget: true, setMouseEvent: true });
+export function updatedLayerContext(interactive = true): UpdatedContext<string> {
+  return updatedContext<string>({
+    key: 'layer',
+    setPopupTarget: interactive,
+    setMouseEvent: interactive,
+  });
 }
 
 export function updatedDeckGlContext(): UpdatedContext<string> {

@@ -16,9 +16,10 @@
   /** How to calculate the coordinates of the marker.
    * @default Calls d3.geoCentroid` on the feature. */
   export let markerLngLat: (feature: Feature) => [number, number] = geoCentroid;
-  /** If interactive is true (default), the markers will render as `button`. If not,
-   * they will render as `div` elements. */
-  export let interactive = false;
+  /** Handle mouse events */
+  export let interactive = true;
+  /** Make markers tabbable and add the button role. */
+  export let asButton = false;
   export let draggable = false;
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
@@ -135,6 +136,7 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
     {@const c = markerLngLat(feature)}
     {@const z = typeof zIndex === 'function' ? zIndex(feature) : zIndex}
     <Marker
+      {asButton}
       {interactive}
       {draggable}
       class={className}

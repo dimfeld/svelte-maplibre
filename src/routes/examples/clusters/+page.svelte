@@ -24,7 +24,7 @@
   >
 </p>
 
-<fieldset class="border border-gray-300 self-start px-2 flex gap-x-4 mb-2">
+<fieldset class="mb-2 flex gap-x-4 self-start border border-gray-300 px-2">
   <legend>Show popup on</legend>
   <label><input type="radio" bind:group={openOn} value="hover" /> Hover</label>
   <label><input type="radio" bind:group={openOn} value="click" /> Click</label>
@@ -53,6 +53,7 @@
     }}
   >
     <CircleLayer
+      id="cluster_circles"
       applyToClusters
       hoverCursor="pointer"
       paint={{
@@ -76,6 +77,8 @@
     </CircleLayer>
 
     <SymbolLayer
+      id="cluster_labels"
+      interactive={false}
       applyToClusters
       layout={{
         'text-field': [
@@ -99,6 +102,7 @@
     />
 
     <CircleLayer
+      id="earthquakes_circle"
       applyToClusters={false}
       hoverCursor="pointer"
       paint={{
