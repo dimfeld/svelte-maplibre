@@ -17,10 +17,12 @@ export { default as MapLibre } from './MapLibre.svelte';
 export { default as Marker } from './Marker.svelte';
 export { default as MarkerLayer } from './MarkerLayer.svelte';
 export { default as NavigationControl } from './NavigationControl.svelte';
-export { default as VectorTileSource } from './VectorTileSource.svelte';
 export { default as Popup } from './Popup.svelte';
+export { default as RasterLayer } from './RasterLayer.svelte';
+export { default as RasterTileSource } from './RasterTileSource.svelte';
 export { default as ScaleControl } from './ScaleControl.svelte';
 export { default as SymbolLayer } from './SymbolLayer.svelte';
+export { default as VectorTileSource } from './VectorTileSource.svelte';
 export { default as ZoomRange } from './ZoomRange.svelte';
 export {
   getId,
