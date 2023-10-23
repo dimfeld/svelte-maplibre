@@ -1,5 +1,33 @@
 # svelte-maplibre
 
+## 0.6.0
+
+### Major Changes
+
+- [#94](https://github.com/dimfeld/svelte-maplibre/pull/94) [`90cde79`](https://github.com/dimfeld/svelte-maplibre/commit/90cde791dd6222086197edfc6a872177bf6c1920) Thanks [@dimfeld](https://github.com/dimfeld)!
+
+Allow setting layers to be non-interactive. Layers with `interactive={false}` will not emit mouse events, and will not
+  participate in hit testing when comparing to other layers with `eventsIfTopMost`.
+
+  This is useful, for example, when placing a SymbolLayer on top of a
+  CircleLayer. See the updated "Clusters and Popups" example; previous the popup would disappear when the mouse was over
+  the labels, but not it does not.
+
+  This is a breaking change:
+
+  - The `interactive` prop for `Marker` and `MarkerLayer` has been renamed to `asButton`, to make room for the new
+    `interactive` prop.
+  - DeckGlLayer still continues to allow the `pickable` prop, but `interactive` should be used instead for consistency.
+    The behavior here is unchanged though.
+
+### Minor Changes
+
+- [#91](https://github.com/dimfeld/svelte-maplibre/pull/91) [`52a7f4b`](https://github.com/dimfeld/svelte-maplibre/commit/52a7f4b5e0dd11d33da8e824cfeb5d5871cc9865) Thanks [@dimfeld](https://github.com/dimfeld)! - Export source helpers for use by other Source components
+
+### Patch Changes
+
+- [#93](https://github.com/dimfeld/svelte-maplibre/pull/93) [`4357161`](https://github.com/dimfeld/svelte-maplibre/commit/4357161e9c207c114e00226d9c36f5d975c72ad5) Thanks [@dimfeld](https://github.com/dimfeld)! - Fix exception when clicking a deck.gl layer with a Popup
+
 ## 0.5.3
 
 ### Minor Changes
