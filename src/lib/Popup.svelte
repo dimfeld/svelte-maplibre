@@ -6,7 +6,12 @@
     type MapLayerTouchEvent,
   } from 'maplibre-gl';
   import { onDestroy, onMount, tick } from 'svelte';
-  import { mapContext, type DeckGlMouseEvent, type LayerEvent } from './context.js';
+  import {
+    mapContext,
+    type DeckGlMouseEvent,
+    type LayerEvent,
+    isDeckGlMouseEvent,
+  } from './context.js';
 
   /** Show the built-in close button. By default the close button will be shown
    * only if closeOnClickOutside and closeOnClickInside are not set. */
@@ -167,6 +172,14 @@
     };
   });
 
+  function skipHandlingEvent(e: MapLayerMouseEvent) {
+    if (!openIfTopMost) {
+      return false;
+    }
+    // Marker clicks are always only on the top-most marker. Otherwise check for the top-most layer.
+    return !('marker' in e) && !isDeckGlMouseEvent(e) && eventTopMost(e) !== $layer;
+  }
+
   let features: Feature[] | null = null;
   let touchOpenState: 'normal' | 'opening' | 'justOpened' = 'normal';
   function handleLayerClick(e: MapLayerMouseEvent | LayerEvent) {
@@ -174,11 +187,8 @@
       return;
     }
 
-    if (openIfTopMost) {
-      // Marker clicks are always only on the top-most marker. Otherwise check for the top-most layer.
-      if (!('marker' in e) && eventTopMost(e) !== $layer) {
-        return;
-      }
+    if (skipHandlingEvent(e)) {
+      return;
     }
 
     if ('layerType' in e) {
@@ -238,7 +248,7 @@
       return;
     }
 
-    if (openIfTopMost && eventTopMost(e) !== $layer) {
+    if (skipHandlingEvent(e)) {
       open = false;
       features = null;
       return;

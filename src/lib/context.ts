@@ -178,3 +178,9 @@ export function updatedZoomRangeContext(
     maxzoom,
   };
 }
+
+export function isDeckGlMouseEvent(
+  event: MapMouseEvent | DeckGlMouseEvent
+): event is DeckGlMouseEvent<unknown> {
+  return 'layerType' in event && event.layerType === 'deckgl';
+}
