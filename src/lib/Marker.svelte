@@ -7,9 +7,10 @@
   export let lngLat: LngLatLike;
   let classNames: string | undefined = undefined;
   export { classNames as class };
-  /** If interactive is true (default), it will render as a `button`. If not,
-   * it will render as a `div` element. */
+  /** Handle mouse events */
   export let interactive = true;
+  /** Make markers tabbable and add the button role. */
+  export let asButton = false;
   export let draggable = false;
   /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
    * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
@@ -106,6 +107,10 @@
   }
 
   function sendEvent(eventName: string) {
+    if (!interactive) {
+      return;
+    }
+
     let loc = $marker?.getLngLat();
     if (!loc) {
       return;
@@ -144,8 +149,8 @@
   use:addMarker
   use:manageClasses={classNames}
   style:z-index={zIndex}
-  tabindex={interactive ? 0 : undefined}
-  role={interactive ? 'button' : undefined}
+  tabindex={asButton ? 0 : undefined}
+  role={asButton ? 'button' : undefined}
   on:click={() => sendEvent('click')}
   on:dblclick={() => sendEvent('dblclick')}
   on:contextmenu={() => sendEvent('contextmenu')}

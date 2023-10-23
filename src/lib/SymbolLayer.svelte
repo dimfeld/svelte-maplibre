@@ -27,6 +27,8 @@
   export let manageHoverState = false;
   export let hovered: Feature | null = null;
   export let eventsIfTopMost = false;
+  /** Handle mouse events on this layer. */
+  export let interactive = true;
 </script>
 
 <Layer
@@ -45,6 +47,7 @@
   {hoverCursor}
   {manageHoverState}
   {eventsIfTopMost}
+  {interactive}
   bind:hovered
   on:click
   on:dblclick

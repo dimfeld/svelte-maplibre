@@ -25,7 +25,7 @@
   >
 </p>
 
-<fieldset class="border border-gray-300 self-start px-2 flex gap-x-4 mb-2">
+<fieldset class="mb-2 flex gap-x-4 self-start border border-gray-300 px-2">
   <legend>Show popup on</legend>
   <label><input type="radio" bind:group={openOn} value="hover" /> Hover</label>
   <label><input type="radio" bind:group={openOn} value="click" /> Click</label>
@@ -55,7 +55,7 @@
   >
     <MarkerLayer
       applyToClusters
-      interactive
+      asButton
       on:click={(e) => (clickedFeature = e.detail.feature?.properties)}
       let:feature
     >
@@ -74,6 +74,7 @@
 
     <MarkerLayer
       applyToClusters={false}
+      asButton
       on:click={(e) => (clickedFeature = e.detail.feature?.properties)}
       let:feature
     >

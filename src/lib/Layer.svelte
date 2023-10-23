@@ -5,7 +5,7 @@
   import type { LayerClickInfo } from './types.js';
   import flush from 'just-flush';
   import { onDestroy, createEventDispatcher } from 'svelte';
-  import { MapMouseEvent, type MapGeoJSONFeature } from 'maplibre-gl';
+  import type { MapMouseEvent, MapGeoJSONFeature } from 'maplibre-gl';
 
   export let id = getId('layer');
   /** Set the source for this layer. This can be omitted when the Layer is created in the slot
@@ -34,6 +34,8 @@
   export let manageHoverState = false;
   /** The feature currently being hovered. */
   export let hovered: GeoJSON.Feature | null = null;
+  /** Handle mouse events on this layer. */
+  export let interactive = true;
 
   export let hoverCursor: string | undefined = undefined;
 
@@ -58,13 +60,21 @@
     minzoom: minZoomContext,
     maxzoom: maxZoomContext,
     eventTopMost,
+    layerInfo,
   } = updatedLayerContext();
 
   $: actualMinZoom = minzoom ?? $minZoomContext;
   $: actualMaxZoom = maxzoom ?? $maxZoomContext;
 
+  $: if ($layer) {
+    layerInfo.set($layer, {
+      interactive,
+    });
+  }
+
   onDestroy(() => {
     if ($layer && $map) {
+      layerInfo.delete($layer);
       $map?.removeLayer($layer);
     }
   });
@@ -74,6 +84,9 @@
   let hoverFeatureId: string | number | undefined = undefined;
 
   $: if ($map && $layer !== id && actualSource) {
+    if ($layer) {
+      layerInfo.delete($layer);
+    }
     let actualBeforeId = beforeId;
     if (!beforeId && beforeLayerType) {
       let layers = $map.getStyle().layers;
@@ -104,7 +117,7 @@
     );
 
     function handleClick(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
-      if (!$layer || !$map) {
+      if (!interactive || !$layer || !$map) {
         return;
       }
 
@@ -131,7 +144,7 @@
     $map.on('contextmenu', $layer, handleClick);
 
     $map.on('mouseenter', $layer, (e) => {
-      if (!$layer || !$map) {
+      if (!interactive || !$layer || !$map) {
         return;
       }
 
@@ -160,6 +173,10 @@
     });
 
     $map.on('mousemove', $layer, (e) => {
+      if (!interactive) {
+        return;
+      }
+
       if (eventsIfTopMost && eventTopMost(e) !== $layer) {
         hovered = null;
         if (manageHoverState && hoverFeatureId !== undefined) {
@@ -211,7 +228,7 @@
     });
 
     $map.on('mouseleave', $layer, (e) => {
-      if (!$layer || !$map) {
+      if (!interactive || !$layer || !$map) {
         return;
       }
 
