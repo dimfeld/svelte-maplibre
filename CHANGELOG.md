@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.7.1
+
+### Minor Changes
+
+- [`b3f4305`](https://github.com/dimfeld/svelte-maplibre/commit/b3f43050a2e44954151ed66e8567636feeda27d0) Thanks [@dimfeld](https://github.com/dimfeld)! - Add extra info to MarkerLayer events
+
 ## 0.7.0
 
 ### Major Changes
