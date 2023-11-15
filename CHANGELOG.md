@@ -1,5 +1,13 @@
 # svelte-maplibre
 
+## 0.7.2
+
+### Patch Changes
+
+- [`25d840c`](https://github.com/dimfeld/svelte-maplibre/commit/25d840cb13f2f42a8df771374f5508387a709c22) Thanks [@dimfeld](https://github.com/dimfeld)! - Add type definition for events emitted by MarkerLayer
+
+- [`25d840c`](https://github.com/dimfeld/svelte-maplibre/commit/25d840cb13f2f42a8df771374f5508387a709c22) Thanks [@dimfeld](https://github.com/dimfeld)! - Fix missing type definition file for Marker.svelte
+
 ## 0.7.1
 
 ### Minor Changes
