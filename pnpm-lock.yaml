@@ -397,8 +397,8 @@ packages:
     dependencies:
       '@loaders.gl/core': 3.3.1
       '@loaders.gl/images': 3.3.1
-      '@luma.gl/constants': 8.5.18
-      '@luma.gl/core': 8.5.18
+      '@luma.gl/constants': 8.5.21
+      '@luma.gl/core': 8.5.21
       '@math.gl/core': 3.6.3
       '@math.gl/sun': 3.6.3
       '@math.gl/web-mercator': 3.6.3
@@ -421,7 +421,7 @@ packages:
       '@loaders.gl/core': 3.4.14
       '@loaders.gl/images': 3.3.1
       '@loaders.gl/schema': 3.3.1
-      '@luma.gl/constants': 8.5.18
+      '@luma.gl/constants': 8.5.21
       '@luma.gl/core': 8.5.21
       '@mapbox/tiny-sdf': 1.2.5
       '@math.gl/core': 3.6.3
@@ -969,23 +969,8 @@ packages:
       '@babel/runtime': 7.23.2
     dev: true
 
-  /@luma.gl/constants@8.5.18:
-    resolution: {integrity: sha512-lQLGAlroQaeJkAUwrb1fRiHlMBP9/ukyjnZ1QlYgXYyeC7/9XhLx4rqBlOzQ2sxcTHHwi73nHD0P2XmVuAccBg==}
-    dev: true
-
   /@luma.gl/constants@8.5.21:
     resolution: {integrity: sha512-aJxayGxTT+IRd1vfpcgD/cKSCiVJjBNiuiChS96VulrmCvkzUOLvYXr42y5qKB4RyR7vOIda5uQprNzoHrhQAA==}
-    dev: true
-
-  /@luma.gl/core@8.5.18:
-    resolution: {integrity: sha512-XvxE2WE9jFEweJftczQ4QPd8FD23H8mWJoQej7llnyta0Xqb18Cx2VOzuyQ4uN7Uab42YkwXTu25uAq0SdAehA==}
-    dependencies:
-      '@babel/runtime': 7.21.0
-      '@luma.gl/constants': 8.5.18
-      '@luma.gl/engine': 8.5.18
-      '@luma.gl/gltools': 8.5.18
-      '@luma.gl/shadertools': 8.5.18
-      '@luma.gl/webgl': 8.5.18
     dev: true
 
   /@luma.gl/core@8.5.21:
@@ -997,20 +982,6 @@ packages:
       '@luma.gl/gltools': 8.5.21
       '@luma.gl/shadertools': 8.5.21
       '@luma.gl/webgl': 8.5.21
-    dev: true
-
-  /@luma.gl/engine@8.5.18:
-    resolution: {integrity: sha512-hLdtEPk3yt8ikL3g9qVc5FuMPMdhnj1ykPgmG6Mh4lRlCProgGSlwqWuAkzPYwYqIBqKlPNMv8DavRfsKAKc3g==}
-    dependencies:
-      '@babel/runtime': 7.21.0
-      '@luma.gl/constants': 8.5.18
-      '@luma.gl/gltools': 8.5.18
-      '@luma.gl/shadertools': 8.5.18
-      '@luma.gl/webgl': 8.5.18
-      '@math.gl/core': 3.6.3
-      '@probe.gl/env': 3.6.0
-      '@probe.gl/stats': 3.6.0
-      '@types/offscreencanvas': 2019.7.0
     dev: true
 
   /@luma.gl/engine@8.5.21:
@@ -1027,16 +998,6 @@ packages:
       '@types/offscreencanvas': 2019.7.3
     dev: true
 
-  /@luma.gl/gltools@8.5.18:
-    resolution: {integrity: sha512-AnZ8fxsJz/wRdUJazsFvTXbh8ypYX9rATPJj8YlDv08DGGFTQiq8MurzbEjXaEYshAu5w9rXd22nQXkQziUhmQ==}
-    dependencies:
-      '@babel/runtime': 7.21.0
-      '@luma.gl/constants': 8.5.18
-      '@probe.gl/env': 3.6.0
-      '@probe.gl/log': 3.6.0
-      '@types/offscreencanvas': 2019.7.0
-    dev: true
-
   /@luma.gl/gltools@8.5.21:
     resolution: {integrity: sha512-6qZ0LaT2Mxa4AJT5F44TFoaziokYiHUwO45vnM/NYUOIu9xevcmS6VtToawytMEACGL6PDeDyVqP3Y80SDzq5g==}
     dependencies:
@@ -1047,28 +1008,11 @@ packages:
       '@types/offscreencanvas': 2019.7.3
     dev: true
 
-  /@luma.gl/shadertools@8.5.18:
-    resolution: {integrity: sha512-orkdnlVLB8AO4yf9jXXZqEG/UuwVg/v3Gmo4/F2vdrwkUMN+wUZFUdhssDGEGWvuauZWK9Mbz8XrxC0gmLbWzw==}
-    dependencies:
-      '@babel/runtime': 7.21.0
-      '@math.gl/core': 3.6.3
-    dev: true
-
   /@luma.gl/shadertools@8.5.21:
     resolution: {integrity: sha512-WQah7yFDJ8cNCLPYpIm3r0wSlXLvjoA279fcknmATvvkW3/i8PcCJ/nYEBJO3hHEwwMQxD16+YZu/uwGiifLMg==}
     dependencies:
       '@babel/runtime': 7.23.2
       '@math.gl/core': 3.6.3
-    dev: true
-
-  /@luma.gl/webgl@8.5.18:
-    resolution: {integrity: sha512-8pRMq4olLzEv7ToDtCagGDklkIu1iFFBEXT4Rh11ohrfUiDAPfGz5hJrr3m0XtsVfS1CQ5QPWN2tQclmXOL+cQ==}
-    dependencies:
-      '@babel/runtime': 7.21.0
-      '@luma.gl/constants': 8.5.18
-      '@luma.gl/gltools': 8.5.18
-      '@probe.gl/env': 3.6.0
-      '@probe.gl/stats': 3.6.0
     dev: true
 
   /@luma.gl/webgl@8.5.21:
