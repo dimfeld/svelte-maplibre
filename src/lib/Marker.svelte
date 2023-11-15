@@ -3,6 +3,7 @@
   import { createEventDispatcher } from 'svelte';
   import { updatedMarkerContext } from './context';
   import type { MarkerClickInfo } from './types';
+  import type * as GeoJSON from 'geojson';
 
   export let lngLat: LngLatLike;
   let classNames: string | undefined = undefined;
