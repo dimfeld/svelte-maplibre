@@ -150,12 +150,12 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
           hovered = null;
         }
       }}
-      on:dragstart={(e) => dispatch('dragstart', { ...e, feature })}
-      on:drag={(e) => dispatch('drag', { ...e, feature })}
-      on:dragend={(e) => dispatch('dragend', { ...e, feature })}
-      on:click={(e) => dispatch('click', { ...e, feature })}
-      on:dblclick={(e) => dispatch('dblclick', { ...e, feature })}
-      on:contextmenu={(e) => dispatch('contextmenu', { ...e, feature })}
+      on:dragstart={(e) => dispatch('dragstart', { ...e.detail, source: $source, feature })}
+      on:drag={(e) => dispatch('drag', { ...e.detail, source: $source, feature })}
+      on:dragend={(e) => dispatch('dragend', { ...e.detail, source: $source, feature })}
+      on:click={(e) => dispatch('click', { ...e.detail, source: $source, feature })}
+      on:dblclick={(e) => dispatch('dblclick', { ...e.detail, source: $source, feature })}
+      on:contextmenu={(e) => dispatch('contextmenu', { ...e.detail, source: $source, feature })}
     >
       <slot {feature} position={c} />
     </Marker>
