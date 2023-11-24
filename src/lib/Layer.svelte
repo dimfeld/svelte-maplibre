@@ -6,6 +6,7 @@
   import flush from 'just-flush';
   import { onDestroy, createEventDispatcher } from 'svelte';
   import type { MapMouseEvent, MapGeoJSONFeature } from 'maplibre-gl';
+  import type * as GeoJSON from 'geojson';
 
   export let id = getId('layer');
   /** Set the source for this layer. This can be omitted when the Layer is created in the slot
