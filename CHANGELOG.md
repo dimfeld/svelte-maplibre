@@ -1,5 +1,13 @@
 # svelte-maplibre
 
+## 0.7.3
+
+### Minor Changes
+
+- [#106](https://github.com/dimfeld/svelte-maplibre/pull/106) [`36a1ec3`](https://github.com/dimfeld/svelte-maplibre/commit/36a1ec30c0225b6fba5ee3d69cbbc23ac910cbee) Thanks [@dabreegster](https://github.com/dabreegster)! - Update filters when changed
+
+- [#105](https://github.com/dimfeld/svelte-maplibre/pull/105) [`55818fe`](https://github.com/dimfeld/svelte-maplibre/commit/55818fe525c62acd03a323a02ce12c98329f02f4) Thanks [@dabreegster](https://github.com/dabreegster)! - Add ImageSource
+
 ## 0.7.2
 
 ### Patch Changes
