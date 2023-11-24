@@ -32,6 +32,7 @@
     { href: '/examples/pmtile_source', title: `PMTiles Source` },
     { href: '/examples/data_join', title: `Client Side Data Join` },
     { href: '/examples/raster_source', title: `Raster Source` },
+    { href: '/examples/image_source', title: `Image Source` },
   ];
 
   // Examples which don't really warrant showing on the docs site, but ensure that
