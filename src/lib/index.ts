@@ -10,6 +10,7 @@ export { default as FullscreenControl } from './FullscreenControl.svelte';
 export { default as GeoJSON } from './GeoJSON.svelte';
 export { default as GeolocateControl } from './GeolocateControl.svelte';
 export { default as HeatmapLayer } from './HeatmapLayer.svelte';
+export { default as ImageSource } from './ImageSource.svelte';
 export { default as JoinedData } from './JoinedData.svelte';
 export { default as Layer } from './Layer.svelte';
 export { default as LineLayer } from './LineLayer.svelte';
