@@ -31,15 +31,21 @@
       map.setPaintProperty(layer.id, 'text-halo-color', colors.textOutlineColor);
     }
   }
+
+  let filterStates = false;
+  $: filter = filterStates ? ['==', 'T', ['slice', ['get', 'NAME'], 0, 1]] : undefined;
   // END EXTRACT
 </script>
 
-<div class="self-start w-full max-w-md grid gap-y-2 items-center">
+<div class="grid w-full max-w-md items-center gap-y-2 self-start">
   <label><input type="checkbox" bind:checked={showFill} /> Show fill</label>
   <label><input type="color" bind:value={fillColor} /> Fill Color </label>
   <label><input type="checkbox" bind:checked={showBorder} /> Show border</label>
   <label><input type="color" bind:value={borderColor} /> Border Color </label>
 </div>
+<label
+  ><input type="checkbox" bind:checked={filterStates} /> Only show states starting with 'T'</label
+>
 
 <MapLibre
   bind:map
@@ -57,6 +63,7 @@
           'fill-color': hoverStateFilter(fillColor, colors.hoverBgColor),
           'fill-opacity': 0.5,
         }}
+        {filter}
         beforeLayerType="symbol"
         manageHoverState
       />
