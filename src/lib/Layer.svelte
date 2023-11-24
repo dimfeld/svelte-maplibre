@@ -83,6 +83,7 @@
 
   let hoverFeatureId: string | number | undefined = undefined;
 
+  let first = true;
   $: if ($map && $layer !== id && actualSource) {
     if ($layer) {
       layerInfo.delete($layer);
@@ -115,6 +116,7 @@
       }),
       actualBeforeId
     );
+    first = true;
 
     function handleClick(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
       if (!interactive || !$layer || !$map) {
@@ -261,6 +263,15 @@
   $: applyPaint?.(paint);
   $: applyLayout?.(layout);
   $: if ($layer) $map?.setLayerZoomRange($layer, actualMinZoom, actualMaxZoom);
+
+  // Don't set the filter again after we've just created it.
+  $: if ($layer) {
+    if (first) {
+      first = false;
+    } else {
+      $map?.setFilter($layer, layerFilter);
+    }
+  }
 </script>
 
 <!--
