@@ -1,6 +1,6 @@
 {
-  "name": "svelte-maplibre",
-  "version": "0.7.7",
+  "name": "@ragone/svelte-maplibre",
+  "version": "0.7.3",
   "description": "Svelte bindings for MapLibre",
   "author": {
     "name": "Daniel Imfeld",
@@ -12,15 +12,8 @@
   },
   "homepage": "https://svelte-maplibre.imfeld.dev",
   "license": "MIT",
-  "keywords": [
-    "gis",
-    "map",
-    "maplibre",
-    "svelte"
-  ],
-  "files": [
-    "dist"
-  ],
+  "keywords": ["gis", "map", "maplibre", "svelte"],
+  "files": ["dist"],
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && npm run package",
