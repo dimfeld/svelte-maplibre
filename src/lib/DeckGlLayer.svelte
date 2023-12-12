@@ -13,6 +13,7 @@
   export let minzoom: number | undefined = undefined;
   export let maxzoom: number | undefined = undefined;
   export let visible = true;
+  export let beforeId: string | undefined = undefined;
   /** Whether to handle mouse events on this layer.
    * @deprecated Use `interactive` instead. */
   export let pickable: boolean | undefined = undefined;
@@ -109,7 +110,7 @@
       type,
       ...options,
     });
-    $map.addLayer(layer);
+    $map.addLayer(layer, beforeId);
   }
 
   $: layer?.setProps(options);
