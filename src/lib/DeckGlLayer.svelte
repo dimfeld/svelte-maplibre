@@ -110,7 +110,9 @@
       type,
       ...options,
     });
-    layer.deck.props.getCursor = () => '';
+    if (layer.deck) {
+      layer.deck.props.getCursor = () => '';
+    }
     $map.addLayer(layer, beforeId);
   }
 
