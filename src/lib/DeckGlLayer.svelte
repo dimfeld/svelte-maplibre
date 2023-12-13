@@ -110,10 +110,10 @@
       type,
       ...options,
     });
+    $map.addLayer(layer, beforeId);
     if (layer.deck) {
       layer.deck.props.getCursor = () => '';
     }
-    $map.addLayer(layer, beforeId);
   }
 
   $: layer?.setProps(options);
