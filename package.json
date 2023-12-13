@@ -1,6 +1,6 @@
 {
   "name": "@ragone/svelte-maplibre",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "description": "Svelte bindings for MapLibre",
   "author": {
     "name": "Daniel Imfeld",
