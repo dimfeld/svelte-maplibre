@@ -2,7 +2,7 @@
   import { onDestroy, tick } from 'svelte';
   import { getId, updatedSourceContext } from './context.js';
   import { addSource, removeSource } from './source.js';
-  import maplibregl, { ImageSource, type Coordinates } from 'maplibre-gl';
+  import type { ImageSource, Coordinates } from 'maplibre-gl';
   import flush from 'just-flush';
 
   export let id: string = getId('image');

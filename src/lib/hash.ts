@@ -1,4 +1,4 @@
-import type { Map } from 'maplibre-gl-js';
+import type { Map } from 'maplibre-gl';
 
 // Adapted from https://github.com/maplibre/maplibre-gl-js/blob/5d7e6d52000a8569ac2308a9aef14c98933eb0d8/src/ui/hash.ts
 export function getViewportHash(map: Map): string {
