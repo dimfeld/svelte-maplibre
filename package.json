@@ -39,11 +39,13 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "svelte": "./dist/index.js"
+      "svelte": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./*.svelte": {
       "types": "./dist/*.d.ts",
-      "svelte": "./dist/*.svelte"
+      "svelte": "./dist/*.svelte",
+      "default": "./dist/*.svelte"
     },
     "./context.js": {
       "types": "./dist/context.d.ts",
