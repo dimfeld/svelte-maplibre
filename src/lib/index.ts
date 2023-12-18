@@ -4,6 +4,7 @@ export { default as Control } from './Control.svelte';
 export { default as ControlButton } from './ControlButton.svelte';
 export { default as ControlGroup } from './ControlGroup.svelte';
 export { default as DeckGlLayer } from './DeckGlLayer.svelte';
+export { default as DefaultMarker } from './DefaultMarker.svelte';
 export { default as FillExtrusionLayer } from './FillExtrusionLayer.svelte';
 export { default as FillLayer } from './FillLayer.svelte';
 export { default as FullscreenControl } from './FullscreenControl.svelte';
