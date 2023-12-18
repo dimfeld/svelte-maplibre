@@ -1,5 +1,17 @@
 # svelte-maplibre
 
+## 0.7.4
+
+### Minor Changes
+
+- [#112](https://github.com/dimfeld/svelte-maplibre/pull/112) [`b77ab5a`](https://github.com/dimfeld/svelte-maplibre/commit/b77ab5a615082b8be836cb867639787a5b94645f) Thanks [@dimfeld](https://github.com/dimfeld)! - Add DefaultMarker component
+
+### Patch Changes
+
+- [#111](https://github.com/dimfeld/svelte-maplibre/pull/111) [`8821852`](https://github.com/dimfeld/svelte-maplibre/commit/88218528a90056892d96219e8e4cb232a1f4e76a) Thanks [@dimfeld](https://github.com/dimfeld)! - Update imports to work with Vite 5 and Node.js
+
+- [#113](https://github.com/dimfeld/svelte-maplibre/pull/113) [`28f1dd1`](https://github.com/dimfeld/svelte-maplibre/commit/28f1dd1b4fb8532dc5232af66cd6409e412290b0) Thanks [@dimfeld](https://github.com/dimfeld)! - Add "default" export condition to help frameworks that don't add "svelte" to their list
+
 ## 0.7.3
 
 ### Minor Changes
