@@ -3,7 +3,7 @@
   import { getId, updatedSourceContext } from './context';
   import { addSource, removeSource } from './source.js';
   import flush from 'just-flush';
-  import type { RasterTileSource, ExpressionSpecification } from 'maplibre-gl';
+  import type { RasterTileSource } from 'maplibre-gl';
 
   export let id: string = getId('raster-source');
   export let tiles: string[];

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Feature } from 'geojson';
   import maplibregl, {
-    MapMouseEvent,
+    type MapMouseEvent,
     type MapLayerMouseEvent,
     type MapLayerTouchEvent,
   } from 'maplibre-gl';

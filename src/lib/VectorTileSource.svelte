@@ -3,7 +3,7 @@
   import { getId, updatedSourceContext } from './context.js';
   import { addSource, removeSource } from './source.js';
   import * as pmtiles from 'pmtiles';
-  import maplibregl, { VectorTileSource } from 'maplibre-gl';
+  import maplibregl, { type VectorTileSource } from 'maplibre-gl';
   import flush from 'just-flush';
 
   export let id: string = getId('vector');

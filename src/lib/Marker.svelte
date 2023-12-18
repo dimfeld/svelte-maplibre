@@ -1,5 +1,5 @@
 <script lang="ts">
-  import maplibre, { LngLat, type LngLatLike, type PointLike } from 'maplibre-gl';
+  import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import { createEventDispatcher } from 'svelte';
   import { updatedMarkerContext } from './context';
   import type { MarkerClickInfo } from './types';
