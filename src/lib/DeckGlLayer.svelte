@@ -99,7 +99,7 @@
     };
   }
 
-  let layer: typeof import('@deck.gl/mapbox').MapboxLayer;
+  export let layer: typeof import('@deck.gl/mapbox').MapboxLayer;
   $: if ($map && deckgl && !layer) {
     $map.on('zoom', handleZoom);
     $map.on('zoomend', handleZoom);
