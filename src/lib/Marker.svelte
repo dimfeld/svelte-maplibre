@@ -20,6 +20,8 @@
   export let offset: PointLike | undefined = undefined;
   /** The z-index of the marker. This can also be set via CSS classes using the `class` prop */
   export let zIndex: number | undefined = undefined;
+  /** The rotation angle of the marker (clockwise, in degrees) */
+  export let rotation: number = 0;
 
   const dispatch = createEventDispatcher();
   const { map, layerEvent, self: marker } = updatedMarkerContext();
@@ -27,6 +29,7 @@
   function addMarker(node: HTMLDivElement) {
     $marker = new maplibre.Marker({
       element: node,
+      rotation,
       draggable,
       offset,
     })
@@ -82,6 +85,7 @@
 
   $: $marker?.setLngLat(lngLat);
   $: $marker?.setOffset(offset ?? [0, 0]);
+  $: $marker?.setRotation(rotation);
 
   function propagateLngLatChange() {
     let newPos = $marker?.getLngLat();
