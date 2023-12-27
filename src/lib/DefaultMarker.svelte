@@ -16,6 +16,8 @@
   export let feature: GeoJSON.Feature | null = null;
   /** An offset in pixels to apply to the marker. */
   export let offset: PointLike | undefined = undefined;
+  /** The rotation angle of the marker (clockwise, in degrees) */
+  export let rotation: number = 0;
 
   const dispatch = createEventDispatcher();
   const { map, layerEvent, self: marker } = updatedMarkerContext();
@@ -33,6 +35,7 @@
   $marker = new maplibre.Marker(
     flush({
       draggable,
+      rotation,
       className: classNames,
       offset,
     })
@@ -49,6 +52,7 @@
 
   $: $marker?.setLngLat(lngLat);
   $: $marker?.setOffset(offset ?? [0, 0]);
+  $: $marker?.setRotation(rotation);
 
   function propagateLngLatChange() {
     let newPos = $marker?.getLngLat();
