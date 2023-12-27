@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.7.5
+
+### Minor Changes
+
+- [#117](https://github.com/dimfeld/svelte-maplibre/pull/117) [`bb1441a`](https://github.com/dimfeld/svelte-maplibre/commit/bb1441a6d9bdb829d19acb5fcb644e62b80f177f) Thanks [@Sidd27](https://github.com/Sidd27)! - Added Rotation property to marker
+
 ## 0.7.4
 
 ### Minor Changes
