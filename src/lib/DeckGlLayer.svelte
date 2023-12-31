@@ -61,7 +61,6 @@
     visible: visibility,
     data,
     pickable: pickable ?? interactive,
-    onClick: handleClick,
     onHover: handleHover,
   };
 
