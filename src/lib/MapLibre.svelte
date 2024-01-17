@@ -40,6 +40,8 @@
   export let interactive = true;
   /** Set false to hide the default attribution control, so you can add your own. */
   export let attributionControl = true;
+  /**Set true to require hitting ⌘/Ctrl while scrolling to zoom. Or use two fingers on phones. Set custom help-texts with {windowHelpText, macHelpText, mobileHelpText} */
+  export let cooperativeGestures = false;
   /** Set to true if you want to export the map as an image */
   export let preserveDrawingBuffer = false;
   export let maxBounds: LngLatBoundsLike | undefined = undefined;
@@ -146,6 +148,7 @@
         bounds,
         attributionControl,
         transformRequest,
+        cooperativeGestures,
       })
     );
 
