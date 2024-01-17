@@ -34,6 +34,7 @@
     { href: '/examples/data_join', title: `Client Side Data Join` },
     { href: '/examples/raster_source', title: `Raster Source` },
     { href: '/examples/image_source', title: `Image Source` },
+    { href: '/examples/cooperative_gestures', title: `Cooperative Gestures` },
   ];
 
   // Examples which don't really warrant showing on the docs site, but ensure that
