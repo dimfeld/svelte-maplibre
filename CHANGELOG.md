@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.7.6
+
+### Minor Changes
+
+- [#121](https://github.com/dimfeld/svelte-maplibre/pull/121) [`1e9ecfa`](https://github.com/dimfeld/svelte-maplibre/commit/1e9ecfa73051cdaf5013b74abb2b4b944557ea57) Thanks [@torsteinringnes](https://github.com/torsteinringnes)! - Add cooperativeGestures as svelte prop
+
 ## 0.7.5
 
 ### Minor Changes
