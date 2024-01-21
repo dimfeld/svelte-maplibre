@@ -10,6 +10,8 @@
   export let url: string | null = null;
   export let tiles: Array<string> | null = null;
   export let promoteId: string | null = null;
+  export let minzoom: number | null = null;
+  export let maxzoom: number | null = null;
 
   if (url && url.includes('pmtiles://')) {
     if (!maplibregl.config.REGISTERED_PROTOCOLS.hasOwnProperty('pmtiles')) {
@@ -31,6 +33,8 @@
         url,
         tiles,
         promoteId,
+        minzoom,
+        maxzoom,
       }),
       (sourceId) => $map && sourceId === $source,
       () => {
