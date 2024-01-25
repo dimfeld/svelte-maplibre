@@ -173,7 +173,7 @@
       dispatch('moveend', { ...ev, map: $mapInstance });
       if (hash) {
         let location = window.location.href.replace(/(#.+)?$/, getViewportHash($mapInstance));
-        replaceState(window.history.state, '', location);
+        replaceState('', location);
       }
     });
 
