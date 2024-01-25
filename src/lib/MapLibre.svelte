@@ -17,7 +17,7 @@
   import GeolocateControl from './GeolocateControl.svelte';
   import FullscreenControl from './FullscreenControl.svelte';
   import ScaleControl from './ScaleControl.svelte';
-  import { replaceState } from '$app/navigation';
+  import { goto } from '$app/navigation';
 
   export let map: maplibregl.Map | null = null;
   let classNames: string | undefined = undefined;
@@ -173,7 +173,7 @@
       dispatch('moveend', { ...ev, map: $mapInstance });
       if (hash) {
         let location = window.location.href.replace(/(#.+)?$/, getViewportHash($mapInstance));
-        replaceState('', location);
+        goto(location, { replaceState: true });
       }
     });
 
