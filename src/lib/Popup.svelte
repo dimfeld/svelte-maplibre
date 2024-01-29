@@ -325,6 +325,12 @@
     }
   }
 
+  onDestroy(() => {
+    if ($map && popup?.isOpen()) {
+      popup.remove();
+    }
+  });
+
   let popupEl: HTMLDivElement | undefined;
 </script>
 

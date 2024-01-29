@@ -84,11 +84,143 @@
 
   let hoverFeatureId: string | number | undefined = undefined;
 
+  function handleClick(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
+    if (!interactive || !$layer || !$map) {
+      return;
+    }
+
+    if (eventsIfTopMost && eventTopMost(e) !== $layer) {
+      return;
+    }
+
+    let features = e.features ?? [];
+    let clusterId = features[0]?.properties?.cluster_id;
+    let eventData: LayerClickInfo = {
+      event: e,
+      map: $map!,
+      clusterId,
+      layer: $layer,
+      source: actualSource!,
+      features,
+    };
+
+    dispatch(e.type as 'click' | 'dblclick' | 'contextmenu', eventData);
+  }
+
+  function handleMouseEnter(e: MapMouseEvent) {
+    if (!interactive || !$layer || !$map) {
+      return;
+    }
+
+    if (eventsIfTopMost && eventTopMost(e) !== $layer) {
+      return;
+    }
+
+    if (hoverCursor) {
+      $map.getCanvas().style.cursor = hoverCursor;
+    }
+
+    let features = e.features ?? [];
+    hovered = features[0] ?? null;
+    let clusterId = features[0]?.properties?.cluster_id;
+
+    let data: LayerClickInfo = {
+      event: e,
+      map: $map!,
+      clusterId,
+      layer: $layer!,
+      source: actualSource!,
+      features,
+    };
+
+    dispatch('mouseenter', data);
+  }
+
+  function handleMouseMove(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
+    if (!interactive || !$map) {
+      return;
+    }
+
+    if (eventsIfTopMost && eventTopMost(e) !== $layer) {
+      hovered = null;
+      if (manageHoverState && hoverFeatureId !== undefined) {
+        $map?.setFeatureState(
+          { source: actualSource!, sourceLayer, id: hoverFeatureId },
+          { hover: false }
+        );
+        hoverFeatureId = undefined;
+      }
+
+      return;
+    }
+
+    // This may get out of sync, if this layer regains focus from a higher layer.
+    $map.getCanvas().style.cursor = hoverCursor;
+
+    let features = e.features ?? [];
+
+    let clusterId = features[0]?.properties?.cluster_id;
+
+    let featureId = features[0]?.id;
+
+    if (featureId !== hoverFeatureId) {
+      if (manageHoverState) {
+        if (hoverFeatureId !== undefined) {
+          $map?.setFeatureState(
+            { source: actualSource!, id: hoverFeatureId, sourceLayer },
+            { hover: false }
+          );
+        }
+        $map?.setFeatureState(
+          { source: actualSource!, id: featureId, sourceLayer },
+          { hover: true }
+        );
+      }
+
+      hoverFeatureId = featureId;
+      hovered = features[0] ?? null;
+    }
+
+    dispatch('mousemove', {
+      event: e,
+      map: $map!,
+      clusterId,
+      layer: $layer!,
+      source: actualSource!,
+      features,
+    });
+  }
+
+  function handleMouseLeave(e: MapMouseEvent) {
+    if (!interactive || !$layer || !$map) {
+      return;
+    }
+
+    if (hoverCursor) {
+      $map.getCanvas().style.cursor = '';
+    }
+
+    hovered = null;
+    if (manageHoverState && hoverFeatureId !== undefined) {
+      const featureSelector = { source: actualSource!, id: hoverFeatureId, sourceLayer };
+      $map?.setFeatureState(featureSelector, { hover: false });
+      hoverFeatureId = undefined;
+    }
+
+    dispatch('mouseleave', {
+      map: $map!,
+      layer: $layer,
+      source: actualSource!,
+    });
+  }
+
   let first = true;
   $: if ($map && $layer !== id && actualSource) {
     if ($layer) {
+      unsubEvents($layer);
       layerInfo.delete($layer);
     }
+
     let actualBeforeId = beforeId;
     if (!beforeId && beforeLayerType) {
       let layers = $map.getStyle().layers;
@@ -119,140 +251,32 @@
     );
     first = true;
 
-    function handleClick(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
-      if (!interactive || !$layer || !$map) {
-        return;
-      }
-
-      if (eventsIfTopMost && eventTopMost(e) !== $layer) {
-        return;
-      }
-
-      let features = e.features ?? [];
-      let clusterId = features[0]?.properties?.cluster_id;
-      let eventData: LayerClickInfo = {
-        event: e,
-        map: $map!,
-        clusterId,
-        layer: $layer,
-        source: actualSource!,
-        features,
-      };
-
-      dispatch(e.type as 'click' | 'dblclick' | 'contextmenu', eventData);
-    }
-
     $map.on('click', $layer, handleClick);
     $map.on('dblclick', $layer, handleClick);
     $map.on('contextmenu', $layer, handleClick);
-
-    $map.on('mouseenter', $layer, (e) => {
-      if (!interactive || !$layer || !$map) {
-        return;
-      }
-
-      if (eventsIfTopMost && eventTopMost(e) !== $layer) {
-        return;
-      }
-
-      if (hoverCursor) {
-        $map.getCanvas().style.cursor = hoverCursor;
-      }
-
-      let features = e.features ?? [];
-      hovered = features[0] ?? null;
-      let clusterId = features[0]?.properties?.cluster_id;
-
-      let data: LayerClickInfo = {
-        event: e,
-        map: $map!,
-        clusterId,
-        layer: $layer!,
-        source: actualSource!,
-        features,
-      };
-
-      dispatch('mouseenter', data);
-    });
-
-    $map.on('mousemove', $layer, (e) => {
-      if (!interactive) {
-        return;
-      }
-
-      if (eventsIfTopMost && eventTopMost(e) !== $layer) {
-        hovered = null;
-        if (manageHoverState && hoverFeatureId !== undefined) {
-          $map?.setFeatureState(
-            { source: actualSource!, sourceLayer, id: hoverFeatureId },
-            { hover: false }
-          );
-          hoverFeatureId = undefined;
-        }
-
-        return;
-      }
-
-      // This may get out of sync, if this layer regains focus from a higher layer.
-      $map.getCanvas().style.cursor = hoverCursor;
-
-      let features = e.features ?? [];
-
-      let clusterId = features[0]?.properties?.cluster_id;
-
-      let featureId = features[0]?.id;
-
-      if (featureId !== hoverFeatureId) {
-        if (manageHoverState) {
-          if (hoverFeatureId !== undefined) {
-            $map?.setFeatureState(
-              { source: actualSource!, id: hoverFeatureId, sourceLayer },
-              { hover: false }
-            );
-          }
-          $map?.setFeatureState(
-            { source: actualSource!, id: featureId, sourceLayer },
-            { hover: true }
-          );
-        }
-
-        hoverFeatureId = featureId;
-        hovered = features[0] ?? null;
-      }
-
-      dispatch('mousemove', {
-        event: e,
-        map: $map!,
-        clusterId,
-        layer: $layer!,
-        source: actualSource!,
-        features,
-      });
-    });
-
-    $map.on('mouseleave', $layer, (e) => {
-      if (!interactive || !$layer || !$map) {
-        return;
-      }
-
-      if (hoverCursor) {
-        $map.getCanvas().style.cursor = '';
-      }
-
-      hovered = null;
-      if (manageHoverState && hoverFeatureId !== undefined) {
-        const featureSelector = { source: actualSource!, id: hoverFeatureId, sourceLayer };
-        $map?.setFeatureState(featureSelector, { hover: false });
-        hoverFeatureId = undefined;
-      }
-
-      dispatch('mouseleave', {
-        map: $map!,
-        layer: $layer,
-        source: actualSource!,
-      });
-    });
+    $map.on('mouseenter', $layer, handleMouseEnter);
+    $map.on('mousemove', $layer, handleMouseMove);
+    $map.on('mouseleave', $layer, handleMouseLeave);
   }
+
+  function unsubEvents(layerName: string) {
+    if (!$map) {
+      return;
+    }
+
+    $map.off('click', layerName, handleClick);
+    $map.off('dblclick', layerName, handleClick);
+    $map.off('contextmenu', layerName, handleClick);
+    $map.off('mouseenter', layerName, handleMouseEnter);
+    $map.off('mousemove', layerName, handleMouseMove);
+    $map.off('mouseleave', layerName, handleMouseLeave);
+  }
+
+  onDestroy(() => {
+    if ($map && $layer) {
+      unsubEvents($layer);
+    }
+  });
 
   $: applyPaint = $layer
     ? diffApplier((key, value) => $map?.setPaintProperty($layer!, key, value))
