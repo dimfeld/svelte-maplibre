@@ -1,5 +1,13 @@
 # svelte-maplibre
 
+## 0.7.7
+
+### Patch Changes
+
+- [#123](https://github.com/dimfeld/svelte-maplibre/pull/123) [`b97d4c5`](https://github.com/dimfeld/svelte-maplibre/commit/b97d4c59097a64827b849841489959518e223059) Thanks [@dimfeld](https://github.com/dimfeld)! - Explicitly unsubscribe from events in Layer to avoid race condition between Layer and containing Source being torn down
+
+- [#123](https://github.com/dimfeld/svelte-maplibre/pull/123) [`b97d4c5`](https://github.com/dimfeld/svelte-maplibre/commit/b97d4c59097a64827b849841489959518e223059) Thanks [@dimfeld](https://github.com/dimfeld)! - Properly remove Popup if it is open when the Popup component is destroyed
+
 ## 0.7.6
 
 ### Minor Changes
