@@ -37,8 +37,8 @@ export function isClusterFilter(
   return matchClusters === true
     ? ['has', 'point_count']
     : matchClusters === false
-    ? ['!', ['has', 'point_count']]
-    : undefined;
+      ? ['!', ['has', 'point_count']]
+      : undefined;
 }
 
 /** Return an expression that returns a value based on whether the feature is hovered. Requires manageHoverState to be enabled for the layer. */

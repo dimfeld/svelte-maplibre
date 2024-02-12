@@ -20,7 +20,7 @@
 
 <MapLibre
   style={styles[0]}
-  class="relative w-full aspect-[9/16] max-h-[70vh] sm:max-h-full sm:aspect-video"
+  class="relative aspect-[9/16] max-h-[70vh] w-full sm:aspect-video sm:max-h-full"
   standardControls
 />
 

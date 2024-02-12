@@ -61,7 +61,7 @@
     <Marker
       {lngLat}
       on:click={() => (clickedName = name)}
-      class="border-gray-200 border shadow-2xl focus:outline-2 focus:outline-black w-8 h-8 bg-red-300 text-black rounded-full grid place-items-center"
+      class="grid h-8 w-8 place-items-center rounded-full border border-gray-200 bg-red-300 text-black shadow-2xl focus:outline-2 focus:outline-black"
     >
       <span>
         {label}

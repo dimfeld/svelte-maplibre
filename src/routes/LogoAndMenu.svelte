@@ -8,7 +8,7 @@
   }
 </script>
 
-<div class="flex gap-8 items-center">
+<div class="flex items-center gap-8">
   {#if menuButton}
     <button type="button" on:click={toggle}>
       <svg
@@ -17,7 +17,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
-        class="w-6 h-6"
+        class="h-6 w-6"
       >
         <path
           stroke-linecap="round"

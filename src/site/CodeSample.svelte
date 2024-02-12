@@ -54,6 +54,6 @@
   $: output = getExtract(code, startBoundary, endBoundary, omitStartBoundary, omitEndBoundary);
 </script>
 
-<div class="my-4 flex flex-col w-full items-stretch">
+<div class="my-4 flex w-full flex-col items-stretch">
   <CodeBlock {language} background="bg-gray-800" code={output} />
 </div>

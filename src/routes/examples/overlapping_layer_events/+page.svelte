@@ -85,7 +85,7 @@
 
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
-  class="relative w-full aspect-[9/16] max-h-[70vh] sm:max-h-full sm:aspect-video"
+  class="relative aspect-[9/16] max-h-[70vh] w-full sm:aspect-video sm:max-h-full"
   standardControls
 >
   {#each layers as { data, color, hoverCursor }, i}

@@ -44,8 +44,8 @@
   states and counties as the map zooms.
 </p>
 
-<div class="self-start w-full">
-  <label class="flex flex-wrap gap-x-2 w-full">
+<div class="w-full self-start">
+  <label class="flex w-full flex-wrap gap-x-2">
     <span>Transition at zoom level: {zoomThreshold}</span>
     <input class="w-32" type="range" bind:value={zoomThreshold} min={0} max={10} step={0.1} />
   </label>
