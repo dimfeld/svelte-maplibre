@@ -55,7 +55,7 @@
 
 <p>A deck.gl ArcLayer integrated into a MapLibre map, with hover and popup support.</p>
 
-<fieldset class="border border-gray-400 p-2 mb-2 self-start">
+<fieldset class="mb-2 self-start border border-gray-400 p-2">
   <legend>View Mode</legend>
   <div class="flex flex-wrap gap-2">
     <label>
@@ -75,7 +75,7 @@
   center={[-100, 40]}
   maxZoom={5}
   bind:zoom
-  class="relative w-full aspect-[9/16] max-h-[70vh] sm:max-h-full sm:aspect-video"
+  class="relative aspect-[9/16] max-h-[70vh] w-full sm:aspect-video sm:max-h-full"
   standardControls
 >
   <GeoJson id="states-base" data={states} promoteId="GEOID">

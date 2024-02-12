@@ -28,7 +28,7 @@
     lngLat={[-122.2993, 47.4464]}
     draggable
     on:drag={handleDrag}
-    class="border-gray-200 border shadow-2xl focus:outline-2 focus:outline-black w-20 h-8 bg-red-300 text-black rounded-full grid place-items-center"
+    class="grid h-8 w-20 place-items-center rounded-full border border-gray-200 bg-red-300 text-black shadow-2xl focus:outline-2 focus:outline-black"
   >
     <span> Drag me ! </span>
   </Marker>
@@ -36,7 +36,7 @@
   <Marker
     bind:lngLat={boundPos}
     draggable
-    class="border-gray-200 border shadow-2xl focus:outline-2 focus:outline-black w-24 h-8 bg-red-300 text-black rounded-full grid place-items-center"
+    class="grid h-8 w-24 place-items-center rounded-full border border-gray-200 bg-red-300 text-black shadow-2xl focus:outline-2 focus:outline-black"
   >
     <span> 2-way Bound ! </span>
   </Marker>
