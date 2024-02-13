@@ -8,8 +8,9 @@
 </script>
 
 <p>
-  Enable cooperative gestures with a specific language. Set to <code>true</code> or use custom help-text
-  like below.
+  Enable cooperative gestures, which configures the map's zoom functionality to not override the
+  usual scroll methods. The strings displayed can be changed using the `locale` option, as shown
+  below.
 </p>
 <p>
   Scroll the map to see it in action. <a
@@ -21,10 +22,12 @@
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class="relative aspect-[9/16] max-h-[70vh] w-full sm:aspect-video sm:max-h-full"
-  cooperativeGestures={{
-    windowsHelpText: 'Utilice Ctrl + desplazamiento para hacer zoom en el mapa.',
-    macHelpText: 'Use ⌘ + desplazamiento para hacer zoom en el mapa.',
-    mobileHelpText: 'Usa dos dedos para mover el mapa.',
+  cooperativeGestures
+  locale={{
+    'CooperativeGesturesHandler.WindowsHelpText':
+      'Utilice Ctrl + desplazamiento para hacer zoom en el mapa.',
+    'CooperativeGesturesHandler.MacHelpText': 'Usa ⌘ + desplazamiento para hacer zoom en el mapa.',
+    'CooperativeGesturesHandler.MobileHelpText': 'Usa dos dedos para mover el mapa.',
   }}
 />
 

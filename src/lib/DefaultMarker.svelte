@@ -18,6 +18,8 @@
   export let offset: PointLike | undefined = undefined;
   /** The rotation angle of the marker (clockwise, in degrees) */
   export let rotation: number = 0;
+  /** The opacity of the marker */
+  export let opacity: number = 1;
 
   const dispatch = createEventDispatcher();
   const { map, layerEvent, self: marker } = updatedMarkerContext();
@@ -38,6 +40,7 @@
       rotation,
       className: classNames,
       offset,
+      opacity: opacity.toString(),
     })
   )
     .setLngLat(lngLat)
@@ -53,6 +56,7 @@
   $: $marker?.setLngLat(lngLat);
   $: $marker?.setOffset(offset ?? [0, 0]);
   $: $marker?.setRotation(rotation);
+  $: $marker?.setOpacity(opacity.toString());
 
   function propagateLngLatChange() {
     let newPos = $marker?.getLngLat();

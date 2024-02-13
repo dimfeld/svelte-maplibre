@@ -10,7 +10,8 @@
   $: if ($map && $source && feature) {
     $map
       ?.getSource($source)
-      ?.getClusterLeaves(feature.properties.cluster_id, 10000, 0, (err, features) => {
+      ?.getClusterLeaves(feature.properties.cluster_id, 10000, 0)
+      .then((features) => {
         innerFeatures = features;
       });
   }
