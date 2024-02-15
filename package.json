@@ -75,8 +75,8 @@
     "d3-geo": "^3.1.0",
     "just-compare": "^2.3.0",
     "just-flush": "^2.3.0",
-    "maplibre-gl": "^3.5.0",
-    "pmtiles": "^2.10.0"
+    "maplibre-gl": "^4.0.0",
+    "pmtiles": "^3.0.3"
   },
   "peerDependencies": {
     "@deck.gl/core": "^8.8.0",

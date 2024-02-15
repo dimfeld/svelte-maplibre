@@ -38,11 +38,13 @@
   export let minZoom = 0;
   export let maxZoom = 22;
   export let zoomOnDoubleClick = true;
+  /** Override MapLibre's default locale table */
+  export let locale: any = undefined;
   export let interactive = true;
   /** Set false to hide the default attribution control, so you can add your own. */
   export let attributionControl = true;
-  /**Set true to require hitting ⌘/Ctrl while scrolling to zoom. Or use two fingers on phones. Set custom help-texts with {windowHelpText, macHelpText, mobileHelpText} */
-  export let cooperativeGestures: boolean | GestureOptions = false;
+  /** Set true to require hitting ⌘/Ctrl while scrolling to zoom. Or use two fingers on phones. */
+  export let cooperativeGestures = false;
   /** Set to true if you want to export the map as an image */
   export let preserveDrawingBuffer = false;
   export let maxBounds: LngLatBoundsLike | undefined = undefined;
@@ -75,23 +77,23 @@
   $: map = $mapInstance;
 
   let loadingImages = new Set();
-  function loadImage(image: CustomImageSpec) {
+  async function loadImage(image: CustomImageSpec) {
     if (!$mapInstance?.loaded()) {
       return;
     }
 
     if ('url' in image) {
       loadingImages.add(image.id);
-      $mapInstance.loadImage(image.url, (error, imageData) => {
+      try {
+        let imageData = await $mapInstance.loadImage(image.url);
+        $mapInstance?.addImage(image.id, imageData.data, image.options);
+        $loadedImages.add(image.id);
+        $loadedImages = $loadedImages; // trigger reactivity
+      } catch (e) {
+        dispatch('error', e as Error);
+      } finally {
         loadingImages.delete(image.id);
-        if (error) {
-          dispatch('error', error);
-        } else if (imageData) {
-          $mapInstance?.addImage(image.id, imageData, image.options);
-          $loadedImages.add(image.id);
-          $loadedImages = $loadedImages; // trigger reactivity
-        }
-      });
+      }
     } else {
       $mapInstance.addImage(image.id, image.data, image.options);
       $loadedImages.add(image.id);
@@ -137,6 +139,7 @@
       flush({
         container: element,
         style,
+        locale,
         center,
         zoom,
         pitch,
