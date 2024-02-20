@@ -270,6 +270,17 @@
   $: zoomOnDoubleClick
     ? $mapInstance?.doubleClickZoom.enable()
     : $mapInstance?.doubleClickZoom.disable();
+
+  // https://github.com/dummdidumm/rfcs/blob/ts-typedefs-within-svelte-components/text/ts-typing-props-slots-events.md#typing-slots
+  interface $$Slots {
+    default: {
+      // `map` is always a MaplibreMap, never `null`
+      map: maplibregl.Map;
+      // the other slot props are correctly autodetected
+      loadedImages: Set<string>;
+      allImagesLoaded: boolean;
+    };
+  }
 </script>
 
 <div class={classNames} class:expand-map={!classNames} use:createMap>
