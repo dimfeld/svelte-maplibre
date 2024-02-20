@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.8.1
+
+### Patch Changes
+
+- [#129](https://github.com/dimfeld/svelte-maplibre/pull/129) [`766f4ac`](https://github.com/dimfeld/svelte-maplibre/commit/766f4ace330a2cbec0db0ddd9c3bd33b5bdacb91) Thanks [@singingwolfboy](https://github.com/singingwolfboy)! - Fix typing for `map` prop in slot
+
 ## 0.8.0
 
 ### Major Changes
