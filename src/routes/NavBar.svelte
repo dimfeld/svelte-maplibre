@@ -15,6 +15,7 @@
     { href: '/examples/marker', title: `Default Markers` },
     { href: '/examples/custom_marker', title: `Custom Markers` },
     { href: '/examples/draggable_custom_marker', title: `Custom draggable Markers` },
+    { href: '/examples/popup_remote', title: `Remote Popup Data` },
     { href: '/examples/geojson_polygon', title: `GeoJSON Filled Polygon` },
     { href: '/examples/geojson_line_layer', title: `Styled Line` },
     { href: '/examples/heatmap', title: `Heatmap` },

@@ -5,13 +5,8 @@
     type MapLayerMouseEvent,
     type MapLayerTouchEvent,
   } from 'maplibre-gl';
-  import { onDestroy, onMount, tick } from 'svelte';
-  import {
-    mapContext,
-    type DeckGlMouseEvent,
-    type LayerEvent,
-    isDeckGlMouseEvent,
-  } from './context.js';
+  import { onDestroy, onMount, createEventDispatcher } from 'svelte';
+  import { mapContext, type LayerEvent, isDeckGlMouseEvent } from './context.js';
 
   /** Show the built-in close button. By default the close button will be shown
    * only if closeOnClickOutside and closeOnClickInside are not set. */
@@ -45,6 +40,12 @@
   /** Whether the popup is open or not. Can be set to manualy open the popup at `lngLat`. */
   export let open = false;
 
+  const dispatch = createEventDispatcher<{
+    open: maplibregl.Popup;
+    close: maplibregl.Popup;
+    hover: maplibregl.Popup;
+  }>();
+
   const { map, popupTarget, layerEvent, layer, eventTopMost } = mapContext();
 
   const clickEvents = ['click', 'dblclick', 'contextmenu'];
@@ -70,10 +71,16 @@
     popup.on('open', () => {
       open = true;
       setPopupClickHandler();
+      dispatch('open', popup);
     });
 
-    popup.on('close', (e) => {
+    popup.on('close', () => {
       open = false;
+      dispatch('close', popup);
+    });
+
+    popup.on('hover', () => {
+      dispatch('hover', popup);
     });
   }
 
