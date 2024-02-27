@@ -7,9 +7,22 @@
   import Marker from './Marker.svelte';
   import FillLayer from './FillLayer.svelte';
   import type { MapLibreZoomEvent } from 'maplibre-gl';
+  import type { MarkerClickInfo } from './types';
+
+  interface ExtendedMarkerClickInfo extends MarkerClickInfo {
+    source: string | null;
+    feature: GeoJSON.Feature;
+  }
 
   const { map, source, minzoom: minZoomContext, maxzoom: maxZoomContext } = mapContext();
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    click: ExtendedMarkerClickInfo;
+    dblclick: ExtendedMarkerClickInfo;
+    contextmenu: ExtendedMarkerClickInfo;
+    drag: ExtendedMarkerClickInfo;
+    dragstart: ExtendedMarkerClickInfo;
+    dragend: ExtendedMarkerClickInfo;
+  }>();
 
   export let applyToClusters: boolean | undefined = undefined;
   export let filter: maplibregl.ExpressionSpecification | undefined = undefined;

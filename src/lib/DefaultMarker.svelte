@@ -21,7 +21,11 @@
   /** The opacity of the marker */
   export let opacity: number = 1;
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    drag: MarkerClickInfo;
+    dragstart: MarkerClickInfo;
+    dragend: MarkerClickInfo;
+  }>();
   const { map, layerEvent, self: marker } = updatedMarkerContext();
 
   const dragStartListener = () => sendEvent('dragstart');
@@ -74,7 +78,7 @@
     }
   }
 
-  function sendEvent(eventName: string) {
+  function sendEvent(eventName: Parameters<typeof dispatch>[0]) {
     let loc = $marker?.getLngLat();
     if (!loc) {
       return;
