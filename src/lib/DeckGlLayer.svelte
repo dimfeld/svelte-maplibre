@@ -28,7 +28,11 @@
   export let type: any;
   export let data: DATA[];
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    click: DeckGlMouseEvent<DATA>;
+    mousemove: DeckGlMouseEvent<DATA>;
+    mouseleave: DeckGlMouseEvent<DATA>;
+  }>();
 
   const context = mapContext();
   const { map, minzoom: minZoomContext, maxzoom: maxZoomContext } = context;

@@ -25,7 +25,12 @@
   /** The opacity of the marker */
   export let opacity: number = 1;
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    drag: MarkerClickInfo;
+    dragstart: MarkerClickInfo;
+    dragend: MarkerClickInfo;
+    click: MarkerClickInfo;
+  }>();
   const { map, layerEvent, self: marker } = updatedMarkerContext();
 
   function addMarker(node: HTMLDivElement) {
@@ -115,7 +120,7 @@
     }
   }
 
-  function sendEvent(eventName: string) {
+  function sendEvent(eventName: Parameters<typeof dispatch>[0]) {
     if (!interactive) {
       return;
     }
