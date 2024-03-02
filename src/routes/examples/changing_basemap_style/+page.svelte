@@ -1,13 +1,12 @@
 <script lang="ts">
-  import MapLibre from '$lib/MapLibre.svelte';
-  import GeoJSON from '$lib/GeoJSON.svelte';
-  import FillLayer from '$lib/FillLayer.svelte';
-  import LineLayer from '$lib/LineLayer.svelte';
+  import { SymbolLayer, MapLibre, GeoJSON, FillLayer, LineLayer } from '$lib';
   import { mapClasses } from '../styles.js';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import states from '$site/states.json?url';
   import type { FeatureCollection } from 'geojson';
+  import quakeImageUrl from '$site/earthquake.png';
+  import tsunamiImageUrl from '$site/tsunami.png';
 
   let showBorder = true;
   let showFill = true;
@@ -41,6 +40,28 @@
     ],
   } as FeatureCollection;
 
+  const pointsData = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        properties: { image: 'quake' },
+        geometry: {
+          type: 'Point',
+          coordinates: [-127.5, 45.5],
+        },
+      },
+      {
+        type: 'Feature',
+        properties: { image: 'tsunami' },
+        geometry: {
+          type: 'Point',
+          coordinates: [-91.6, 28.7],
+        },
+      },
+    ],
+  } as FeatureCollection;
+
   let dataOption: 'states' | 'colorado' = 'states';
   $: dataset = dataOption === 'states' ? states : coloradoPolygon;
 </script>
@@ -57,7 +78,17 @@
   </select>
 </div>
 
-<MapLibre {style} class={mapClasses} standardControls center={[-98.137, 40.137]} zoom={4}>
+<MapLibre
+  {style}
+  class={mapClasses}
+  standardControls
+  center={[-98.137, 40.137]}
+  zoom={3}
+  images={[
+    { id: 'quake', url: quakeImageUrl },
+    { id: 'tsunami', url: tsunamiImageUrl },
+  ]}
+>
   <GeoJSON id="states" data={dataset} promoteId="STATEFP">
     {#if showFill}
       <FillLayer
@@ -75,6 +106,14 @@
         beforeLayerType="symbol"
       />
     {/if}
+  </GeoJSON>
+
+  <GeoJSON data={pointsData}>
+    <SymbolLayer
+      layout={{
+        'icon-image': ['get', 'image'],
+      }}
+    />
   </GeoJSON>
 </MapLibre>
 
