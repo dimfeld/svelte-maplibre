@@ -1,4 +1,9 @@
 import { json } from '@sveltejs/kit';
+import type { Config } from '@sveltejs/adapter-vercel';
+
+export const config: Config = {
+  runtime: 'edge',
+};
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
