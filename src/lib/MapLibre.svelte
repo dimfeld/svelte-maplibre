@@ -78,17 +78,21 @@
 
   let loadingImages = new Set();
   async function loadImage(image: CustomImageSpec) {
+    console.log(`loadImage called on ${JSON.stringify(image)}`);
     if (!$mapInstance?.loaded()) {
+      console.log('...but map not loaded, ignoring');
       return;
     }
 
     if ('url' in image) {
       loadingImages.add(image.id);
       try {
+        console.log(`get ${image.url}`);
         let imageData = await $mapInstance.loadImage(image.url);
         $mapInstance?.addImage(image.id, imageData.data, image.options);
         $loadedImages.add(image.id);
         $loadedImages = $loadedImages; // trigger reactivity
+        console.log(`cool, got ${image.url}`);
       } catch (e) {
         dispatch('error', e as Error);
       } finally {
@@ -101,15 +105,21 @@
     }
   }
 
-  $: if (loaded && $mapInstance?.loaded()) {
+  $: allImagesLoaded = images.every((image) => $loadedImages.has(image.id));
+
+  // TODO can't get this to re-run
+  $: if (loaded && $mapInstance?.loaded() && !allImagesLoaded) {
     for (let image of images) {
-      if (!loadingImages.has(image.id) && !$mapInstance.hasImage(image.id)) {
+      console.log(`rerunning block with ${image.id}`);
+      if (
+        !loadingImages.has(image.id) &&
+        !$loadedImages.has(image.id) &&
+        !$mapInstance.hasImage(image.id)
+      ) {
         loadImage(image);
       }
     }
   }
-
-  $: allImagesLoaded = images.every((image) => $loadedImages.has(image.id));
 
   // These variables are used to keep track of what sources / layers
   // are part of the basemap style vs those that are part of the
@@ -262,7 +272,14 @@
     }
     lastStyle = style;
     $mapInstance.setStyle(style, { diff: diffStyleUpdates });
+
+    console.log('Style changed, reseting images');
+    console.log(loadingImages);
+    console.log($loadedImages);
+    $loadedImages = new Set();
+    loadingImages = new Set();
   }
+  $: console.log(`allImagesLoaded = ${allImagesLoaded}`);
 
   $: if (center && !compare(center, $mapInstance?.getCenter())) $mapInstance?.panTo(center);
   $: if (zoom && !compare(zoom, $mapInstance?.getZoom())) $mapInstance?.zoomTo(zoom);

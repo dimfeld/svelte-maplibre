@@ -1,18 +1,14 @@
 <script lang="ts">
-  import MapLibre from '$lib/MapLibre.svelte';
-  import GeoJSON from '$lib/GeoJSON.svelte';
-  import FillLayer from '$lib/FillLayer.svelte';
-  import LineLayer from '$lib/LineLayer.svelte';
+  import { SymbolLayer, MapLibre, GeoJSON, FillLayer, LineLayer } from '$lib';
   import { mapClasses } from '../styles.js';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import states from '$site/states.json?url';
   import type { FeatureCollection } from 'geojson';
+  import quakeImageUrl from '$site/earthquake.png';
+  import tsunamiImageUrl from '$site/tsunami.png';
 
-  let showBorder = true;
-  let showFill = true;
-  let fillColor = '#006600';
-  let borderColor = '#003300';
+  let showPoints = true;
   let selected: 'light' | 'dark' = 'light';
   $: style =
     selected === 'light'
@@ -40,6 +36,27 @@
       },
     ],
   } as FeatureCollection;
+  const pointsData = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        properties: { image: 'quake' },
+        geometry: {
+          type: 'Point',
+          coordinates: [-127.5, 45.5],
+        },
+      },
+      {
+        type: 'Feature',
+        properties: { image: 'tsunami' },
+        geometry: {
+          type: 'Point',
+          coordinates: [-91.6, 28.7],
+        },
+      },
+    ],
+  } as FeatureCollection;
 
   let dataOption: 'states' | 'colorado' = 'states';
   $: dataset = dataOption === 'states' ? states : coloradoPolygon;
@@ -55,24 +72,41 @@
     <option value="states">States Dataset</option>
     <option value="colorado">Colorado Dataset</option>
   </select>
+
+  <label>Show symbols: <input type="checkbox" bind:checked={showPoints} /></label>
 </div>
 
-<MapLibre {style} class={mapClasses} standardControls center={[-98.137, 40.137]} zoom={4}>
+<MapLibre
+  {style}
+  class={mapClasses}
+  standardControls
+  center={[-98.137, 40.137]}
+  zoom={4}
+  images={[
+    { id: 'quake', url: quakeImageUrl },
+    { id: 'tsunami', url: tsunamiImageUrl },
+  ]}
+>
   <GeoJSON id="states" data={dataset} promoteId="STATEFP">
-    {#if showFill}
-      <FillLayer
-        paint={{
-          'fill-color': fillColor,
-          'fill-opacity': 0.5,
+    <FillLayer
+      paint={{
+        'fill-color': '#006600',
+        'fill-opacity': 0.5,
+      }}
+      beforeLayerType="symbol"
+    />
+    <LineLayer
+      layout={{ 'line-cap': 'round', 'line-join': 'round' }}
+      paint={{ 'line-color': '#003300', 'line-width': 3 }}
+      beforeLayerType="symbol"
+    />
+  </GeoJSON>
+  <GeoJSON data={pointsData}>
+    {#if showPoints}
+      <SymbolLayer
+        layout={{
+          'icon-image': ['get', 'image'],
         }}
-        beforeLayerType="symbol"
-      />
-    {/if}
-    {#if showBorder}
-      <LineLayer
-        layout={{ 'line-cap': 'round', 'line-join': 'round' }}
-        paint={{ 'line-color': borderColor, 'line-width': 3 }}
-        beforeLayerType="symbol"
       />
     {/if}
   </GeoJSON>
