@@ -77,8 +77,12 @@
   $: map = $mapInstance;
 
   let loadingImages = new Set();
-  async function loadImage(image: CustomImageSpec) {
-    if (!$mapInstance?.loaded()) {
+  async function loadImage(image: CustomImageSpec, force = false) {
+    if (!$mapInstance) {
+      return;
+    }
+
+    if (!$mapInstance.loaded() && !force) {
       return;
     }
 
@@ -103,7 +107,11 @@
 
   $: if (loaded && $mapInstance?.loaded()) {
     for (let image of images) {
-      if (!loadingImages.has(image.id) && !$mapInstance.hasImage(image.id)) {
+      if (
+        !$loadedImages.has(image.id) &&
+        !loadingImages.has(image.id) &&
+        !$mapInstance.hasImage(image.id)
+      ) {
         loadImage(image);
       }
     }
@@ -158,7 +166,7 @@
 
     $mapInstance.on('load', (e) => {
       loaded = true;
-      dispatch('load', $mapInstance);
+      dispatch('load', $mapInstance!);
     });
 
     $mapInstance.on('error', (e) => dispatch('error', { ...e, map: $mapInstance }));
@@ -204,6 +212,13 @@
           for (const layer of layersToReAddAfterStyleChange) {
             $mapInstance.addLayer(layer);
           }
+        }
+
+        // Need to reload images as well when the style is changed.
+        for (const image of images) {
+          // Force the image to reload, since when this runs $mapInstance.loaded() == false
+          // but it's actually safe to do so.
+          loadImage(image, true);
         }
       }
     });
@@ -262,6 +277,10 @@
     }
     lastStyle = style;
     $mapInstance.setStyle(style, { diff: diffStyleUpdates });
+
+    // Changing the style unloads the images. We'll reload them after the map finishes loading the new style.
+    $loadedImages = new Set();
+    loadingImages = new Set();
   }
 
   $: if (center && !compare(center, $mapInstance?.getCenter())) $mapInstance?.panTo(center);
