@@ -1,5 +1,15 @@
 # svelte-maplibre
 
+## 0.8.2
+
+### Minor Changes
+
+- [#130](https://github.com/dimfeld/svelte-maplibre/pull/130) [`d464803`](https://github.com/dimfeld/svelte-maplibre/commit/d4648033ae95c45d7ace386a36c9a5fea33083e7) Thanks [@singingwolfboy](https://github.com/singingwolfboy)! - Add on:open and on:close events to Popup
+
+### Patch Changes
+
+- [#132](https://github.com/dimfeld/svelte-maplibre/pull/132) [`a66a3df`](https://github.com/dimfeld/svelte-maplibre/commit/a66a3dfee93bce54562439a5526384b017f7d53e) Thanks [@dimfeld](https://github.com/dimfeld)! - Reload images when the map style changes
+
 ## 0.8.1
 
 ### Patch Changes
