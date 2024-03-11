@@ -165,6 +165,8 @@
     );
 
     $mapInstance.on('load', (e) => {
+      e.target.getContainer().setAttribute('data-testid', 'map');
+      e.target.getCanvas().setAttribute('data-testid', 'map-canvas');
       loaded = true;
       dispatch('load', $mapInstance!);
     });
@@ -302,7 +304,7 @@
   }
 </script>
 
-<div class={classNames} class:expand-map={!classNames} use:createMap>
+<div class={classNames} class:expand-map={!classNames} use:createMap data-testid="map-container">
   {#if $mapInstance && loaded}
     {#if standardControls}
       <NavigationControl position={standardControlsPosition} />

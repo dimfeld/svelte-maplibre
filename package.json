@@ -90,7 +90,7 @@
     "@deck.gl/core": "^8.8.0",
     "@deck.gl/layers": "^8.8.0",
     "@deck.gl/mapbox": "^8.8.0",
-    "@playwright/test": "^1.28.1",
+    "@playwright/test": "^1.42.0",
     "@skeletonlabs/skeleton": "^1.0.0",
     "@sveltejs/adapter-vercel": "^4.0.0",
     "@sveltejs/kit": "^2.0.0",
