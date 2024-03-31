@@ -131,17 +131,7 @@
   let sourcesToReAddAfterStyleChange: Record<string, SourceSpecification> | undefined = undefined;
 
   function createMap(element: HTMLDivElement) {
-    if (hash) {
-      let parts = parseViewportHash(window.location.hash);
-      if (parts.length >= 3) {
-        zoom = parts[0];
-        center = [parts[2], parts[1]];
-      }
-      if (parts.length == 5) {
-        bearing = parts[3];
-        pitch = parts[4];
-      }
-    }
+    onHashChange();
 
     $mapInstance = new maplibre.Map(
       flush({
@@ -302,7 +292,23 @@
       allImagesLoaded: boolean;
     };
   }
+
+  function onHashChange() {
+    if (hash) {
+      let parts = parseViewportHash(window.location.hash);
+      if (parts.length >= 3) {
+        zoom = parts[0];
+        center = [parts[2], parts[1]];
+      }
+      if (parts.length == 5) {
+        bearing = parts[3];
+        pitch = parts[4];
+      }
+    }
+  }
 </script>
+
+<svelte:window on:hashchange={onHashChange} />
 
 <div class={classNames} class:expand-map={!classNames} use:createMap data-testid="map-container">
   {#if $mapInstance && loaded}
