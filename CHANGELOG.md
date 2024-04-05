@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.8.3
+
+### Patch Changes
+
+- [#142](https://github.com/dimfeld/svelte-maplibre/pull/142) [`c22141a`](https://github.com/dimfeld/svelte-maplibre/commit/c22141a6282b5cc57dc67e7b6a104eba58412cb5) Thanks [@dabreegster](https://github.com/dabreegster)! - Update the viewport when the URL hash changes
+
 ## 0.8.2
 
 ### Minor Changes
