@@ -9,9 +9,11 @@
   import type { MapLibreZoomEvent } from 'maplibre-gl';
   import type { MarkerClickInfo } from './types';
 
+  type FeatureWithId = Feature & { id: string | number };
+
   interface ExtendedMarkerClickInfo extends MarkerClickInfo {
     source: string | null;
-    feature: GeoJSON.Feature;
+    feature: FeatureWithId;
   }
 
   const { map, source, minzoom: minZoomContext, maxzoom: maxZoomContext } = mapContext();
@@ -97,7 +99,7 @@
     }
   }
 
-  let features: Feature[] = [];
+  let features: FeatureWithId[] = [];
   function updateMarkers() {
     if (!$map || !$source) {
       return;
@@ -108,7 +110,7 @@
     });
 
     // Need to dedupe the results of featureList
-    let featureMap = new Map<string | number, Feature>();
+    let featureMap = new Map<string | number, FeatureWithId>();
     for (let feature of featureList) {
       if (!feature.id) {
         if (feature.properties?.cluster_id) {
@@ -117,7 +119,7 @@
           feature.id = getId('autofeat');
         }
       }
-      featureMap.set(feature.id, feature);
+      featureMap.set(feature.id, feature as FeatureWithId);
     }
 
     // Sort the features by ID so that the #each loop doesn't think the order ever changes. If the order
