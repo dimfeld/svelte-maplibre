@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.8.4
+
+### Patch Changes
+
+- [#148](https://github.com/dimfeld/svelte-maplibre/pull/148) [`f39e1d6`](https://github.com/dimfeld/svelte-maplibre/commit/f39e1d677c7e25dba389cbc4328c45697cba27c5) Thanks [@singingwolfboy](https://github.com/singingwolfboy)! - Tell Typescript that features in MarkerLayer always have an id
+
 ## 0.8.3
 
 ### Patch Changes
