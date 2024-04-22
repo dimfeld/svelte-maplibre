@@ -37,6 +37,7 @@
   export let loaded = false;
   export let minZoom = 0;
   export let maxZoom = 22;
+  export let antialias: boolean | undefined = undefined;
   export let zoomOnDoubleClick = true;
   /** Override MapLibre's default locale table */
   export let locale: any = undefined;
@@ -144,6 +145,7 @@
         bearing,
         minZoom,
         maxZoom,
+        antialias,
         interactive,
         preserveDrawingBuffer,
         maxBounds,
