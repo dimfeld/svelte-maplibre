@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.8.5
+
+### Patch Changes
+
+- [#153](https://github.com/dimfeld/svelte-maplibre/pull/153) [`14b46a7`](https://github.com/dimfeld/svelte-maplibre/commit/14b46a784277d6ec43749c9024bb6d44310b8c3c) Thanks [@Tenchi2xh](https://github.com/Tenchi2xh)! - Added property to control antialiasing
+
 ## 0.8.4
 
 ### Patch Changes
