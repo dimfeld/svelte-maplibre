@@ -30,6 +30,11 @@
     dragstart: MarkerClickInfo;
     dragend: MarkerClickInfo;
     click: MarkerClickInfo;
+    dblclick: MarkerClickInfo;
+    contextmenu: MarkerClickInfo;
+    mouseenter: MarkerClickInfo;
+    mouseleave: MarkerClickInfo;
+    mousemove: MarkerClickInfo;
   }>();
   const { map, layerEvent, self: marker } = updatedMarkerContext();
 
