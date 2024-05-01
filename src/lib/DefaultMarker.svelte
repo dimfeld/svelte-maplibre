@@ -6,6 +6,9 @@
   import type * as GeoJSON from 'geojson';
   import flush from 'just-flush';
 
+  /** The Marker instance which was added to the map */
+  let markerProp: maplibre.Marker | undefined = undefined;
+  export { markerProp as marker };
   export let lngLat: LngLatLike;
   let classNames: string | undefined = undefined;
   export { classNames as class };
@@ -49,13 +52,17 @@
   )
     .setLngLat(lngLat)
     .addTo($map!);
+  markerProp = $marker;
   if (draggable) {
     $marker.on('dragstart', dragStartListener);
     $marker.on('drag', dragListener);
     $marker.on('dragend', dragEndListener);
   }
 
-  onDestroy(() => $marker?.remove());
+  onDestroy(() => {
+    markerProp = undefined;
+    $marker?.remove();
+  });
 
   $: $marker?.setLngLat(lngLat);
   $: $marker?.setOffset(offset ?? [0, 0]);
@@ -112,4 +119,4 @@
   }
 </script>
 
-<slot />
+<slot marker={$marker} />

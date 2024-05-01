@@ -5,6 +5,9 @@
   import type { MarkerClickInfo } from './types';
   import type * as GeoJSON from 'geojson';
 
+  /** The Marker instance which was added to the map */
+  let markerProp: maplibre.Marker | undefined = undefined;
+  export { markerProp as marker };
   export let lngLat: LngLatLike;
   let classNames: string | undefined = undefined;
   export { classNames as class };
@@ -48,6 +51,7 @@
     })
       .setLngLat(lngLat)
       .addTo($map!);
+    markerProp = $marker;
 
     const dragStartListener = () => sendEvent('dragstart');
     const dragListener = () => {
@@ -72,6 +76,7 @@
           $marker?.off('drag', dragListener);
           $marker?.off('dragend', dragEndListener);
         }
+        markerProp = undefined;
         $marker?.remove();
       },
     };
@@ -182,5 +187,5 @@
   on:mousemove={() => sendEvent('mousemove')}
   on:keydown={handleKeyDown}
 >
-  <slot />
+  <slot marker={$marker} />
 </div>
