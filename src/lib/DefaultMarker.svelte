@@ -48,7 +48,7 @@
     })
   )
     .setLngLat(lngLat)
-    .addTo($map);
+    .addTo($map!);
   if (draggable) {
     $marker.on('dragstart', dragStartListener);
     $marker.on('drag', dragListener);
