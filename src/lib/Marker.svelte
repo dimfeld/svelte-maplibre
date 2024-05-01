@@ -170,9 +170,9 @@
   style:z-index={zIndex}
   tabindex={asButton ? 0 : undefined}
   role={asButton ? 'button' : undefined}
-  on:click={() => sendEvent('click')}
-  on:dblclick={() => sendEvent('dblclick')}
-  on:contextmenu={() => sendEvent('contextmenu')}
+  on:click|stopPropagation={() => sendEvent('click')}
+  on:dblclick|stopPropagation={() => sendEvent('dblclick')}
+  on:contextmenu|stopPropagation={() => sendEvent('contextmenu')}
   on:mouseenter={(e) => {
     sendEvent('mouseenter');
   }}
