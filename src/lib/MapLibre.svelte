@@ -19,6 +19,9 @@
   import ScaleControl from './ScaleControl.svelte';
 
   export let map: maplibregl.Map | null = null;
+  /** The `div` element that the Map is placed into. You can bind to this prop to access the element for yourself.
+   * Setting it externally will have no effect. */
+  export let mapContainer: HTMLDivElement | undefined = undefined;
   let classNames: string | undefined = undefined;
   export { classNames as class };
   /** The style to use for the map. */
@@ -312,7 +315,13 @@
 
 <svelte:window on:hashchange={onHashChange} />
 
-<div class={classNames} class:expand-map={!classNames} use:createMap data-testid="map-container">
+<div
+  class={classNames}
+  bind:this={mapContainer}
+  class:expand-map={!classNames}
+  use:createMap
+  data-testid="map-container"
+>
   {#if $mapInstance && loaded}
     {#if standardControls}
       <NavigationControl position={standardControlsPosition} />
