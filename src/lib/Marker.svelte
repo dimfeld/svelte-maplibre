@@ -47,7 +47,7 @@
       opacity: opacity.toString(),
     })
       .setLngLat(lngLat)
-      .addTo($map);
+      .addTo($map!);
 
     const dragStartListener = () => sendEvent('dragstart');
     const dragListener = () => {
