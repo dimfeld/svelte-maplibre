@@ -1,5 +1,19 @@
 # svelte-maplibre
 
+## 0.9.0
+
+### Minor Changes
+
+- [#159](https://github.com/dimfeld/svelte-maplibre/pull/159) [`23fb3ab`](https://github.com/dimfeld/svelte-maplibre/commit/23fb3abd4605406765126a720b5f35194197a10e) Thanks [@dimfeld](https://github.com/dimfeld)! - MapLibre component now exposes its `<div>` element on the `mapContainer` prop
+
+- [#160](https://github.com/dimfeld/svelte-maplibre/pull/160) [`756a1ef`](https://github.com/dimfeld/svelte-maplibre/commit/756a1efecc726e0111faab59323f8f88fb916365) Thanks [@dimfeld](https://github.com/dimfeld)! - Update Marker and DefaultMarker to expose the internal `maplibregl.Marker` through the `marker` prop
+
+- [#157](https://github.com/dimfeld/svelte-maplibre/pull/157) [`417d468`](https://github.com/dimfeld/svelte-maplibre/commit/417d468edcca782ce93c58e72d1412a927703a4d) Thanks [@dabreegster](https://github.com/dabreegster)! - Stop propagation of clicks on Markers
+
+### Patch Changes
+
+- [#156](https://github.com/dimfeld/svelte-maplibre/pull/156) [`1529801`](https://github.com/dimfeld/svelte-maplibre/commit/15298014bc258cc594745a82d7724201776887c2) Thanks [@singingwolfboy](https://github.com/singingwolfboy)! - improve TypeScript typings for DefaultMarker
+
 ## 0.8.5
 
 ### Patch Changes
