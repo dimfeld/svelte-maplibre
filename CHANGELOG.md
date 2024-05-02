@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.9.1
+
+### Patch Changes
+
+- [`efa0430`](https://github.com/dimfeld/svelte-maplibre/commit/efa04302841b32795172f06db4151d312d9bde39) Thanks [@dimfeld](https://github.com/dimfeld)! - Add Svelte 5 to peerDependencies
+
 ## 0.9.0
 
 ### Minor Changes
