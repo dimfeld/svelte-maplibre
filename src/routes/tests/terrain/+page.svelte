@@ -2,7 +2,9 @@
   import MapLibre from '$lib/MapLibre.svelte';
   import NavigationControl from '$lib/NavigationControl.svelte';
   import RasterTileSource from '$lib/RasterTileSource.svelte';
+  import RasterDEMTileSource from '$lib/RasterDEMTileSource.svelte';
   import RasterLayer from '$lib/RasterLayer.svelte';
+  import HillshadeLayer from '$lib/HillshadeLayer.svelte';
   import FullscreenControl from '$lib/FullscreenControl.svelte';
   import TerrainControl from '$lib/TerrainControl.svelte';
   import CodeSample from '$site/CodeSample.svelte';
@@ -25,41 +27,43 @@
     version: 8,
     center: [11.39085, 47.27574],
     zoom: 12,
-    sources: {
-      // Use a different source for terrain and hillshade layers, to improve render quality
-      terrainSource: {
-          type: 'raster-dem',
-          // url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json',
-          tiles: [terrainTiles],
-          tileSize: terrainTileSize
-      },
-      hillshadeSource: {
-        type: 'raster-dem',
-        tiles: [terrainTiles],
-        tileSize: terrainTileSize,
-      }
-    },
-    layers: [
-      {
-        id: 'hills',
-        type: 'hillshade',
-        source: 'hillshadeSource',
-        layout: {visibility: 'visible'},
-        paint: { // https://maplibre.org/maplibre-style-spec/layers/#hillshade
-            'hillshade-illumination-anchor': "map", // default "viewport"
-            'hillshade-illumination-direction': 300, // default 335
-            'hillshade-highlight-color': '#ffffff', // default "#FFFFFF"
-            'hillshade-accent-color': '#000000', // default "#000000"
-            'hillshade-shadow-color': '#000000', // default "#000000"
-            'hillshade-exaggeration': hillshadeExaggeration // default 0.5
-        }
-      }, 
-    ],
-    terrain: {
-      source: 'terrainSource',
-      exaggeration: terrainExaggeration
-    }
+    sources: {},
+    layers: [],
+    // terrain: { // Works if this is omitted: Initially terrain is off, then turning it on 
+    //   source: 'terrainSource',
+    //   exaggeration: terrainExaggeration
+    // }
   };
+
+  // const style: StyleSpecification = {
+  //   version: 8,
+  //   center: [11.39085, 47.27574],
+  //   zoom: 12,
+  //   // sources: {
+  //   //   // Use a different source for terrain and hillshade layers, to improve render quality
+  //   //   hillshadeSource: {
+  //   //     type: 'raster-dem',
+  //   //     tiles: [terrainTiles],
+  //   //     tileSize: terrainTileSize,
+  //   //   }
+  //   // },
+  //   // layers: [
+  //   //   {
+  //   //     id: 'hills',
+  //   //     type: 'hillshade',
+  //   //     source: 'hillshadeSource',
+  //   //     layout: {visibility: 'visible'},
+  //   //     paint: { // https://maplibre.org/maplibre-style-spec/layers/#hillshade
+  //   //         'hillshade-illumination-anchor': "map", // default "viewport"
+  //   //         'hillshade-exaggeration': hillshadeExaggeration // default 0.5
+  //   //     }
+  //   //   }, 
+  //   // ],
+  //   // terrain: {
+  //   //   source: 'terrainSource',
+  //   //   exaggeration: terrainExaggeration
+  //   // }
+  // };
 
 
 </script>
@@ -69,16 +73,25 @@
   class="relative aspect-[9/16] max-h-[70vh] w-full sm:aspect-video sm:max-h-full"
   diffStyleUpdates={true}
 >
-  <NavigationControl visualizePitch={true} />
-  <FullscreenControl />
-  <TerrainControl source={'terrainSource'} exaggeration={terrainExaggeration} />
-  <RasterTileSource tiles={[tiles]} tileSize={256} id="rgbSource">
+  <NavigationControl visualizePitch={true} position={'top-right'} />
+  <FullscreenControl position={'top-right'} />
+
+  <RasterTileSource tiles={[terrainTiles]} tileSize={256} id="rgbSource">
     <RasterLayer
       paint={{
         'raster-opacity': opacity,
       }}
     />
   </RasterTileSource>
+
+  <RasterDEMTileSource tiles={[terrainTiles]} tileSize={terrainTileSize} id='hillshadeSource'>
+    <!-- <HillshadeLayer id={'hills'} layout={{ visibility: 'visible' }} paint={{'hillshade-shadow-color': '#ff00ff'}} /> -->
+    <HillshadeLayer />
+  </RasterDEMTileSource>
+  
+  <RasterDEMTileSource tiles={[terrainTiles]} tileSize={terrainTileSize} id='terrainSource' />
+  
+  <TerrainControl source={'terrainSource'} exaggeration={terrainExaggeration} position={'top-right'} />
 </MapLibre>
 
 <div>
