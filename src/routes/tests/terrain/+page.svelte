@@ -5,6 +5,7 @@
   import RasterDEMTileSource from '$lib/RasterDEMTileSource.svelte';
   import RasterLayer from '$lib/RasterLayer.svelte';
   import HillshadeLayer from '$lib/HillshadeLayer.svelte';
+  import Terrain from '$lib/Terrain.svelte';
   import FullscreenControl from '$lib/FullscreenControl.svelte';
   import TerrainControl from '$lib/TerrainControl.svelte';
   import CodeSample from '$site/CodeSample.svelte';
@@ -20,13 +21,14 @@
   const terrainTiles = 'https://demotiles.maplibre.org/terrain-tiles/{z}/{x}/{y}.png';
   const terrainTileSize = 256;
 
-  const terrainExaggeration: number = 1.0;
-  const hillshadeExaggeration: number = 1.0;
+  let terrainExaggeration: number = 1.0;
+  let hillshadeExaggeration: number = 0.5;
 
   const style: StyleSpecification = {
     version: 8,
     center: [11.39085, 47.27574],
     zoom: 12,
+    pitch: 52,
     sources: {},
     layers: [],
     // terrain: { // Works if this is omitted: Initially terrain is off, then turning it on 
@@ -76,7 +78,7 @@
   <NavigationControl visualizePitch={true} position={'top-right'} />
   <FullscreenControl position={'top-right'} />
 
-  <RasterTileSource tiles={[terrainTiles]} tileSize={256} id="rgbSource">
+  <RasterTileSource tiles={[tiles]} tileSize={256} id="rgbSource">
     <RasterLayer
       paint={{
         'raster-opacity': opacity,
@@ -84,12 +86,21 @@
     />
   </RasterTileSource>
 
-  <RasterDEMTileSource tiles={[terrainTiles]} tileSize={terrainTileSize} id='hillshadeSource'>
-    <!-- <HillshadeLayer id={'hills'} layout={{ visibility: 'visible' }} paint={{'hillshade-shadow-color': '#ff00ff'}} /> -->
-    <HillshadeLayer />
-  </RasterDEMTileSource>
-  
   <RasterDEMTileSource tiles={[terrainTiles]} tileSize={terrainTileSize} id='terrainSource' />
+
+  <RasterDEMTileSource tiles={[terrainTiles]} tileSize={terrainTileSize} id='hillshadeSource'>
+    <HillshadeLayer 
+      id={'hills'} 
+      layout={{ visibility: 'visible' }} 
+      paint={{
+        'hillshade-exaggeration': hillshadeExaggeration,
+        'hillshade-illumination-anchor': "map", // default "viewport"
+        }}
+      />
+    <!-- <HillshadeLayer /> -->
+  </RasterDEMTileSource>
+
+  <Terrain source={'terrainSource'} exaggeration={terrainExaggeration} />
   
   <TerrainControl source={'terrainSource'} exaggeration={terrainExaggeration} position={'top-right'} />
 </MapLibre>
@@ -99,6 +110,22 @@
     RGB opacity
     <input type="number" bind:value={opacity} min="0.0" max="1.0" step="0.01">
     <input type="range" min="0.0" max="1.0" step="0.01" bind:value={opacity} id="rgb-opacity">
+  </label>
+</div>
+
+<div>
+  <label>
+    Hillshade exaggeration
+    <input type="number" bind:value={hillshadeExaggeration} min="0.0" max="1.0" step="0.01">
+    <input type="range" min="0.0" max="1.0" step="0.01" bind:value={hillshadeExaggeration} id="hillshade-exaggeration">
+  </label>
+</div>
+
+<div>
+  <label>
+    Terrain exaggeration
+    <input type="number" bind:value={terrainExaggeration} min="0.0" max="10.0" step="0.1">
+    <input type="range" min="0.0" max="10.0" step="0.1" bind:value={terrainExaggeration} id="terrain-exaggeration">
   </label>
 </div>
 
