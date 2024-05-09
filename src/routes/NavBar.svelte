@@ -45,6 +45,7 @@
     { href: '/tests/marker-class-update', title: `Marker Class Update` },
     { href: '/tests/marker-z-index', title: `Marker Z-Index` },
     { href: '/tests/replace_source', title: `Replace a Source` },
+    { href: '/tests/terrain', title: `3D Terrain` },
   ];
 
   beforeNavigate(() => {
