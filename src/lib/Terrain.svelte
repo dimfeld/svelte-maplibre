@@ -15,6 +15,5 @@
   }
 
   onDestroy(() => {
-
   });
 </script>
