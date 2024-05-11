@@ -69,6 +69,9 @@
   const dispatch = createEventDispatcher<{
     load: maplibregl.Map;
     error: Error;
+    click: maplibregl.MapMouseEvent & { map: maplibregl.Map };
+    dblclick: maplibregl.MapMouseEvent & { map: maplibregl.Map };
+    contextmenu: maplibregl.MapMouseEvent & { map: maplibregl.Map };
     movestart: maplibregl.MapMouseEvent & { map: maplibregl.Map };
     moveend: maplibregl.MapMouseEvent & { map: maplibregl.Map };
     zoomstart: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
@@ -180,6 +183,9 @@
       }
     });
 
+    $mapInstance.on('click', (ev) => dispatch('click', { ...ev, map: $mapInstance }));
+    $mapInstance.on('dblclick', (ev) => dispatch('dblclick', { ...ev, map: $mapInstance }));
+    $mapInstance.on('contextmenu', (ev) => dispatch('contextmenu', { ...ev, map: $mapInstance }));
     $mapInstance.on('zoomstart', (ev) => dispatch('zoomstart', { ...ev, map: $mapInstance }));
     $mapInstance.on('zoom', (ev) => {
       zoom = ev.target.getZoom();

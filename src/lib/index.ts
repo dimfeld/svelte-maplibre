@@ -15,6 +15,7 @@ export { default as ImageSource } from './ImageSource.svelte';
 export { default as JoinedData } from './JoinedData.svelte';
 export { default as Layer } from './Layer.svelte';
 export { default as LineLayer } from './LineLayer.svelte';
+export { default as MapEvents } from './MapEvents.svelte';
 export { default as MapLibre } from './MapLibre.svelte';
 export { default as Marker } from './Marker.svelte';
 export { default as MarkerLayer } from './MarkerLayer.svelte';
