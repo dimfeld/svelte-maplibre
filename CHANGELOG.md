@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.9.2
+
+### Minor Changes
+
+- [#161](https://github.com/dimfeld/svelte-maplibre/pull/161) [`90ddec8`](https://github.com/dimfeld/svelte-maplibre/commit/90ddec849b9cf57dcf7d4165d7437f6f52318409) Thanks [@dimfeld](https://github.com/dimfeld)! - Add MapEvents component that makes it easier to subscribe to map events from inside Map components
+
 ## 0.9.1
 
 ### Patch Changes
