@@ -14,6 +14,7 @@
     { href: '/examples/basic', title: `Plain Map` },
     { href: '/examples/marker', title: `Default Markers` },
     { href: '/examples/custom_marker', title: `Custom Markers` },
+    { href: '/examples/marker_on_click', title: `Add Marker On Click` },
     { href: '/examples/draggable_custom_marker', title: `Custom draggable Markers` },
     { href: '/examples/popup_remote', title: `Remote Popup Data` },
     { href: '/examples/geojson_polygon', title: `GeoJSON Filled Polygon` },
