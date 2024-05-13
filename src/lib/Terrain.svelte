@@ -15,5 +15,8 @@
   }
 
   onDestroy(() => {
+    if ($map?.loaded() && specification) {
+      $map.setTerrain(null);
+    }
   });
 </script>
