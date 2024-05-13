@@ -1,6 +1,7 @@
 <script lang="ts">
   import MapLibre from '$lib/MapLibre.svelte';
   import NavigationControl from '$lib/NavigationControl.svelte';
+  import AttributionControl from '$lib/AttributionControl.svelte';
   import RasterTileSource from '$lib/RasterTileSource.svelte';
   import RasterDEMTileSource from '$lib/RasterDEMTileSource.svelte';
   import RasterLayer from '$lib/RasterLayer.svelte';
@@ -58,9 +59,13 @@
     layers: [],
   }}
   class="relative aspect-[9/16] max-h-[70vh] w-full sm:aspect-video sm:max-h-full"
+  attributionControl={false}
   diffStyleUpdates={true}
 >
   <NavigationControl visualizePitch={true} />
+  <AttributionControl
+    customAttribution={`Map data © <a href=https://www.openstreetmap.org/copyright>OpenStreetMap</a> Contributors | Terrain data <a href="https://earth.jaxa.jp/en/data/policy/">AW3D30 (JAXA)</a> | <a href=https://maplibre.org>MapLibre</a>`}
+  />
   <RasterTileSource tiles={['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png']} tileSize={256}>
     <RasterLayer paint={{}} />
   </RasterTileSource>
