@@ -62,7 +62,7 @@
   attributionControl={false}
   diffStyleUpdates={true}
 >
-  <NavigationControl visualizePitch={true} />
+  <NavigationControl visualizePitch={true} position={'top-right'}/>
   <AttributionControl
     customAttribution={`Map data © <a href=https://www.openstreetmap.org/copyright>OpenStreetMap</a> Contributors | Terrain data <a href="https://earth.jaxa.jp/en/data/policy/">AW3D30 (JAXA)</a> | <a href=https://maplibre.org>MapLibre</a>`}
   />
@@ -91,7 +91,7 @@
     />
   </RasterDEMTileSource>
   <Terrain source={'terrainSource'} exaggeration={terrainExaggeration} />
-  <TerrainControl source={'terrainSource'} exaggeration={terrainExaggeration} />
+  <TerrainControl source={'terrainSource'} exaggeration={terrainExaggeration} position={'top-right'}/>
 </MapLibre>
 
 <CodeSample {code} startBoundary="<MapLibre"/>
