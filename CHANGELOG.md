@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.9.3
+
+### Minor Changes
+
+- [#164](https://github.com/dimfeld/svelte-maplibre/pull/164) [`39371ee794f2a338c5760a840295af25964cfdec`](https://github.com/dimfeld/svelte-maplibre/commit/39371ee794f2a338c5760a840295af25964cfdec) Thanks [@larsmaxfield](https://github.com/larsmaxfield)! - Add 3D Terrain components and corresponding demo page
+
 ## 0.9.2
 
 ### Minor Changes
