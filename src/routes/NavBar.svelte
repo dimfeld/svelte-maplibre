@@ -37,6 +37,7 @@
     { href: '/examples/raster_source', title: `Raster Source` },
     { href: '/examples/image_source', title: `Image Source` },
     { href: '/examples/cooperative_gestures', title: `Cooperative Gestures` },
+    { href: '/examples/3d_terrain', title: `3D Terrain` },
   ];
 
   // Examples which don't really warrant showing on the docs site, but ensure that
