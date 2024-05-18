@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.9.4
+
+### Minor Changes
+
+- [#171](https://github.com/dimfeld/svelte-maplibre/pull/171) [`d968425`](https://github.com/dimfeld/svelte-maplibre/commit/d9684251e1d727393fa4b072160d6313b850d768) Thanks [@thijserven](https://github.com/thijserven)! - Exposed control value of GeolocateControl so you can do bind:control and access the root maplibre-gl functionalities from the outside.
+
 ## 0.9.3
 
 ### Minor Changes
