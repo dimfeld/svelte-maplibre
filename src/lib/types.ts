@@ -13,6 +13,7 @@ export type {
   PointLike,
   PositionAnchor,
   StyleSpecification,
+  GeolocateControl as GeolocateControlInterface,
 } from 'maplibre-gl';
 
 export interface ClusterOptions {

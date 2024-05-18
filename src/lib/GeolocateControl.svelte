@@ -12,7 +12,7 @@
   export let showAccuracyCircle = true;
   export let showUserLocation = true;
 
-  let control: maplibregl.GeolocateControl | null = null;
+  export let control: maplibregl.GeolocateControl | null = null;
   $: if ($map && !control) {
     control = new maplibregl.GeolocateControl({
       positionOptions,
