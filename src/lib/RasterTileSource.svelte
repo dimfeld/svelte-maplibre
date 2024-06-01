@@ -2,12 +2,19 @@
   import { onDestroy } from 'svelte';
   import { getId, updatedSourceContext } from './context';
   import { addSource, removeSource } from './source.js';
+  import type { Scheme } from './types.js';
   import flush from 'just-flush';
   import type { RasterTileSource } from 'maplibre-gl';
 
   export let id: string = getId('raster-source');
   export let tiles: string[];
   export let tileSize: number | undefined = undefined;
+  export let bounds: Array<number> | null = null;
+  export let scheme: Scheme | null = null;
+  export let attribution: string | null = null;
+  export let minzoom: number | null = null;
+  export let maxzoom: number | null = null;
+  export let volatile: boolean | null = null;
 
   const { map, self: source } = updatedSourceContext();
   let sourceObj: RasterTileSource | undefined;
@@ -22,6 +29,12 @@
         type: 'raster',
         tiles,
         tileSize,
+        bounds,
+        scheme,
+        attribution,
+        minzoom,
+        maxzoom,
+        volatile,
       }),
       (sourceId: string) => $map && sourceId === $source,
       () => {

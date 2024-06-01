@@ -2,6 +2,7 @@
   import { onDestroy, tick } from 'svelte';
   import { getId, updatedSourceContext } from './context.js';
   import { addSource, removeSource } from './source.js';
+  import type { Scheme } from './types.js';
   import * as pmtiles from 'pmtiles';
   import maplibregl, { type VectorTileSource } from 'maplibre-gl';
   import flush from 'just-flush';
@@ -10,6 +11,12 @@
   export let url: string | null = null;
   export let tiles: Array<string> | null = null;
   export let promoteId: string | null = null;
+  export let bounds: Array<number> | null = null;
+  export let scheme: Scheme | null = null;
+  export let attribution: string | null = null;
+  export let minzoom: number | null = null;
+  export let maxzoom: number | null = null;
+  export let volatile: boolean | null = null;
 
   if (url && url.includes('pmtiles://')) {
     if (!maplibregl.config.REGISTERED_PROTOCOLS.hasOwnProperty('pmtiles')) {
@@ -31,6 +38,12 @@
         url,
         tiles,
         promoteId,
+        bounds,
+        scheme,
+        attribution,
+        minzoom,
+        maxzoom,
+        volatile,
       }),
       (sourceId) => $map && sourceId === $source,
       () => {

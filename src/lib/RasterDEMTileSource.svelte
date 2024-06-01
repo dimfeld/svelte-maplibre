@@ -2,12 +2,23 @@
   import { onDestroy } from 'svelte';
   import { getId, updatedSourceContext } from './context';
   import { addSource, removeSource } from './source.js';
+  import type { RasterDEMEncoding } from './types.js';
   import flush from 'just-flush';
   import type { RasterDEMTileSource } from 'maplibre-gl';
 
   export let id: string = getId('raster-source');
   export let tiles: string[];
   export let tileSize: number | undefined = undefined;
+  export let bounds: Array<number> | null = null;
+  export let attribution: string | null = null;
+  export let minzoom: number | null = null;
+  export let maxzoom: number | null = null;
+  export let volatile: boolean | null = null;
+  export let encoding: RasterDEMEncoding | null = null;
+  export let redFactor: number | null = null;
+  export let greenFactor: number | null;
+  export let blueFactor: number | null;
+  export let baseShift: number | null;
 
   const { map, self: source } = updatedSourceContext();
   let sourceObj: RasterDEMTileSource | undefined;
@@ -22,6 +33,16 @@
         type: 'raster-dem',
         tiles,
         tileSize,
+        bounds,
+        attribution,
+        minzoom,
+        maxzoom,
+        volatile,
+        encoding,
+        redFactor,
+        greenFactor,
+        blueFactor,
+        baseShift,
       }),
       (sourceId: string) => $map && sourceId === $source,
       () => {
