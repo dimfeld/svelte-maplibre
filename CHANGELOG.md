@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.9.5
+
+### Patch Changes
+
+- [#173](https://github.com/dimfeld/svelte-maplibre/pull/173) [`2beda17`](https://github.com/dimfeld/svelte-maplibre/commit/2beda17e2c8348eeb7602441a871d97a5e65e6b3) Thanks [@ragone](https://github.com/ragone)! - Expose source attributes
+
 ## 0.9.4
 
 ### Minor Changes
