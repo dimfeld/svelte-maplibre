@@ -73,3 +73,5 @@ export interface MarkerLayerEventInfo extends MarkerClickInfo {
 
 export type DeckGlAccessor<DATA, RETVAL> = RETVAL | ((data: DATA) => RETVAL);
 export type DeckGlColorAccessor<DATA> = DeckGlAccessor<DATA, number[]>;
+
+export type Scheme = 'xyz' | 'tms';

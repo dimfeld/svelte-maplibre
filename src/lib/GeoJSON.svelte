@@ -20,6 +20,11 @@
 
   export let cluster: ClusterOptions | undefined = undefined;
 
+  export let maxzoom: number | undefined = undefined;
+  export let attribution: string | undefined = undefined;
+  export let buffer: number | undefined = undefined;
+  export let tolerance: number | undefined = undefined;
+
   const { map, cluster: clusterStore, self: source } = updatedSourceContext();
   let sourceObj: GeoJSONSource | undefined;
 
@@ -43,6 +48,10 @@
         clusterMaxZoom: cluster?.maxZoom,
         clusterRadius: cluster?.radius,
         clusterProperties: cluster?.properties,
+        maxzoom,
+        attribution,
+        buffer,
+        tolerance,
       }),
       (sourceId: string) => $map && sourceId === $source,
       () => {
