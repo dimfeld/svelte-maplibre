@@ -38,6 +38,14 @@
   export let bounds: LngLatBoundsLike | undefined = undefined;
   /** Set to true to track the map viewport in the URL hash. If the URL hash is set, that overrides initial viewport settings. */
   export let hash = false;
+  /** Update the URL when the hash changes, if `hash` is true.
+   * The default behavior uses `window.history.replaceState`. For SvelteKit, you should
+   *  `import { replaceState } from '$app/navigation';` and pass something like
+   *  `updateHash={(u) => replaceState(u, $page.state)}` when instantiating the map.
+   */
+  export let updateHash: (url: URL) => void = (url) => {
+    window.history.replaceState(window.history.state, '', url);
+  };
   export let loaded = false;
   export let minZoom = 0;
   export let maxZoom = 22;
@@ -181,8 +189,10 @@
       bounds = ev.target.getBounds();
       dispatch('moveend', { ...ev, map: $mapInstance });
       if (hash) {
-        let location = window.location.href.replace(/(#.+)?$/, getViewportHash($mapInstance));
-        window.history.replaceState(window.history.state, '', location);
+        let location = new URL(
+          window.location.href.replace(/(#.+)?$/, getViewportHash($mapInstance))
+        );
+        updateHash(location);
       }
     });
 

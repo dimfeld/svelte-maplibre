@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { replaceState } from '$app/navigation';
+  import { page } from '$app/stores';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import type { Feature } from 'geojson';
@@ -53,6 +55,7 @@
   center={[-68.137, 45.137]}
   zoom={5}
   hash
+  updateHash={(url) => replaceState(url, $page.state)}
 >
   <GeoJSON id="maine" {data}>
     <LineLayer
