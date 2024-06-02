@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.9.7
+
+### Patch Changes
+
+- [#175](https://github.com/dimfeld/svelte-maplibre/pull/175) [`c857517`](https://github.com/dimfeld/svelte-maplibre/commit/c857517afa9516da50e4858f4d0e6aa4897e749b) Thanks [@dimfeld](https://github.com/dimfeld)! - Allow providing custom hash update function for better framework compatibility
+
 ## 0.9.6
 
 ### Patch Changes
