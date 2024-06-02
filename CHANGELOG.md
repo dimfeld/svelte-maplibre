@@ -1,5 +1,13 @@
 # svelte-maplibre
 
+## 0.9.6
+
+### Patch Changes
+
+- [#169](https://github.com/dimfeld/svelte-maplibre/pull/169) [`3af7f53`](https://github.com/dimfeld/svelte-maplibre/commit/3af7f536ff69665e19e48d25b4930fa155416bc6) Thanks [@dimfeld](https://github.com/dimfeld)! - Use easeTo so that simultaneous changes to center and zoom work properly
+
+- [#169](https://github.com/dimfeld/svelte-maplibre/pull/169) [`3af7f53`](https://github.com/dimfeld/svelte-maplibre/commit/3af7f536ff69665e19e48d25b4930fa155416bc6) Thanks [@dimfeld](https://github.com/dimfeld)! - Handle changes in bearing and pitch
+
 ## 0.9.5
 
 ### Patch Changes
