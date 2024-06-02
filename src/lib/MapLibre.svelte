@@ -4,6 +4,7 @@
   import { createMapContext } from './context.js';
   import { getViewportHash, parseViewportHash } from './hash.js';
   import maplibre, {
+    type CenterZoomBearing,
     type GestureOptions,
     type LayerSpecification,
     type LngLatBoundsLike,
@@ -175,6 +176,8 @@
     $mapInstance.on('moveend', (ev) => {
       center = ev.target.getCenter();
       zoom = ev.target.getZoom();
+      pitch = ev.target.getPitch();
+      bearing = ev.target.getBearing();
       bounds = ev.target.getBounds();
       dispatch('moveend', { ...ev, map: $mapInstance });
       if (hash) {
@@ -188,11 +191,9 @@
     $mapInstance.on('contextmenu', (ev) => dispatch('contextmenu', { ...ev, map: $mapInstance }));
     $mapInstance.on('zoomstart', (ev) => dispatch('zoomstart', { ...ev, map: $mapInstance }));
     $mapInstance.on('zoom', (ev) => {
-      zoom = ev.target.getZoom();
       dispatch('zoom', { ...ev, map: $mapInstance });
     });
     $mapInstance.on('zoomend', (ev) => {
-      zoom = ev.target.getZoom();
       dispatch('zoomend', { ...ev, map: $mapInstance });
     });
 
@@ -286,8 +287,29 @@
     loadingImages = new Set();
   }
 
-  $: if (center && !compare(center, $mapInstance?.getCenter())) $mapInstance?.panTo(center);
-  $: if (zoom && !compare(zoom, $mapInstance?.getZoom())) $mapInstance?.zoomTo(zoom);
+  $: if ($mapInstance) {
+    let options: CenterZoomBearing & { pitch?: number } = {};
+    if (center != null && !compare(center, $mapInstance?.getCenter())) {
+      options.center = center;
+    }
+
+    if (zoom != null && !compare(zoom, $mapInstance?.getZoom())) {
+      options.zoom = zoom;
+    }
+
+    if (bearing != null && !compare(bearing, $mapInstance?.getBearing())) {
+      options.bearing = bearing;
+    }
+
+    if (pitch != null && !compare(pitch, $mapInstance?.getPitch())) {
+      options.pitch = pitch;
+    }
+
+    if (Object.keys(options).length) {
+      $mapInstance.easeTo(options);
+    }
+  }
+
   $: if (bounds && !compare(bounds, $mapInstance?.getBounds())) $mapInstance?.fitBounds(bounds);
   $: zoomOnDoubleClick
     ? $mapInstance?.doubleClickZoom.enable()
