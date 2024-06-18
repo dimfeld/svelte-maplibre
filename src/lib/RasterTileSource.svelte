@@ -8,9 +8,13 @@
   import maplibregl, { type RasterTileSource } from 'maplibre-gl';
 
   export let id: string = getId('raster-source');
-  export let tiles: string[] | null = null;
+
+  /** An array one or more tile source URLs pointing to the tiles.
+   * Either `tiles` or `url` must be provided. */
+  export let tiles: string[] | undefined = undefined;
   export let tileSize: number | undefined = undefined;
-  export let url: string;
+  /** A single URL pointing to a PMTiles archive. Either `tiles` or `url` must be provided. */
+  export let url: string | undefined = undefined;
   export let bounds: Array<number> | null = null;
   export let scheme: Scheme | null = null;
   export let attribution: string | null = null;
@@ -66,8 +70,10 @@
       first = false;
     } else if (tiles) {
       sourceObj.setTiles(tiles);
-    } else {
+    } else if (url) {
       sourceObj.setUrl(url);
+    } else {
+      throw new Error('Either tiles or url must be set');
     }
   }
 
