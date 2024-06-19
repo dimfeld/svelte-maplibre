@@ -70,10 +70,8 @@
       first = false;
     } else if (tiles) {
       sourceObj.setTiles(tiles);
-    } else if (url) {
-      sourceObj.setUrl(url);
     } else {
-      throw new Error('Either tiles or url must be set');
+      sourceObj.setUrl(url);
     }
   }
 
