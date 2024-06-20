@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.9.8
+
+### Patch Changes
+
+- [#178](https://github.com/dimfeld/svelte-maplibre/pull/178) [`6f8e10b`](https://github.com/dimfeld/svelte-maplibre/commit/6f8e10b4432e22a86d2c140bc4b7ab3b29043ea7) Thanks [@ADD-William-WaltersDavis](https://github.com/ADD-William-WaltersDavis)! - Add pmtiles support for raster url
+
 ## 0.9.7
 
 ### Patch Changes
