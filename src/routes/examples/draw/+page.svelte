@@ -1,6 +1,13 @@
 <script lang="ts">
+  // Import MapboxDraw and its CSS
   import MapboxDraw from '@mapbox/mapbox-gl-draw';
   import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+
+  // Also need this CSS which lets the mouse pointers work correctly with Maplibre
+  // when switching modes in the draw plugin.
+  // import 'svelte-maplibre/draw-plugin.css';
+  import '$lib/draw-plugin.css';
+
   import maplibregl from 'maplibre-gl';
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';

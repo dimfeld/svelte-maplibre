@@ -42,6 +42,9 @@
       "svelte": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./*.css": {
+      "default": "./dist/*.css"
+    },
     "./*.svelte": {
       "types": "./dist/*.d.ts",
       "svelte": "./dist/*.svelte",
