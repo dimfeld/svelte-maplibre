@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.9.9
+
+### Patch Changes
+
+- [#180](https://github.com/dimfeld/svelte-maplibre/pull/180) [`9e999f1`](https://github.com/dimfeld/svelte-maplibre/commit/9e999f1e81691d7e187a92ddf304f457f49cea58) Thanks [@dimfeld](https://github.com/dimfeld)! - Add `draw-plguin.css` CSS file, which you can import to help with integrating the Mapbox Draw plugin
+
 ## 0.9.8
 
 ### Patch Changes
