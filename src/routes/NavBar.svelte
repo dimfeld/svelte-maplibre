@@ -25,6 +25,7 @@
     { href: '/examples/custom_marker_clusters', title: `Custom Markers and Clusters` },
     { href: '/examples/image_symbols', title: `Images in a Symbol Layer` },
     { href: '/examples/marker_layer', title: `Layer Consisting of Markers` },
+    { href: '/examples/draw', title: `Drawing` },
     { href: '/examples/3d_buildings', title: `3D Buildings` },
     { href: '/examples/geojson_extrusion', title: `GeoJSON Extrusion` },
     { href: '/examples/zoom_transition', title: `Transition Layers with Zoom` },
