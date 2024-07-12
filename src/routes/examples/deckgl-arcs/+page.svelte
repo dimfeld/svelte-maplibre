@@ -1,5 +1,11 @@
 <script lang="ts">
+  // imports start
   import MapLibre from '$lib/MapLibre.svelte';
+  import DeckGlLayer from '$lib/DeckGlLayer.svelte';
+  // Importing from `@deck.gl/layers` so that we can do a direct import
+  // that works even in SSR, as opposed to importing from `deck.gl` which does not.
+  import { ArcLayer } from '@deck.gl/layers';
+  // imports end
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
   import { geoCentroid } from 'd3-geo';
@@ -8,8 +14,6 @@
   import states from '$site/states.json';
   import type { PageData } from './$types';
   import type { FeatureCollection } from 'geojson';
-  import DeckGlLayer from '$lib/DeckGlLayer.svelte';
-  import { ArcLayer } from '@deck.gl/layers';
   import Popup from '$lib/Popup.svelte';
   import FillLayer from '$lib/FillLayer.svelte';
   import GeoJson from '$lib/GeoJSON.svelte';
@@ -132,4 +136,12 @@
   {/if}
 </h4>
 
+<CodeSample
+  {code}
+  language="javascript"
+  startBoundary="// imports start"
+  endBoundary="// imports end"
+  omitStartBoundary
+  omitEndBoundary
+/>
 <CodeSample {code} startBoundary="<MapLibre" endBoundary="</MapLibre>" />
