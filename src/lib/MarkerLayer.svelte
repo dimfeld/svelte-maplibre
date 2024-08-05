@@ -8,6 +8,7 @@
   import FillLayer from './FillLayer.svelte';
   import type { MapLibreZoomEvent } from 'maplibre-gl';
   import type { MarkerClickInfo } from './types';
+  import { dequal } from 'dequal/lite';
 
   type FeatureWithId = Feature & { id: string | number };
 
@@ -98,8 +99,34 @@
       $map.on('sourcedata', handleData);
     }
   }
-
-  let features: FeatureWithId[] = [];
+  let features: Array<FeatureWithId> = [];
+  function stripAutoFeatId(f: FeatureWithId) {
+    if (f.id.toString().startsWith('autocluster_')) {
+      return 'autocluster';
+    }
+    if (f.id.toString().startsWith('autofeat')) {
+      return 'autofeat';
+    }
+    return f.id;
+  }
+  function someFeaturesChanged(current: Array<FeatureWithId>, next: Array<FeatureWithId>) {
+    return (
+      current.length !== next.length ||
+      next.some((nextValue, idx) => {
+        const currentValue = current[idx];
+        return !dequal(
+          {
+            ...(currentValue as maplibregl.MapGeoJSONFeature)?.toJSON(),
+            id: currentValue ? stripAutoFeatId(currentValue) : undefined,
+          },
+          {
+            ...(nextValue as maplibregl.MapGeoJSONFeature).toJSON(),
+            id: stripAutoFeatId(nextValue),
+          }
+        );
+      })
+    );
+  }
   function updateMarkers() {
     if (!$map || !$source) {
       return;
@@ -125,9 +152,17 @@
     // Sort the features by ID so that the #each loop doesn't think the order ever changes. If the order
     // changes then it tries to move the element around which interferes with the map's management of the
     // marker element.
-    features = [...featureMap.values()].sort((a, b) =>
+    const sorted = [...featureMap.values()].sort((a, b) =>
       a.id.toString().localeCompare(b.id.toString())
     );
+
+    const currentFeatures = features;
+    // Don't cause markers to rerender if nothing has changed.
+    if (!someFeaturesChanged(currentFeatures, sorted)) {
+      return;
+    }
+
+    features = sorted;
   }
 
   let zoom = $map?.getZoom() ?? 0;
