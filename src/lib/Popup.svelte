@@ -8,6 +8,15 @@
   import { onDestroy, onMount, createEventDispatcher } from 'svelte';
   import { mapContext, type LayerEvent, isDeckGlMouseEvent } from './context.js';
 
+  interface $$Slots {
+    default: {
+      features: Array<Feature> | null;
+      data: Feature | null;
+      map: maplibregl.Map | null;
+      close: () => void;
+    };
+  }
+
   /** Show the built-in close button. By default the close button will be shown
    * only if closeOnClickOutside and closeOnClickInside are not set. */
   export let closeButton: boolean | undefined = undefined;
@@ -179,7 +188,7 @@
     };
   });
 
-  function skipHandlingEvent(e: MapLayerMouseEvent) {
+  function skipHandlingEvent(e: MapLayerMouseEvent | LayerEvent) {
     if (!openIfTopMost) {
       return false;
     }
@@ -189,27 +198,24 @@
 
   let features: Feature[] | null = null;
   let touchOpenState: 'normal' | 'opening' | 'justOpened' = 'normal';
-  function handleLayerClick(e: MapLayerMouseEvent | LayerEvent) {
-    if (e.type !== openOn) {
-      return;
-    }
 
-    if (skipHandlingEvent(e)) {
-      return;
-    }
-
-    if ('layerType' in e) {
-      if (e.layerType === 'deckgl') {
-        lngLat = e.coordinate;
-        features = e.object ? [e.object] : null;
-      } else {
-        lngLat = e.lngLat;
-        features = e.features ?? [];
-      }
+  function handleLayerEvent(e: MapLayerMouseEvent | LayerEvent) {
+    if ('layerType' in e && e.layerType === 'deckgl') {
+      lngLat = e.coordinate;
+      features = e.object ? [e.object as Feature] : null;
     } else {
       lngLat = e.lngLat;
       features = e.features ?? [];
     }
+  }
+
+  function handleLayerClick(e: MapLayerMouseEvent | LayerEvent) {
+    if (e.type !== openOn || skipHandlingEvent(e)) {
+      return;
+    }
+
+    handleLayerEvent(e);
+
     // Wait a tick in case closeOnClick is set. Then the map will close the popup and we'll reopen it
     // just after.
     setTimeout(() => (open = true));
@@ -301,13 +307,7 @@
     openOn === 'hover' && ($layerEvent?.type === 'mousemove' || $layerEvent?.type === 'mouseenter');
   $: if (openOn === 'hover' && layerEvent) {
     if (hoveringOnLayer && $layerEvent) {
-      if ($layerEvent.layerType === 'deckgl') {
-        lngLat = $layerEvent.coordinate;
-        features = $layerEvent.object ? [$layerEvent.object] : null;
-      } else {
-        lngLat = $layerEvent.lngLat;
-        features = $layerEvent.features ?? [];
-      }
+      handleLayerEvent($layerEvent);
     }
     open = (hoveringOnLayer || hoveringOnPopup) ?? false;
   }
@@ -343,8 +343,8 @@
 
 {#if $$slots.default}
   <div bind:this={popupEl}>
-    {#if features || $popupTarget instanceof maplibregl.Marker}
-      <slot {features} data={features?.[0]} map={$map} close={() => (open = false)} />
+    {#if features?.length || $popupTarget instanceof maplibregl.Marker}
+      <slot {features} data={features?.[0] ?? null} map={$map} close={() => (open = false)} />
     {/if}
   </div>
 {/if}
