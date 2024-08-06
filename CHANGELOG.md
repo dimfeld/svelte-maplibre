@@ -1,5 +1,12 @@
 # svelte-maplibre
 
+## 0.9.10
+
+### Patch Changes
+
+- [#185](https://github.com/dimfeld/svelte-maplibre/pull/185) [`2a1fe13`](https://github.com/dimfeld/svelte-maplibre/commit/2a1fe1302f02a318b5ff8afa80a63535678a39c5) Thanks [@hmnd](https://github.com/hmnd)! - fix degraded performance with MarkerLayer
+- [#186](https://github.com/dimfeld/svelte-maplibre/pull/186) [`484209f`](https://github.com/dimfeld/svelte-maplibre/commit/484209f2658512c460f37ecac310a08bb014c5a1) Thanks [@hmnd](https://github.com/hmnd)!  - Fix types for Popup features and data
+
 ## 0.9.9
 
 ### Patch Changes
