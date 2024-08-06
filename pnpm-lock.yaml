@@ -34,13 +34,13 @@ importers:
         specifier: ^2.26.2
         version: 2.26.2
       '@deck.gl/core':
-        specifier: ^8.8.0
+        specifier: ~8.8.0
         version: 8.8.26
       '@deck.gl/layers':
-        specifier: ^8.8.0
+        specifier: ~8.8.0
         version: 8.8.26(@deck.gl/core@8.8.26)(@loaders.gl/core@3.4.14)(@luma.gl/core@8.5.21)
       '@deck.gl/mapbox':
-        specifier: ^8.8.0
+        specifier: ~8.8.0
         version: 8.8.26(@deck.gl/core@8.8.26)
       '@mapbox/mapbox-gl-draw':
         specifier: ^1.4.3
@@ -175,10 +175,6 @@ packages:
 
   '@babel/runtime@7.21.0':
     resolution: {integrity: sha512-xwII0//EObnq89Ji5AKYQaRYiW/nZ3llSv29d49IuxPhKbtJoLP+9QUUZ4nVragQVtaVGeZrpB+ZtG/Pdy/POw==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/runtime@7.23.2':
-    resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==}
     engines: {node: '>=6.9.0'}
 
   '@babel/runtime@7.23.9':
@@ -443,9 +439,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.18':
     resolution: {integrity: sha512-w+niJYzMHdd7USdiH2U6869nqhD2nbfZXND5Yp93qIbEmnDNk7PD48o+YchRVpzMU7M6jVCbenTR7PA1FLQ9pA==}
-
-  '@loaders.gl/core@3.3.1':
-    resolution: {integrity: sha512-molMKfNbg/6T705VCW2XOKcXPfYZGj9XimQ6YVE4bSN+wwGpkni63ABuqndUllVga98CBZUBZplCQ0ljg6Bv3A==}
 
   '@loaders.gl/core@3.4.14':
     resolution: {integrity: sha512-5PFcjv7xC8AYL17juDMrvo8n0Fcwg9s8F4BaM2YCNUsb9RCI2SmLuIFJMcx1GgHO5vL0WiTIKO+JT4n1FuNR6w==}
@@ -2691,9 +2684,6 @@ packages:
   regenerator-runtime@0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
 
-  regenerator-runtime@0.14.0:
-    resolution: {integrity: sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==}
-
   regenerator-runtime@0.14.1:
     resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
 
@@ -3447,10 +3437,6 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.13.11
 
-  '@babel/runtime@7.23.2':
-    dependencies:
-      regenerator-runtime: 0.14.0
-
   '@babel/runtime@7.23.9':
     dependencies:
       regenerator-runtime: 0.14.1
@@ -3621,7 +3607,7 @@ snapshots:
 
   '@deck.gl/core@8.8.26':
     dependencies:
-      '@loaders.gl/core': 3.3.1
+      '@loaders.gl/core': 3.4.14
       '@loaders.gl/images': 3.3.1
       '@luma.gl/constants': 8.5.21
       '@luma.gl/core': 8.5.21
@@ -3778,13 +3764,6 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
 
-  '@loaders.gl/core@3.3.1':
-    dependencies:
-      '@babel/runtime': 7.21.0
-      '@loaders.gl/loader-utils': 3.3.1
-      '@loaders.gl/worker-utils': 3.3.1
-      '@probe.gl/log': 3.6.0
-
   '@loaders.gl/core@3.4.14':
     dependencies:
       '@babel/runtime': 7.23.9
@@ -3798,7 +3777,7 @@ snapshots:
 
   '@loaders.gl/loader-utils@3.3.1':
     dependencies:
-      '@babel/runtime': 7.21.0
+      '@babel/runtime': 7.23.9
       '@loaders.gl/worker-utils': 3.3.1
       '@probe.gl/stats': 3.6.0
 
@@ -3810,11 +3789,11 @@ snapshots:
 
   '@loaders.gl/schema@3.3.1':
     dependencies:
-      '@types/geojson': 7946.0.10
+      '@types/geojson': 7946.0.14
 
   '@loaders.gl/worker-utils@3.3.1':
     dependencies:
-      '@babel/runtime': 7.21.0
+      '@babel/runtime': 7.23.9
 
   '@loaders.gl/worker-utils@3.4.14':
     dependencies:
@@ -3824,7 +3803,7 @@ snapshots:
 
   '@luma.gl/core@8.5.21':
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@luma.gl/constants': 8.5.21
       '@luma.gl/engine': 8.5.21
       '@luma.gl/gltools': 8.5.21
@@ -3833,7 +3812,7 @@ snapshots:
 
   '@luma.gl/engine@8.5.21':
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@luma.gl/constants': 8.5.21
       '@luma.gl/gltools': 8.5.21
       '@luma.gl/shadertools': 8.5.21
@@ -3845,7 +3824,7 @@ snapshots:
 
   '@luma.gl/gltools@8.5.21':
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@luma.gl/constants': 8.5.21
       '@probe.gl/env': 3.6.0
       '@probe.gl/log': 3.6.0
@@ -3853,12 +3832,12 @@ snapshots:
 
   '@luma.gl/shadertools@8.5.21':
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@math.gl/core': 3.6.3
 
   '@luma.gl/webgl@8.5.21':
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@luma.gl/constants': 8.5.21
       '@luma.gl/gltools': 8.5.21
       '@probe.gl/env': 3.6.0
@@ -3957,7 +3936,7 @@ snapshots:
 
   '@math.gl/core@3.6.3':
     dependencies:
-      '@babel/runtime': 7.21.0
+      '@babel/runtime': 7.23.9
       '@math.gl/types': 3.6.3
       gl-matrix: 3.4.3
 
@@ -3967,13 +3946,13 @@ snapshots:
 
   '@math.gl/sun@3.6.3':
     dependencies:
-      '@babel/runtime': 7.21.0
+      '@babel/runtime': 7.23.9
 
   '@math.gl/types@3.6.3': {}
 
   '@math.gl/web-mercator@3.6.3':
     dependencies:
-      '@babel/runtime': 7.21.0
+      '@babel/runtime': 7.23.9
       gl-matrix: 3.4.3
 
   '@nodelib/fs.scandir@2.1.5':
@@ -3996,7 +3975,7 @@ snapshots:
 
   '@probe.gl/env@3.6.0':
     dependencies:
-      '@babel/runtime': 7.21.0
+      '@babel/runtime': 7.23.9
 
   '@probe.gl/env@4.0.5':
     dependencies:
@@ -4004,7 +3983,7 @@ snapshots:
 
   '@probe.gl/log@3.6.0':
     dependencies:
-      '@babel/runtime': 7.21.0
+      '@babel/runtime': 7.23.9
       '@probe.gl/env': 3.6.0
 
   '@probe.gl/log@4.0.5':
@@ -4014,7 +3993,7 @@ snapshots:
 
   '@probe.gl/stats@3.6.0':
     dependencies:
-      '@babel/runtime': 7.21.0
+      '@babel/runtime': 7.23.9
 
   '@probe.gl/stats@4.0.5':
     dependencies:
@@ -6230,8 +6209,6 @@ snapshots:
       strip-indent: 3.0.0
 
   regenerator-runtime@0.13.11: {}
-
-  regenerator-runtime@0.14.0: {}
 
   regenerator-runtime@0.14.1: {}
 
