@@ -111,7 +111,7 @@
       >
         <Popup {openOn} {openIfTopMost} let:features>
           <div style:background={color} style:color="white">
-            <p>{features.length} features from {color} layer</p>
+            <p>{features?.length} features from {color} layer</p>
             {#if color == 'red'}
               <p>extra padding for lowest red layer</p>
               <p>extra padding for lowest red layer</p>

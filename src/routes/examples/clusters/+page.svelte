@@ -71,8 +71,8 @@
       manageHoverState
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     >
-      <Popup {openOn} closeOnClickInside let:features>
-        <ClusterPopup feature={features?.[0]} />
+      <Popup {openOn} closeOnClickInside let:data>
+        <ClusterPopup feature={data ?? undefined} />
       </Popup>
     </CircleLayer>
 
@@ -113,17 +113,19 @@
       }}
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     >
-      <Popup {openOn} closeOnClickInside let:features>
-        {@const props = features?.[0]?.properties}
-        <p>
-          Date: <span class="font-medium text-gray-800"
-            >{new Date(props.time).toLocaleDateString()}</span
-          >
-        </p>
-        <p>Magnitude: <span class="font-medium text-gray-800">{props.mag}</span></p>
-        <p>
-          Tsunami: <span class="font-medium text-gray-800">{props.tsunami ? 'Yes' : 'No'}</span>
-        </p>
+      <Popup {openOn} closeOnClickInside let:data>
+        {@const props = data?.properties}
+        {#if props}
+          <p>
+            Date: <span class="font-medium text-gray-800"
+              >{new Date(props.time).toLocaleDateString()}</span
+            >
+          </p>
+          <p>Magnitude: <span class="font-medium text-gray-800">{props.mag}</span></p>
+          <p>
+            Tsunami: <span class="font-medium text-gray-800">{props.tsunami ? 'Yes' : 'No'}</span>
+          </p>
+        {/if}
       </Popup>
     </CircleLayer>
   </GeoJSON>
