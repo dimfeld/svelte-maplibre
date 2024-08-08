@@ -4,11 +4,12 @@
    * @default true since most map buttons are icons. */
   export let icon = true;
   export let center = true;
+  export let label = "";
   let classNames: string | undefined = undefined;
   export { classNames as class };
 </script>
 
-<button type="button" on:click>
+<button type="button" title={label} on:click>
   <div class:maplibregl-ctrl-icon={icon} class:ctrl-btn-center={center} class={classNames}>
     <slot />
   </div>
