@@ -4,7 +4,7 @@
    * @default true since most map buttons are icons. */
   export let icon = true;
   export let center = true;
-  export let title = '';
+  export let title: string | undefined = undefined;
   let classNames: string | undefined = undefined;
   export { classNames as class };
 </script>

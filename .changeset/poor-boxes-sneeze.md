@@ -2,4 +2,4 @@
 'svelte-maplibre': minor
 ---
 
-Add label attribute to ControlButton
+Add title attribute to ControlButton
