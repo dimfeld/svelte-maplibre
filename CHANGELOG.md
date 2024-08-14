@@ -1,11 +1,17 @@
 # svelte-maplibre
 
+## 0.10.0
+
+### Minor Changes
+
+- [#189](https://github.com/dimfeld/svelte-maplibre/pull/189) [`d070959`](https://github.com/dimfeld/svelte-maplibre/commit/d07095952d801dc24a9d5201dc3a60af96f41353) Thanks [@tjhorner](https://github.com/tjhorner)! - Add title attribute to ControlButton
+
 ## 0.9.10
 
 ### Patch Changes
 
 - [#185](https://github.com/dimfeld/svelte-maplibre/pull/185) [`2a1fe13`](https://github.com/dimfeld/svelte-maplibre/commit/2a1fe1302f02a318b5ff8afa80a63535678a39c5) Thanks [@hmnd](https://github.com/hmnd)! - fix degraded performance with MarkerLayer
-- [#186](https://github.com/dimfeld/svelte-maplibre/pull/186) [`484209f`](https://github.com/dimfeld/svelte-maplibre/commit/484209f2658512c460f37ecac310a08bb014c5a1) Thanks [@hmnd](https://github.com/hmnd)!  - Fix types for Popup features and data
+- [#186](https://github.com/dimfeld/svelte-maplibre/pull/186) [`484209f`](https://github.com/dimfeld/svelte-maplibre/commit/484209f2658512c460f37ecac310a08bb014c5a1) Thanks [@hmnd](https://github.com/hmnd)! - Fix types for Popup features and data
 
 ## 0.9.9
 
