@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.9.12
+
+### Patch Changes
+
+- [#195](https://github.com/dimfeld/svelte-maplibre/pull/195) [`aeaf638`](https://github.com/dimfeld/svelte-maplibre/commit/aeaf63881c945efd2c56c415bc874dfd5c4d0e53) Thanks [@dimfeld](https://github.com/dimfeld)! - Fix marker popups not closing properly when clicking on a different marker. This broke in v0.9.0
+
 ## 0.9.11
 
 ### Minor Changes
