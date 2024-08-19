@@ -39,7 +39,7 @@
     mouseleave: MarkerClickInfo;
     mousemove: MarkerClickInfo;
   }>();
-  const { map, layerEvent, self: marker } = updatedMarkerContext();
+  const { map, layerEvent, self: marker, markerClickManager } = updatedMarkerContext();
 
   function addMarker(node: HTMLDivElement) {
     $marker = new maplibre.Marker({
@@ -158,6 +158,10 @@
       ],
     };
 
+    if (eventName === 'click' || eventName === 'contextmenu') {
+      markerClickManager.handleClick(data);
+    }
+
     $layerEvent = {
       ...data,
       layerType: 'marker',
@@ -177,8 +181,10 @@
   role={asButton ? 'button' : undefined}
   on:click|stopPropagation={() => sendEvent('click')}
   on:dblclick|stopPropagation={() => sendEvent('dblclick')}
-  on:contextmenu|stopPropagation={() => sendEvent('contextmenu')}
-  on:mouseenter={(e) => {
+  on:contextmenu|stopPropagation|preventDefault={() => {
+    sendEvent('contextmenu');
+  }}
+  on:mouseenter={() => {
     sendEvent('mouseenter');
   }}
   on:mouseleave={() => {

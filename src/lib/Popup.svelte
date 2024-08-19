@@ -7,6 +7,7 @@
   } from 'maplibre-gl';
   import { onDestroy, onMount, createEventDispatcher } from 'svelte';
   import { mapContext, type LayerEvent, isDeckGlMouseEvent } from './context.js';
+  import type { MarkerClickInfo } from './types.js';
 
   interface $$Slots {
     default: {
@@ -55,7 +56,7 @@
     hover: maplibregl.Popup;
   }>();
 
-  const { map, popupTarget, layerEvent, layer, eventTopMost } = mapContext();
+  const { map, popupTarget, layerEvent, layer, eventTopMost, markerClickManager } = mapContext();
 
   const clickEvents = ['click', 'dblclick', 'contextmenu'];
 
@@ -155,6 +156,7 @@
 
     $map.on('click', globalClickHandler);
     $map.on('contextmenu', globalClickHandler);
+    markerClickManager.add(globalMarkerClickHandler);
     if (typeof $popupTarget === 'string') {
       $map.on('click', $popupTarget, handleLayerClick);
       $map.on('dblclick', $popupTarget, handleLayerClick);
@@ -170,6 +172,7 @@
         popup?.remove();
         $map.off('click', globalClickHandler);
         $map.off('contextmenu', globalClickHandler);
+        markerClickManager.remove(globalMarkerClickHandler);
 
         if ($popupTarget instanceof maplibregl.Marker) {
           if ($popupTarget.getPopup() === popup) {
@@ -295,6 +298,13 @@
       if ((e.type === 'contextmenu' && openOn === 'contextmenu') || e.type !== 'contextmenu') {
         open = false;
       }
+    }
+  }
+
+  function globalMarkerClickHandler(info: MarkerClickInfo) {
+    // Markers don't propagate clicks to the map, so we handle it separately here.
+    if (closeOnClickOutside && open && popup.isOpen() && info.marker !== $popupTarget) {
+      open = false;
     }
   }
 

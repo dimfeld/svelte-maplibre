@@ -32,6 +32,10 @@ export interface MapContext {
   eventTopMost: (event: MapMouseEvent) => string;
 
   layerEvent: Writable<LayerEvent | null>;
+  /** Subscribe to marker clicks globally. Marker clicks intentionally do not propagate their events
+   * to the map, but some internal components such as Popups need to know when any click happens, on the
+   * map or on a marker, and MarkerClickManager facilitates that functionality. */
+  markerClickManager: MarkerClickManager;
 }
 
 export type MarkerMouseEvent = MarkerClickInfo & { layerType: 'marker'; type: string };
@@ -92,6 +96,7 @@ export function createMapContext(): MapContext {
     layerEvent: writable(null),
     layerInfo,
     eventTopMost: eventTopMost(layerInfo),
+    markerClickManager: new MarkerClickManager(),
   });
 }
 
@@ -196,4 +201,24 @@ export function isDeckGlMouseEvent(
   event: MapMouseEvent | DeckGlMouseEvent
 ): event is DeckGlMouseEvent<unknown> {
   return 'layerType' in event && event.layerType === 'deckgl';
+}
+
+type MarkerClickCallback = (event: MarkerClickInfo) => void;
+
+class MarkerClickManager {
+  private _handlers: Set<MarkerClickCallback> = new Set();
+
+  add(markerClickInfo: MarkerClickCallback) {
+    this._handlers.add(markerClickInfo);
+  }
+
+  remove(markerClickInfo: MarkerClickCallback) {
+    this._handlers.delete(markerClickInfo);
+  }
+
+  handleClick(event: MarkerClickInfo) {
+    for (const handler of this._handlers) {
+      handler(event);
+    }
+  }
 }
