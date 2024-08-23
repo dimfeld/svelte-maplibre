@@ -49,6 +49,12 @@
   export let loaded = false;
   export let minZoom = 0;
   export let maxZoom = 22;
+  export let minPitch: number | undefined = 0;
+  export let maxPitch: number | undefined = 60;
+  export let renderWorldCopies: boolean | undefined = undefined;
+  export let dragPan: boolean | undefined = undefined;
+  export let dragRotate: boolean | undefined = undefined;
+  export let pitchWithRotate: boolean | undefined = undefined;
   export let antialias: boolean | undefined = undefined;
   export let zoomOnDoubleClick = true;
   /** Override MapLibre's default locale table */
@@ -160,6 +166,12 @@
         bearing,
         minZoom,
         maxZoom,
+        minPitch,
+        maxPitch,
+        renderWorldCopies,
+        dragPan,
+        dragRotate,
+        pitchWithRotate,
         antialias,
         interactive,
         preserveDrawingBuffer,
