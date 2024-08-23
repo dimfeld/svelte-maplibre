@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.9.13
+
+### Patch Changes
+
+- [#199](https://github.com/dimfeld/svelte-maplibre/pull/199) [`579769d`](https://github.com/dimfeld/svelte-maplibre/commit/579769d177fbd3f18dffe30b98a23a875833a515) Thanks [@craumix](https://github.com/craumix)! - Expose additional MapOptions for MapLibre
+
 ## 0.9.12
 
 ### Patch Changes
