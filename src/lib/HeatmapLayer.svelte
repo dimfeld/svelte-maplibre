@@ -23,6 +23,7 @@
   export let maxzoom: number | undefined = undefined;
   /** Set the cursor style to this value when the mouse is over the layer. */
   export let hoverCursor: string | undefined = undefined;
+  /** Enable to use hoverStateFilter or filter on `hover-state`. Features must have an `id` property for this to work. */
   export let manageHoverState = false;
   export let hovered: Feature | null = null;
   export let eventsIfTopMost = false;
