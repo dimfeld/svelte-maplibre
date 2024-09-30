@@ -279,14 +279,28 @@
   });
 
   $: applyPaint = $layer
-    ? diffApplier((key, value) => $map?.setPaintProperty($layer!, key, value))
-    : undefined;
+    ? diffApplier((key, value) => {
+        if ($map?.isStyleLoaded()) {
+          $map.setPaintProperty($layer!, key, value);
+        } else {
+          $map?.once('styledata', () => $map?.setPaintProperty($layer!, key, value));
+        }
+      })
+    : void 0;
+
   $: applyLayout = $layer
-    ? diffApplier((key, value) => $map?.setLayoutProperty($layer!, key, value))
-    : undefined;
+    ? diffApplier((key, value) => {
+        if ($map?.isStyleLoaded()) {
+          $map.setLayoutProperty($layer!, key, value);
+        } else {
+          $map?.once('styledata', () => $map?.setLayoutProperty($layer!, key, value));
+        }
+      })
+    : void 0;
 
   $: applyPaint?.(paint);
   $: applyLayout?.(layout);
+
   $: if ($layer) $map?.setLayerZoomRange($layer, actualMinZoom, actualMaxZoom);
 
   // Don't set the filter again after we've just created it.
