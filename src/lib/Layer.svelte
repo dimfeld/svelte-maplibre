@@ -280,7 +280,7 @@
 
   $: applyPaint = $layer
     ? diffApplier((key, value) => {
-        if ($map?.isStyleLoaded()) {
+        if ($map?.style._loaded) {
           $map.setPaintProperty($layer!, key, value);
         } else {
           $map?.once('styledata', () => $map?.setPaintProperty($layer!, key, value));
@@ -290,7 +290,7 @@
 
   $: applyLayout = $layer
     ? diffApplier((key, value) => {
-        if ($map?.isStyleLoaded()) {
+        if ($map?.style._loaded) {
           $map.setLayoutProperty($layer!, key, value);
         } else {
           $map?.once('styledata', () => $map?.setLayoutProperty($layer!, key, value));
