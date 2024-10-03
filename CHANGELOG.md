@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 0.9.14
+
+### Patch Changes
+
+- [`d84def9`](https://github.com/dimfeld/svelte-maplibre/commit/d84def9df60c14b5eed66ac912288386db308055) Thanks [@ciscorn](https://github.com/ciscorn)! - Defer updating Layer’s layout and paint properties until Map style is fully loaded
+
 ## 0.9.13
 
 ### Patch Changes
