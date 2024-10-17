@@ -9,7 +9,7 @@
   export { classNames as class };
 </script>
 
-<button type="button" {title} on:click>
+<button type="button" {title} on:click {...$$props}>
   <div class:maplibregl-ctrl-icon={icon} class:ctrl-btn-center={center} class={classNames}>
     <slot />
   </div>
