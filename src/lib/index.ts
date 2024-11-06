@@ -8,6 +8,7 @@ export { default as DeckGlLayer } from './DeckGlLayer.svelte';
 export { default as DefaultMarker } from './DefaultMarker.svelte';
 export { default as FillExtrusionLayer } from './FillExtrusionLayer.svelte';
 export { default as FillLayer } from './FillLayer.svelte';
+export { default as FlatGeobuf } from './FlatGeobuf.svelte';
 export { default as FullscreenControl } from './FullscreenControl.svelte';
 export { default as GeoJSON } from './GeoJSON.svelte';
 export { default as GeolocateControl } from './GeolocateControl.svelte';
