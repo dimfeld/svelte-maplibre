@@ -76,6 +76,7 @@
   "dependencies": {
     "d3-geo": "^3.1.0",
     "dequal": "^2.0.3",
+    "flatgeobuf": "^3.35.0",
     "just-compare": "^2.3.0",
     "maplibre-gl": "^4.0.0 || ^5.0.1",
     "pmtiles": "^3.0.3"
