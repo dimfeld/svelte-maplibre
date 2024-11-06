@@ -7,7 +7,7 @@
   import { onDestroy } from 'svelte';
 
   import MapLibreGeoJSON from './GeoJSON.svelte';
-  import { addSource, removeSource } from './source.js';
+  import { addSource, removeSource } from './source';
   import { getId, updatedSourceContext } from './context';
   import { flatgeobufToGeoJson, filterGeomsCentroidsWithin } from './flatgeobuf';
 
