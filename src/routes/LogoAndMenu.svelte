@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { drawerStore } from '@skeletonlabs/skeleton';
+  import { getDrawerStore } from '@skeletonlabs/skeleton';
 
   export let menuButton = true;
 
+  const drawerStore = getDrawerStore();
   function toggle() {
     $drawerStore.open = !$drawerStore.open;
   }

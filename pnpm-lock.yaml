@@ -49,8 +49,11 @@ importers:
         specifier: ^1.42.0
         version: 1.42.1
       '@skeletonlabs/skeleton':
-        specifier: ^1.12.0
-        version: 1.12.0(svelte@5.1.12)
+        specifier: ^2.10.3
+        version: 2.10.3(svelte@5.1.12)
+      '@skeletonlabs/tw-plugin':
+        specifier: ^0.4.0
+        version: 0.4.0(tailwindcss@3.2.7(postcss@8.4.21))
       '@sveltejs/adapter-vercel':
         specifier: ^5.4.6
         version: 5.4.7(@sveltejs/kit@2.8.0(@sveltejs/vite-plugin-svelte@4.0.0(svelte@5.1.12)(vite@5.4.1))(svelte@5.1.12)(vite@5.4.1))
@@ -679,10 +682,15 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@skeletonlabs/skeleton@1.12.0':
-    resolution: {integrity: sha512-NCGy6WT3LUqu6EaFEG7J6lFQNB/DHlqFQpXMWkSpwdZIZ005OEVoZznNgdATYdTet++nS6LymBGVUQK00z82gw==}
+  '@skeletonlabs/skeleton@2.10.3':
+    resolution: {integrity: sha512-O1RecF68zEVvZl3GgRS4emqWMUIQLHvTOFoqGOw/2OXCPE06IxUQrHQf2hnxCPxtGZNXY2YX8UNV38l+eH8GNQ==}
     peerDependencies:
-      svelte: ^3.56.0 || ^4.0.0
+      svelte: ^3.56.0 || ^4.0.0 || ^5.0.0
+
+  '@skeletonlabs/tw-plugin@0.4.0':
+    resolution: {integrity: sha512-v6Y4deBq9ByRx3kTRGgekhhYkWEYgNNNu8UXOwJngCStB7w8SwmbNFSeHkluxMbgCgMnJyp220EMpw9nj/rEsQ==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0'
 
   '@sveltejs/adapter-vercel@5.4.7':
     resolution: {integrity: sha512-yOKz0fO6G35UbTgEm8VWVeZqnOmMjhxANJt0hlsCo9OKcbLq2cTuh6AvVmcvhg8BzLEspiF4gv8ENtuJgHWvgA==}
@@ -4005,10 +4013,14 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.21.0':
     optional: true
 
-  '@skeletonlabs/skeleton@1.12.0(svelte@5.1.12)':
+  '@skeletonlabs/skeleton@2.10.3(svelte@5.1.12)':
     dependencies:
       esm-env: 1.0.0
       svelte: 5.1.12
+
+  '@skeletonlabs/tw-plugin@0.4.0(tailwindcss@3.2.7(postcss@8.4.21))':
+    dependencies:
+      tailwindcss: 3.2.7(postcss@8.4.21)
 
   '@sveltejs/adapter-vercel@5.4.7(@sveltejs/kit@2.8.0(@sveltejs/vite-plugin-svelte@4.0.0(svelte@5.1.12)(vite@5.4.1))(svelte@5.1.12)(vite@5.4.1))':
     dependencies:
