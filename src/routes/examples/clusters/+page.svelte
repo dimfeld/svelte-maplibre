@@ -13,9 +13,9 @@
 
   import earthquakes from '$site/earthquakes.geojson?url';
 
-  let clickedFeature: Record<string, any> | null = null;
+  let clickedFeature: Record<string, any> | null = $state(null);
 
-  let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = 'hover';
+  let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = $state('hover');
 </script>
 
 <p>
@@ -71,8 +71,10 @@
       manageHoverState
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     >
-      <Popup {openOn} closeOnClickInside let:data>
-        <ClusterPopup feature={data ?? undefined} />
+      <Popup {openOn} closeOnClickInside>
+        {#snippet children({ data })}
+          <ClusterPopup feature={data ?? undefined} />
+        {/snippet}
       </Popup>
     </CircleLayer>
 
@@ -113,19 +115,21 @@
       }}
       on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
     >
-      <Popup {openOn} closeOnClickInside let:data>
-        {@const props = data?.properties}
-        {#if props}
-          <p>
-            Date: <span class="font-medium text-gray-800"
-              >{new Date(props.time).toLocaleDateString()}</span
-            >
-          </p>
-          <p>Magnitude: <span class="font-medium text-gray-800">{props.mag}</span></p>
-          <p>
-            Tsunami: <span class="font-medium text-gray-800">{props.tsunami ? 'Yes' : 'No'}</span>
-          </p>
-        {/if}
+      <Popup {openOn} closeOnClickInside>
+        {#snippet children({ data })}
+          {@const props = data?.properties}
+          {#if props}
+            <p>
+              Date: <span class="font-medium text-gray-800"
+                >{new Date(props.time).toLocaleDateString()}</span
+              >
+            </p>
+            <p>Magnitude: <span class="font-medium text-gray-800">{props.mag}</span></p>
+            <p>
+              Tsunami: <span class="font-medium text-gray-800">{props.tsunami ? 'Yes' : 'No'}</span>
+            </p>
+          {/if}
+        {/snippet}
       </Popup>
     </CircleLayer>
   </GeoJSON>

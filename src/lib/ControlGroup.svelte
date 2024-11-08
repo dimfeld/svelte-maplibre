@@ -1,8 +1,12 @@
 <script lang="ts">
-  let classNames: string = '';
-  export { classNames as class };
+  interface Props {
+    class?: string;
+    children?: import('svelte').Snippet;
+  }
+
+  let { class: classNames = '', children }: Props = $props();
 </script>
 
 <div class="maplibregl-ctrl-group {classNames}">
-  <slot />
+  {@render children?.()}
 </div>

@@ -8,7 +8,7 @@
   import JoinedData from '$lib/JoinedData.svelte';
   import { hoverStateFilter } from '$lib';
 
-  let dataSet = 0;
+  let dataSet = $state(0);
   function changeData() {
     if (dataSet === 0) {
       dataSet = 1;
@@ -33,9 +33,9 @@
 </p>
 
 <button
-  class="rounded border border-gray-400 bg-white py-2 px-4 font-semibold text-gray-800 shadow hover:bg-gray-100"
+  class="rounded border border-gray-400 bg-white px-4 py-2 font-semibold text-gray-800 shadow hover:bg-gray-100"
   type="button"
-  on:click={changeData}
+  onclick={changeData}
 >
   Change Data
 </button>

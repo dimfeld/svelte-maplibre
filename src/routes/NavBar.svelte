@@ -2,12 +2,17 @@
   import { beforeNavigate } from '$app/navigation';
   import { page } from '$app/stores';
   import { dev } from '$app/environment';
-  import { drawerStore } from '@skeletonlabs/skeleton';
+  import { getDrawerStore } from '@skeletonlabs/skeleton';
   import LogoAndMenu from './LogoAndMenu.svelte';
 
-  export let inDrawer = false;
-  let classNames: string = '';
-  export { classNames as class };
+  interface Props {
+    inDrawer?: boolean;
+    class?: string;
+  }
+
+  let { inDrawer = false, class: classNames = '' }: Props = $props();
+
+  const drawerStore = getDrawerStore();
 
   const components = [];
   const examples = [

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   // imports start
   import MapLibre from '$lib/MapLibre.svelte';
   import DeckGlLayer from '$lib/DeckGlLayer.svelte';
@@ -19,7 +21,11 @@
   import GeoJson from '$lib/GeoJSON.svelte';
   import { hoverStateFilter } from '$lib';
 
-  export let data: PageData;
+  interface Props {
+    data: PageData;
+  }
+
+  let { data }: Props = $props();
 
   function calculateArcs(fc: FeatureCollection) {
     let centers = new Map(fc.features.map((f) => [f.properties.GEOID, geoCentroid(f)]));
@@ -47,14 +53,15 @@
     });
   }
 
-  $: arcs = calculateArcs(mode === 'showAll' ? states : counties);
+  let zoom = $state(3);
+  let hovered = $state(null);
 
-  let zoom = 3;
-  let hovered = null;
-
-  $: activeState = arcs[0].fromState;
-
-  let mode: 'showAll' | 'showOne' = 'showOne';
+  let mode: 'showAll' | 'showOne' = $state('showOne');
+  let arcs = $derived(calculateArcs(mode === 'showAll' ? states : counties));
+  let activeState;
+  run(() => {
+    activeState = arcs[0].fromState;
+  });
 </script>
 
 <p>A deck.gl ArcLayer integrated into a MapLibre map, with hover and popup support.</p>
@@ -120,8 +127,10 @@
     getWidth={mode === 'showAll' ? 5 : 1}
     getHeight={clamp(3 / zoom, 0, 1)}
   >
-    <Popup openOn="click" let:data>
-      From {data.fromName} to {data.toName}
+    <Popup openOn="click"
+      >{#snippet children({ data })}
+        From {data.fromName} to {data.toName}
+      {/snippet}
     </Popup>
   </DeckGlLayer>
 </MapLibre>

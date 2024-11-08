@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import type { Feature } from 'geojson';
   import { createEventDispatcher, onDestroy } from 'svelte';
   import { getId, mapContext } from './context';
@@ -27,29 +29,46 @@
     dragend: ExtendedMarkerClickInfo;
   }>();
 
-  export let applyToClusters: boolean | undefined = undefined;
-  export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
-  /** How to calculate the coordinates of the marker.
-   * @default Calls d3.geoCentroid` on the feature. */
-  export let markerLngLat: (feature: Feature) => [number, number] = geoCentroid;
-  /** Handle mouse events */
-  export let interactive = true;
-  /** Make markers tabbable and add the button role. */
-  export let asButton = false;
-  export let draggable = false;
-  export let minzoom: number | undefined = undefined;
-  export let maxzoom: number | undefined = undefined;
-  export let hovered: Feature | null = null;
-  /** The z-index of the markers. This can also be set via CSS classes using the `class` prop.
-   * If a function is provided, it will be called with each feature as an argument. */
-  export let zIndex: number | ((feature: GeoJSON.Feature) => number) | undefined = undefined;
   /** CSS classes to apply to each marker */
-  let className: string | undefined = undefined;
-  export { className as class };
+  interface Props {
+    applyToClusters?: boolean | undefined;
+    filter?: maplibregl.ExpressionSpecification | undefined;
+    /** How to calculate the coordinates of the marker.
+     * @default Calls d3.geoCentroid` on the feature. */
+    markerLngLat?: (feature: Feature) => [number, number];
+    /** Handle mouse events */
+    interactive?: boolean;
+    /** Make markers tabbable and add the button role. */
+    asButton?: boolean;
+    draggable?: boolean;
+    minzoom?: number | undefined;
+    maxzoom?: number | undefined;
+    hovered?: Feature | null;
+    /** The z-index of the markers. This can also be set via CSS classes using the `class` prop.
+     * If a function is provided, it will be called with each feature as an argument. */
+    zIndex?: number | ((feature: GeoJSON.Feature) => number) | undefined;
+    class?: string | undefined;
+    children?: import('svelte').Snippet<[any]>;
+  }
 
-  $: actualMinZoom = minzoom ?? $minZoomContext;
-  $: actualMaxZoom = maxzoom ?? $maxZoomContext;
-  $: actualFilter = combineFilters('all', isClusterFilter(applyToClusters), filter);
+  let {
+    applyToClusters = undefined,
+    filter = undefined,
+    markerLngLat = geoCentroid,
+    interactive = true,
+    asButton = false,
+    draggable = false,
+    minzoom = undefined,
+    maxzoom = undefined,
+    hovered = $bindable(null),
+    zIndex = undefined,
+    class: className = undefined,
+    children,
+  }: Props = $props();
+
+  let actualMinZoom = $derived(minzoom ?? $minZoomContext);
+  let actualMaxZoom = $derived(maxzoom ?? $maxZoomContext);
+  let actualFilter = $derived(combineFilters('all', isClusterFilter(applyToClusters), filter));
 
   let installedHandlers = false;
   function setupHandlers() {
@@ -90,16 +109,18 @@
     $map.off('sourcedata', handleData);
   });
 
-  $: if ($map && $source) {
-    let sourceObj = $map.getSource($source);
-    if (sourceObj?.loaded()) {
-      setupHandlers();
-    } else {
-      // Need to wait for the data to load
-      $map.on('sourcedata', handleData);
+  run(() => {
+    if ($map && $source) {
+      let sourceObj = $map.getSource($source);
+      if (sourceObj?.loaded()) {
+        setupHandlers();
+      } else {
+        // Need to wait for the data to load
+        $map.on('sourcedata', handleData);
+      }
     }
-  }
-  let features: Array<FeatureWithId> = [];
+  });
+  let features: Array<FeatureWithId> = $state([]);
   function stripAutoFeatId(f: FeatureWithId) {
     if (f.id.toString().startsWith('autocluster_')) {
       return 'autocluster';
@@ -165,7 +186,7 @@
     features = sorted;
   }
 
-  let zoom = $map?.getZoom() ?? 0;
+  let zoom = $state($map?.getZoom() ?? 0);
   function handleZoom(e: MapLibreZoomEvent) {
     zoom = $map!.getZoom();
     updateMarkers();
@@ -207,7 +228,7 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
       on:dblclick={(e) => dispatch('dblclick', { ...e.detail, source: $source, feature })}
       on:contextmenu={(e) => dispatch('contextmenu', { ...e.detail, source: $source, feature })}
     >
-      <slot {feature} position={c} />
+      {@render children?.({ feature, position: c })}
     </Marker>
   {/each}
 {/if}

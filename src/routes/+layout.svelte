@@ -1,9 +1,8 @@
-<script>
-  import '@skeletonlabs/skeleton/themes/theme-rocket.css';
-  import '@skeletonlabs/skeleton/styles/all.css';
+<script lang="ts">
   import '../app.postcss';
 
-  import { AppShell, AppBar, Drawer, drawerStore } from '@skeletonlabs/skeleton';
+  import { AppShell, AppBar, Drawer, initializeStores } from '@skeletonlabs/skeleton';
+  initializeStores();
 
   import hljs from 'highlight.js';
   import hljsSvelte from 'highlightjs-svelte';
@@ -12,6 +11,11 @@
 
   import NavBar from './NavBar.svelte';
   import LogoAndMenu from './LogoAndMenu.svelte';
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
+
+  let { children }: Props = $props();
 
   hljsSvelte(hljs);
   storeHighlightJs.set(hljs);
@@ -22,15 +26,15 @@
 </Drawer>
 
 <AppShell slotHeader="lg:hidden block" slotSidebarLeft="bg-surface-500/5">
-  <svelte:fragment slot="header">
+  {#snippet header()}
     <AppBar background="bg-surface-500/5">
       <LogoAndMenu />
     </AppBar>
-  </svelte:fragment>
-  <svelte:fragment slot="sidebarLeft">
+  {/snippet}
+  {#snippet sidebarLeft()}
     <NavBar class="hidden lg:block" />
-  </svelte:fragment>
+  {/snippet}
   <main class="p-4">
-    <slot />
+    {@render children?.()}
   </main>
 </AppShell>
