@@ -2,11 +2,14 @@ import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { skeleton } from '@skeletonlabs/tw-plugin';
 
-const skeletonUrl = fileURLToPath(import.meta.resolve('@skeletonlabs/skeleton'));
-console.log(skeletonUrl);
-
 const config = {
-  content: ['./src/**/*.{html,js,svelte,ts}', join(skeletonUrl, '../**/*.{html,js,svelte,ts}')],
+  content: [
+    './src/**/*.{html,js,svelte,ts}',
+    join(
+      fileURLToPath(import.meta.resolve('@skeletonlabs/skeleton')),
+      '../**/*.{html,js,svelte,ts}'
+    ),
+  ],
 
   darkMode: 'class',
   theme: {
