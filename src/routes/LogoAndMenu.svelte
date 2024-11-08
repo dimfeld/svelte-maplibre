@@ -9,6 +9,7 @@
 
   let { menuButton = true }: Props = $props();
 
+  const drawerStore = getDrawerStore();
   function toggle() {
     $drawerStore.open = !$drawerStore.open;
   }

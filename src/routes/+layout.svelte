@@ -1,8 +1,6 @@
 <script lang="ts">
   import '../app.postcss';
-
   import { AppShell, AppBar, Drawer, initializeStores } from '@skeletonlabs/skeleton';
-  initializeStores();
 
   import hljs from 'highlight.js';
   import hljsSvelte from 'highlightjs-svelte';
@@ -17,6 +15,7 @@
 
   let { children }: Props = $props();
 
+  initializeStores();
   hljsSvelte(hljs);
   storeHighlightJs.set(hljs);
 </script>
