@@ -6,7 +6,7 @@
   import CodeSample from '$site/CodeSample.svelte';
   import Popup from '$lib/Popup.svelte';
 
-  let clickedName = '';
+  let clickedName = $state('');
 
   const markers = [
     {

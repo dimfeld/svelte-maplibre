@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   // Import MapboxDraw and its CSS
   import MapboxDraw from '@mapbox/mapbox-gl-draw';
   import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
@@ -14,10 +16,14 @@
   import code from './+page.svelte?raw';
   import type { PageData } from './$types';
 
-  export let data: PageData;
+  interface Props {
+    data: PageData;
+  }
 
-  let map: maplibregl.Map;
-  let draw: MapboxDraw;
+  let { data }: Props = $props();
+
+  let map: maplibregl.Map = $state();
+  let draw: MapboxDraw = $state();
 
   function createMapboxDraw() {
     let draw = new MapboxDraw();
@@ -35,10 +41,12 @@
     return draw;
   }
 
-  $: if (map && !draw) {
-    draw = createMapboxDraw();
-    map.addControl(draw);
-  }
+  run(() => {
+    if (map && !draw) {
+      draw = createMapboxDraw();
+      map.addControl(draw);
+    }
+  });
 </script>
 
 <MapLibre

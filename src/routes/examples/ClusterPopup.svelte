@@ -1,23 +1,33 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { mapContext } from '$lib/context.js';
   import type { Feature } from 'geojson';
 
   const { map, source } = mapContext();
 
-  export let feature: Feature | undefined;
-
-  let innerFeatures: Feature[] = [];
-  $: if ($map && $source && feature) {
-    $map
-      ?.getSource($source)
-      ?.getClusterLeaves(feature.properties.cluster_id, 10000, 0)
-      .then((features) => {
-        innerFeatures = features;
-      });
+  interface Props {
+    feature: Feature | undefined;
   }
 
-  $: innerFeatures.sort((a, b) => {
-    return b.properties.time - a.properties.time;
+  let { feature }: Props = $props();
+
+  let innerFeatures: Feature[] = $state([]);
+  run(() => {
+    if ($map && $source && feature) {
+      $map
+        ?.getSource($source)
+        ?.getClusterLeaves(feature.properties.cluster_id, 10000, 0)
+        .then((features) => {
+          innerFeatures = features;
+        });
+    }
+  });
+
+  run(() => {
+    innerFeatures.sort((a, b) => {
+      return b.properties.time - a.properties.time;
+    });
   });
 </script>
 

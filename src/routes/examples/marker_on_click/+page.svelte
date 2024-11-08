@@ -6,7 +6,7 @@
   import DefaultMarker from '$lib/DefaultMarker.svelte';
   import type { LngLat, MapMouseEvent } from 'maplibre-gl';
 
-  let markers: { lngLat: LngLat }[] = [];
+  let markers: { lngLat: LngLat }[] = $state([]);
 
   // START SAMPLE 1
   function addMarker(e: CustomEvent<MapMouseEvent>) {

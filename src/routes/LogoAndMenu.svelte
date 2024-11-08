@@ -1,7 +1,13 @@
 <script lang="ts">
   import { getDrawerStore } from '@skeletonlabs/skeleton';
 
-  export let menuButton = true;
+  const drawerStore = getDrawerStore();
+
+  interface Props {
+    menuButton?: boolean;
+  }
+
+  let { menuButton = true }: Props = $props();
 
   const drawerStore = getDrawerStore();
   function toggle() {
@@ -11,7 +17,7 @@
 
 <div class="flex items-center gap-8">
   {#if menuButton}
-    <button type="button" on:click={toggle}>
+    <button type="button" onclick={toggle}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

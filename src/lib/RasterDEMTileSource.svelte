@@ -1,75 +1,103 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { onDestroy } from 'svelte';
   import { getId, updatedSourceContext } from './context';
   import { addSource, removeSource } from './source.js';
   import flush from 'just-flush';
   import type { DEMEncoding, RasterDEMTileSource } from 'maplibre-gl';
 
-  export let id: string = getId('raster-source');
-  export let tiles: string[];
-  export let tileSize: number | undefined = undefined;
-  export let bounds: Array<number> | null = null;
-  export let attribution: string | null = null;
-  export let minzoom: number | null = null;
-  export let maxzoom: number | null = null;
-  export let volatile: boolean | null = null;
-  export let encoding: DEMEncoding | null = null;
-  export let redFactor: number | null = null;
-  export let greenFactor: number | null;
-  export let blueFactor: number | null;
-  export let baseShift: number | null;
+  interface Props {
+    id?: string;
+    tiles: string[];
+    tileSize?: number | undefined;
+    bounds?: Array<number> | null;
+    attribution?: string | null;
+    minzoom?: number | null;
+    maxzoom?: number | null;
+    volatile?: boolean | null;
+    encoding?: DEMEncoding | null;
+    redFactor?: number | null;
+    greenFactor: number | null;
+    blueFactor: number | null;
+    baseShift: number | null;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    id = getId('raster-source'),
+    tiles,
+    tileSize = undefined,
+    bounds = null,
+    attribution = null,
+    minzoom = null,
+    maxzoom = null,
+    volatile = null,
+    encoding = null,
+    redFactor = null,
+    greenFactor,
+    blueFactor,
+    baseShift,
+    children,
+  }: Props = $props();
 
   const { map, self: source } = updatedSourceContext();
-  let sourceObj: RasterDEMTileSource | undefined;
+  let sourceObj: RasterDEMTileSource | undefined = $state();
 
-  let first = true;
-  $: if ($map && $source !== id) {
-    $source = id;
-    addSource(
-      $map,
-      $source,
-      flush({
-        type: 'raster-dem',
-        tiles,
-        tileSize,
-        bounds,
-        attribution,
-        minzoom,
-        maxzoom,
-        volatile,
-        encoding,
-        redFactor,
-        greenFactor,
-        blueFactor,
-        baseShift,
-      }),
-      (sourceId: string) => $map && sourceId === $source,
-      () => {
-        if (!$source) {
-          return;
+  let first = $state(true);
+  run(() => {
+    if ($map && $source !== id) {
+      $source = id;
+      addSource(
+        $map,
+        $source,
+        flush({
+          type: 'raster-dem',
+          tiles,
+          tileSize,
+          bounds,
+          attribution,
+          minzoom,
+          maxzoom,
+          volatile,
+          encoding,
+          redFactor,
+          greenFactor,
+          blueFactor,
+          baseShift,
+        }),
+        (sourceId: string) => $map && sourceId === $source,
+        () => {
+          if (!$source) {
+            return;
+          }
+
+          sourceObj = $map?.getSource($source) as RasterDEMTileSource;
+          first = true;
         }
+      );
 
-        sourceObj = $map?.getSource($source) as RasterDEMTileSource;
-        first = true;
-      }
-    );
-
-    sourceObj;
-  }
+      sourceObj;
+    }
+  });
 
   // Don't set tiles again after we've just created it.
-  $: if (sourceObj) {
-    if (first) {
-      first = false;
-    } else {
-      sourceObj.setTiles(tiles);
+  run(() => {
+    if (sourceObj) {
+      if (first) {
+        first = false;
+      } else {
+        sourceObj.setTiles(tiles);
+      }
     }
-  }
+  });
 
-  $: $map?.on('style.load', () => {
-    // When the style changes the current sources are nuked and recreated. Because of this the
-    // source object no longer references the current source on the map so we update it here.
-    sourceObj = $map?.getSource(id) as RasterDEMTileSource | undefined;
+  run(() => {
+    $map?.on('style.load', () => {
+      // When the style changes the current sources are nuked and recreated. Because of this the
+      // source object no longer references the current source on the map so we update it here.
+      sourceObj = $map?.getSource(id) as RasterDEMTileSource | undefined;
+    });
   });
 
   onDestroy(() => {
@@ -83,6 +111,6 @@
 
 {#if $source}
   {#key $source}
-    <slot />
+    {@render children?.()}
   {/key}
 {/if}

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import { createEventDispatcher, onDestroy } from 'svelte';
   import { updatedMarkerContext } from './context';
@@ -6,23 +8,36 @@
   import type * as GeoJSON from 'geojson';
   import flush from 'just-flush';
 
-  /** The Marker instance which was added to the map */
-  let markerProp: maplibre.Marker | undefined = undefined;
-  export { markerProp as marker };
-  export let lngLat: LngLatLike;
-  let classNames: string | undefined = undefined;
-  export { classNames as class };
-  /** Handle mouse events */
-  export let draggable = false;
-  /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
-   * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
-  export let feature: GeoJSON.Feature | null = null;
-  /** An offset in pixels to apply to the marker. */
-  export let offset: PointLike | undefined = undefined;
-  /** The rotation angle of the marker (clockwise, in degrees) */
-  export let rotation: number = 0;
-  /** The opacity of the marker */
-  export let opacity: number = 1;
+  interface Props {
+    /** The Marker instance which was added to the map */
+    marker?: maplibre.Marker | undefined;
+    lngLat: LngLatLike;
+    class?: string | undefined;
+    /** Handle mouse events */
+    draggable?: boolean;
+    /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
+     * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
+    feature?: GeoJSON.Feature | null;
+    /** An offset in pixels to apply to the marker. */
+    offset?: PointLike | undefined;
+    /** The rotation angle of the marker (clockwise, in degrees) */
+    rotation?: number;
+    /** The opacity of the marker */
+    opacity?: number;
+    children?: import('svelte').Snippet<[any]>;
+  }
+
+  let {
+    marker: markerProp = $bindable(undefined),
+    lngLat = $bindable(),
+    class: classNames = undefined,
+    draggable = false,
+    feature = null,
+    offset = undefined,
+    rotation = 0,
+    opacity = 1,
+    children,
+  }: Props = $props();
 
   const dispatch = createEventDispatcher<{
     drag: MarkerClickInfo;
@@ -64,10 +79,18 @@
     $marker?.remove();
   });
 
-  $: $marker?.setLngLat(lngLat);
-  $: $marker?.setOffset(offset ?? [0, 0]);
-  $: $marker?.setRotation(rotation);
-  $: $marker?.setOpacity(opacity.toString());
+  run(() => {
+    $marker?.setLngLat(lngLat);
+  });
+  run(() => {
+    $marker?.setOffset(offset ?? [0, 0]);
+  });
+  run(() => {
+    $marker?.setRotation(rotation);
+  });
+  run(() => {
+    $marker?.setOpacity(opacity.toString());
+  });
 
   function propagateLngLatChange() {
     let newPos = $marker?.getLngLat();
@@ -119,4 +142,4 @@
   }
 </script>
 
-<slot marker={$marker} />
+{@render children?.({ marker: $marker })}

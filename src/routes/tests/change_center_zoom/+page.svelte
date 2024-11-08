@@ -19,10 +19,10 @@
     },
   ] as { center: [number, number]; zoom: number; pitch: number; bearing: number }[];
 
-  let center: LngLatLike = coords[0].center;
-  let zoom = coords[0].zoom;
-  let bearing = coords[0].bearing;
-  let pitch = coords[0].pitch;
+  let center: LngLatLike = $state(coords[0].center);
+  let zoom = $state(coords[0].zoom);
+  let bearing = $state(coords[0].bearing);
+  let pitch = $state(coords[0].pitch);
 
   let currentIndex = 0;
   function toggle() {
@@ -44,10 +44,10 @@
     setTimeout(() => toggle(), 200);
   }
 
-  let currentCoords = center;
-  let currentZoom = zoom;
-  let currentBearing = bearing;
-  let currentPitch = pitch;
+  let currentCoords = $state(center);
+  let currentZoom = $state(zoom);
+  let currentBearing = $state(bearing);
+  let currentPitch = $state(pitch);
 
   function handleMoveEnd(ev: CustomEvent<MapMouseEvent>) {
     const map = ev.detail.target;
@@ -64,9 +64,9 @@
 
 <div class="flex gap-4">
   <div class="flex gap-4">
-    <button class="btn variant-filled mb-4" type="button" on:click={toggle}> Toggle </button>
+    <button class="variant-filled btn mb-4" type="button" onclick={toggle}> Toggle </button>
 
-    <button class="btn variant-filled mb-4" type="button" on:click={quickToggle}>
+    <button class="variant-filled btn mb-4" type="button" onclick={quickToggle}>
       Toggle and Back
     </button>
   </div>
