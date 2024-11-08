@@ -2,13 +2,25 @@
   import { CodeBlock } from '@skeletonlabs/skeleton';
   import dedent from 'dedent';
 
-  export let code: string;
-  export let filename = '';
-  export let startBoundary = '<MapLibre';
-  export let endBoundary = '</MapLibre>';
-  export let omitStartBoundary = false;
-  export let omitEndBoundary = false;
-  export let language = 'svelte';
+  interface Props {
+    code: string;
+    filename?: string;
+    startBoundary?: string;
+    endBoundary?: string;
+    omitStartBoundary?: boolean;
+    omitEndBoundary?: boolean;
+    language?: string;
+  }
+
+  let {
+    code,
+    filename = '',
+    startBoundary = '<MapLibre',
+    endBoundary = '</MapLibre>',
+    omitStartBoundary = false,
+    omitEndBoundary = false,
+    language = 'svelte',
+  }: Props = $props();
 
   function getExtract(
     code: string,
@@ -51,7 +63,9 @@
     return outputCode;
   }
 
-  $: output = getExtract(code, startBoundary, endBoundary, omitStartBoundary, omitEndBoundary);
+  let output = $derived(
+    getExtract(code, startBoundary, endBoundary, omitStartBoundary, omitEndBoundary)
+  );
 </script>
 
 <div class="my-4 flex w-full flex-col items-stretch">

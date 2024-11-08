@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
   import {
     getId,
@@ -9,24 +11,40 @@
   } from './context';
   import { readable, writable } from 'svelte/store';
 
-  export let id = getId('deckgl-layer');
-  export let minzoom: number | undefined = undefined;
-  export let maxzoom: number | undefined = undefined;
-  export let visible = true;
-  /** Whether to handle mouse events on this layer.
-   * @deprecated Use `interactive` instead. */
-  export let pickable: boolean | undefined = undefined;
-  /** Handle mouse events on this layer. */
-  export let interactive = true;
-
-  /** This indicates the currently hovered feature. Setting this attribute has no effect. */
-  export let hovered: DATA | null = null;
-
   export type DATA = $$Generic;
 
-  /** The deck.gl layer class to create */
-  export let type: any;
-  export let data: DATA[];
+  interface Props {
+    id?: any;
+    minzoom?: number | undefined;
+    maxzoom?: number | undefined;
+    visible?: boolean;
+    /** Whether to handle mouse events on this layer.
+     * @deprecated Use `interactive` instead. */
+    pickable?: boolean | undefined;
+    /** Handle mouse events on this layer. */
+    interactive?: boolean;
+    /** This indicates the currently hovered feature. Setting this attribute has no effect. */
+    hovered?: DATA | null;
+    /** The deck.gl layer class to create */
+    type: any;
+    data: DATA[];
+    children?: import('svelte').Snippet;
+    [key: string]: any;
+  }
+
+  let {
+    id = getId('deckgl-layer'),
+    minzoom = undefined,
+    maxzoom = undefined,
+    visible = true,
+    pickable = undefined,
+    interactive = true,
+    hovered = $bindable(null),
+    type,
+    data,
+    children,
+    ...rest
+  }: Props = $props();
 
   const dispatch = createEventDispatcher<{
     click: DeckGlMouseEvent<DATA>;
@@ -37,7 +55,7 @@
   const context = mapContext();
   const { map, minzoom: minZoomContext, maxzoom: maxZoomContext } = context;
 
-  let deckgl: typeof import('@deck.gl/mapbox');
+  let deckgl: typeof import('@deck.gl/mapbox') = $state();
   onMount(async () => {
     deckgl = await import('@deck.gl/mapbox');
   });
@@ -51,22 +69,7 @@
     layerEvent,
   });
 
-  $: $layerId = id;
-
-  $: actualMinZoom = minzoom ?? $minZoomContext;
-  $: actualMaxZoom = maxzoom ?? $maxZoomContext;
-
-  let zoom = $map?.getZoom() ?? 1;
-  $: visibility = visible && zoom >= actualMinZoom && zoom <= actualMaxZoom;
-
-  $: options = {
-    ...$$restProps,
-    visible: visibility,
-    data,
-    pickable: pickable ?? interactive,
-    onClick: handleClick,
-    onHover: handleHover,
-  };
+  let zoom = $state($map?.getZoom() ?? 1);
 
   function handleZoom() {
     if ($map) {
@@ -102,21 +105,7 @@
     };
   }
 
-  let layer: typeof import('@deck.gl/mapbox').MapboxLayer;
-  $: if ($map && deckgl && !layer) {
-    $map.on('zoom', handleZoom);
-    $map.on('zoomend', handleZoom);
-    handleZoom();
-
-    layer = new deckgl.MapboxLayer({
-      id,
-      type,
-      ...options,
-    });
-    $map.addLayer(layer);
-  }
-
-  $: layer?.setProps(options);
+  let layer: typeof import('@deck.gl/mapbox').MapboxLayer = $state();
 
   onDestroy(() => {
     if ($map?.loaded() && layer) {
@@ -125,8 +114,39 @@
       $map.off('zoomend', handleZoom);
     }
   });
+  run(() => {
+    $layerId = id;
+  });
+  let actualMinZoom = $derived(minzoom ?? $minZoomContext);
+  let actualMaxZoom = $derived(maxzoom ?? $maxZoomContext);
+  let visibility = $derived(visible && zoom >= actualMinZoom && zoom <= actualMaxZoom);
+  let options = $derived({
+    ...rest,
+    visible: visibility,
+    data,
+    pickable: pickable ?? interactive,
+    onClick: handleClick,
+    onHover: handleHover,
+  });
+  run(() => {
+    if ($map && deckgl && !layer) {
+      $map.on('zoom', handleZoom);
+      $map.on('zoomend', handleZoom);
+      handleZoom();
+
+      layer = new deckgl.MapboxLayer({
+        id,
+        type,
+        ...options,
+      });
+      $map.addLayer(layer);
+    }
+  });
+  run(() => {
+    layer?.setProps(options);
+  });
 </script>
 
 {#if layer}
-  <slot />
+  {@render children?.()}
 {/if}

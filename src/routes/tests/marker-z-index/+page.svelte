@@ -35,12 +35,12 @@
 >
   <GeoJson data={features}>
     <MarkerLayer zIndex={10}>
-      <div class="h-8 w-8 rounded-full bg-red-500" />
+      <div class="h-8 w-8 rounded-full bg-red-500"></div>
     </MarkerLayer>
   </GeoJson>
 
   <Marker lngLat={[0, 0]} zIndex={20}>
-    <div class="h-4 w-4 rounded-full bg-green-500" />
+    <div class="h-4 w-4 rounded-full bg-green-500"></div>
   </Marker>
 </MapLibre>
 

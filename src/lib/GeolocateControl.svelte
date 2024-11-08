@@ -1,28 +1,43 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { mapContext } from './context';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
   const { map } = mapContext();
 
-  export let position: maplibregl.ControlPosition = 'top-left';
-  export let positionOptions: PositionOptions | undefined = undefined;
-  export let fitBoundsOptions: maplibregl.FitBoundsOptions | undefined = undefined;
-  export let trackUserLocation = false;
-  export let showAccuracyCircle = true;
-  export let showUserLocation = true;
-
-  export let control: maplibregl.GeolocateControl | null = null;
-  $: if ($map && !control) {
-    control = new maplibregl.GeolocateControl({
-      positionOptions,
-      fitBoundsOptions,
-      trackUserLocation,
-      showAccuracyCircle,
-      showUserLocation,
-    });
-    $map.addControl(control, position);
+  interface Props {
+    position?: maplibregl.ControlPosition;
+    positionOptions?: PositionOptions | undefined;
+    fitBoundsOptions?: maplibregl.FitBoundsOptions | undefined;
+    trackUserLocation?: boolean;
+    showAccuracyCircle?: boolean;
+    showUserLocation?: boolean;
+    control?: maplibregl.GeolocateControl | null;
   }
+
+  let {
+    position = 'top-left',
+    positionOptions = undefined,
+    fitBoundsOptions = undefined,
+    trackUserLocation = false,
+    showAccuracyCircle = true,
+    showUserLocation = true,
+    control = $bindable(null),
+  }: Props = $props();
+  run(() => {
+    if ($map && !control) {
+      control = new maplibregl.GeolocateControl({
+        positionOptions,
+        fitBoundsOptions,
+        trackUserLocation,
+        showAccuracyCircle,
+        showUserLocation,
+      });
+      $map.addControl(control, position);
+    }
+  });
 
   onDestroy(() => {
     if ($map?.loaded() && control) {

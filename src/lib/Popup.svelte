@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import type { Feature } from 'geojson';
   import maplibregl, {
     type MapMouseEvent,
@@ -18,37 +20,53 @@
     };
   }
 
-  /** Show the built-in close button. By default the close button will be shown
-   * only if closeOnClickOutside and closeOnClickInside are not set. */
-  export let closeButton: boolean | undefined = undefined;
-  /** Close on click outside the popup. */
-  export let closeOnClickOutside = true;
-  /** Close on click inside the popup. This should only be used for non-interactive popups. */
-  export let closeOnClickInside = false;
-  /** Close the popup when the map moves. */
-  export let closeOnMove = false;
+  interface Props {
+    /** Show the built-in close button. By default the close button will be shown
+     * only if closeOnClickOutside and closeOnClickInside are not set. */
+    closeButton?: boolean | undefined;
+    /** Close on click outside the popup. */
+    closeOnClickOutside?: boolean;
+    /** Close on click inside the popup. This should only be used for non-interactive popups. */
+    closeOnClickInside?: boolean;
+    /** Close the popup when the map moves. */
+    closeOnMove?: boolean;
+    /** Define when to open the popup. If set to manual, you can open the popup programmatically by
+     * setting the `open` attribute. */
+    openOn?: 'hover' | 'click' | 'dblclick' | 'contextmenu' | 'manual';
+    /** Only open the popup if there's no feature from a higher layer covering this one. */
+    openIfTopMost?: boolean;
+    focusAfterOpen?: boolean;
+    anchor?: maplibregl.PositionAnchor | undefined;
+    offset?: maplibregl.Offset | undefined;
+    /** Classes to apply to the map's popup container */
+    popupClass?: string | undefined;
+    maxWidth?: string | undefined;
+    /** Where to show the popup. */
+    lngLat?: maplibregl.LngLatLike | undefined;
+    /** If set and the slot is omitted, use this string as HTML to pass into the popup. */
+    html?: string | undefined;
+    /** Whether the popup is open or not. Can be set to manualy open the popup at `lngLat`. */
+    open?: boolean;
+    children?: import('svelte').Snippet<[any]>;
+  }
 
-  /** Define when to open the popup. If set to manual, you can open the popup programmatically by
-   * setting the `open` attribute. */
-  export let openOn: 'hover' | 'click' | 'dblclick' | 'contextmenu' | 'manual' = 'click';
-  /** Only open the popup if there's no feature from a higher layer covering this one. */
-  export let openIfTopMost = true;
-
-  export let focusAfterOpen = true;
-  export let anchor: maplibregl.PositionAnchor | undefined = undefined;
-  export let offset: maplibregl.Offset | undefined = undefined;
-  /** Classes to apply to the map's popup container */
-  export let popupClass: string | undefined = undefined;
-  export let maxWidth: string | undefined = undefined;
-
-  /** Where to show the popup. */
-  export let lngLat: maplibregl.LngLatLike | undefined = undefined;
-
-  /** If set and the slot is omitted, use this string as HTML to pass into the popup. */
-  export let html: string | undefined = undefined;
-
-  /** Whether the popup is open or not. Can be set to manualy open the popup at `lngLat`. */
-  export let open = false;
+  let {
+    closeButton = undefined,
+    closeOnClickOutside = true,
+    closeOnClickInside = false,
+    closeOnMove = false,
+    openOn = 'click',
+    openIfTopMost = true,
+    focusAfterOpen = true,
+    anchor = undefined,
+    offset = undefined,
+    popupClass = undefined,
+    maxWidth = undefined,
+    lngLat = $bindable(undefined),
+    html = undefined,
+    open = $bindable(false),
+    children,
+  }: Props = $props();
 
   const dispatch = createEventDispatcher<{
     open: maplibregl.Popup;
@@ -60,42 +78,10 @@
 
   const clickEvents = ['click', 'dblclick', 'contextmenu'];
 
-  $: actualCloseButton = closeButton ?? (!closeOnClickOutside && !closeOnClickInside);
+  let popup: maplibregl.Popup = $state();
 
-  let popup: maplibregl.Popup;
-  $: if (!popup) {
-    popup = new maplibregl.Popup({
-      closeButton: actualCloseButton,
-      // We handle this ourselves to improve behavior on mobile.
-      closeOnClick: false,
-      closeOnMove,
-      focusAfterOpen,
-      maxWidth,
-      className: popupClass,
-      anchor,
-      offset,
-    });
-
-    popupElement = popup.getElement();
-
-    popup.on('open', () => {
-      open = true;
-      setPopupClickHandler();
-      dispatch('open', popup);
-    });
-
-    popup.on('close', () => {
-      open = false;
-      dispatch('close', popup);
-    });
-
-    popup.on('hover', () => {
-      dispatch('hover', popup);
-    });
-  }
-
-  let hoveringOnPopup = false;
-  let popupElement: HTMLElement | undefined;
+  let hoveringOnPopup = $state(false);
+  let popupElement: HTMLElement | undefined = $state();
   function setPopupClickHandler() {
     if (!popup) {
       return;
@@ -139,14 +125,6 @@
       },
       { passive: true }
     );
-  }
-
-  $: if (popup && $popupTarget instanceof maplibregl.Marker) {
-    if (openOn === 'click') {
-      $popupTarget.setPopup(popup);
-    } else if ($popupTarget.getPopup() === popup) {
-      $popupTarget.setPopup(undefined);
-    }
   }
 
   onMount(() => {
@@ -199,8 +177,8 @@
     return !('marker' in e) && !isDeckGlMouseEvent(e) && eventTopMost(e) !== $layer;
   }
 
-  let features: Feature[] | null = null;
-  let touchOpenState: 'normal' | 'opening' | 'justOpened' = 'normal';
+  let features: Feature[] | null = $state(null);
+  let touchOpenState: 'normal' | 'opening' | 'justOpened' = $state('normal');
 
   function handleLayerEvent(e: MapLayerMouseEvent | LayerEvent) {
     if ('layerType' in e && e.layerType === 'deckgl') {
@@ -308,53 +286,106 @@
     }
   }
 
-  $: if (clickEvents.includes(openOn) && $layerEvent?.type === openOn) {
-    handleLayerClick($layerEvent);
-    $layerEvent = null;
-  }
-
-  $: hoveringOnLayer =
-    openOn === 'hover' && ($layerEvent?.type === 'mousemove' || $layerEvent?.type === 'mouseenter');
-  $: if (openOn === 'hover' && layerEvent) {
-    if (hoveringOnLayer && $layerEvent) {
-      handleLayerEvent($layerEvent);
-    }
-    open = (hoveringOnLayer || hoveringOnPopup) ?? false;
-  }
-
-  $: if (popupEl) {
-    popup.setDOMContent(popupEl);
-  } else if (html) {
-    popup.setHTML(html);
-  }
-
-  $: if (lngLat) popup.setLngLat(lngLat);
-
-  $: if ($map) {
-    let isOpen = popup.isOpen();
-    if (open && !isOpen) {
-      popup.addTo($map);
-      if (touchOpenState === 'opening') {
-        touchOpenState = 'justOpened';
-      }
-    } else if (!open && isOpen) {
-      popup.remove();
-    }
-  }
-
   onDestroy(() => {
     if ($map && popup?.isOpen()) {
       popup.remove();
     }
   });
 
-  let popupEl: HTMLDivElement | undefined;
+  let popupEl: HTMLDivElement | undefined = $state();
+  let actualCloseButton = $derived(closeButton ?? (!closeOnClickOutside && !closeOnClickInside));
+  run(() => {
+    if (!popup) {
+      popup = new maplibregl.Popup({
+        closeButton: actualCloseButton,
+        // We handle this ourselves to improve behavior on mobile.
+        closeOnClick: false,
+        closeOnMove,
+        focusAfterOpen,
+        maxWidth,
+        className: popupClass,
+        anchor,
+        offset,
+      });
+
+      popupElement = popup.getElement();
+
+      popup.on('open', () => {
+        open = true;
+        setPopupClickHandler();
+        dispatch('open', popup);
+      });
+
+      popup.on('close', () => {
+        open = false;
+        dispatch('close', popup);
+      });
+
+      popup.on('hover', () => {
+        dispatch('hover', popup);
+      });
+    }
+  });
+  run(() => {
+    if (popup && $popupTarget instanceof maplibregl.Marker) {
+      if (openOn === 'click') {
+        $popupTarget.setPopup(popup);
+      } else if ($popupTarget.getPopup() === popup) {
+        $popupTarget.setPopup(undefined);
+      }
+    }
+  });
+  run(() => {
+    if (clickEvents.includes(openOn) && $layerEvent?.type === openOn) {
+      handleLayerClick($layerEvent);
+      $layerEvent = null;
+    }
+  });
+  let hoveringOnLayer = $derived(
+    openOn === 'hover' && ($layerEvent?.type === 'mousemove' || $layerEvent?.type === 'mouseenter')
+  );
+  run(() => {
+    if (openOn === 'hover' && layerEvent) {
+      if (hoveringOnLayer && $layerEvent) {
+        handleLayerEvent($layerEvent);
+      }
+      open = (hoveringOnLayer || hoveringOnPopup) ?? false;
+    }
+  });
+  run(() => {
+    if (popupEl) {
+      popup.setDOMContent(popupEl);
+    } else if (html) {
+      popup.setHTML(html);
+    }
+  });
+  run(() => {
+    if (lngLat) popup.setLngLat(lngLat);
+  });
+  run(() => {
+    if ($map) {
+      let isOpen = popup.isOpen();
+      if (open && !isOpen) {
+        popup.addTo($map);
+        if (touchOpenState === 'opening') {
+          touchOpenState = 'justOpened';
+        }
+      } else if (!open && isOpen) {
+        popup.remove();
+      }
+    }
+  });
 </script>
 
-{#if $$slots.default}
+{#if children}
   <div bind:this={popupEl}>
     {#if features?.length || $popupTarget instanceof maplibregl.Marker}
-      <slot {features} data={features?.[0] ?? null} map={$map} close={() => (open = false)} />
+      {@render children?.({
+        features,
+        data: features?.[0] ?? null,
+        map: $map,
+        close: () => (open = false),
+      })}
     {/if}
   </div>
 {/if}

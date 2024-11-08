@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { getId, updatedLayerContext } from './context.js';
   import { diffApplier } from './compare.js';
   import { combineFilters, isClusterFilter } from './filters.js';
@@ -8,39 +10,57 @@
   import type { MapMouseEvent, MapGeoJSONFeature } from 'maplibre-gl';
   import type * as GeoJSON from 'geojson';
 
-  export let id = getId('layer');
-  /** Set the source for this layer. This can be omitted when the Layer is created in the slot
-   * of a source component. */
-  export let source: string | undefined = undefined;
-  /** When setting up a layer for a vector tile source, the source layer to which this layer corresponds. */
-  export let sourceLayer: string | undefined = undefined;
+  interface Props {
+    id?: any;
+    /** Set the source for this layer. This can be omitted when the Layer is created in the slot
+     * of a source component. */
+    source?: string | undefined;
+    /** When setting up a layer for a vector tile source, the source layer to which this layer corresponds. */
+    sourceLayer?: string | undefined;
+    /** Draw this layer under another layer. This is only evaluated when the component is created. */
+    beforeId?: string | undefined;
+    /** Calculate beforeId so that this layer appears below all layers of a particular type.
+     * If this is a function, this layer will be added before the first layer for which
+     * the function returns true.*/
+    beforeLayerType?: string | ((layer: maplibregl.LayerSpecification) => boolean) | undefined;
+    type: maplibregl.LayerSpecification['type'];
+    paint?: object | undefined;
+    layout?: object | undefined;
+    filter?: maplibregl.ExpressionSpecification | undefined;
+    applyToClusters?: boolean | undefined;
+    minzoom?: number | undefined;
+    maxzoom?: number | undefined;
+    /** Enable to use hoverStateFilter or filter on `hover-state`. Features must have an `id` property for this to work. */
+    manageHoverState?: boolean;
+    /** The feature currently being hovered. */
+    hovered?: GeoJSON.Feature | null;
+    /** Handle mouse events on this layer. */
+    interactive?: boolean;
+    hoverCursor?: string | undefined;
+    eventsIfTopMost?: boolean;
+    children?: import('svelte').Snippet;
+  }
 
-  /** Draw this layer under another layer. This is only evaluated when the component is created. */
-  export let beforeId: string | undefined = undefined;
-  /** Calculate beforeId so that this layer appears below all layers of a particular type.
-   * If this is a function, this layer will be added before the first layer for which
-   * the function returns true.*/
-  export let beforeLayerType:
-    | string
-    | ((layer: maplibregl.LayerSpecification) => boolean)
-    | undefined = undefined;
-  export let type: maplibregl.LayerSpecification['type'];
-  export let paint: object | undefined = undefined;
-  export let layout: object | undefined = undefined;
-  export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
-  export let applyToClusters: boolean | undefined = undefined;
-  export let minzoom: number | undefined = undefined;
-  export let maxzoom: number | undefined = undefined;
-  /** Enable to use hoverStateFilter or filter on `hover-state`. Features must have an `id` property for this to work. */
-  export let manageHoverState = false;
-  /** The feature currently being hovered. */
-  export let hovered: GeoJSON.Feature | null = null;
-  /** Handle mouse events on this layer. */
-  export let interactive = true;
-
-  export let hoverCursor: string | undefined = undefined;
-
-  export let eventsIfTopMost = false;
+  let {
+    id = getId('layer'),
+    source = undefined,
+    sourceLayer = undefined,
+    beforeId = undefined,
+    beforeLayerType = undefined,
+    type,
+    paint = undefined,
+    layout = undefined,
+    filter = undefined,
+    applyToClusters = undefined,
+    minzoom = undefined,
+    maxzoom = undefined,
+    manageHoverState = false,
+    hovered = $bindable(null),
+    interactive = true,
+    hoverCursor = undefined,
+    eventsIfTopMost = false,
+    children,
+  }: Props = $props();
 
   const dispatch = createEventDispatcher<{
     click: LayerClickInfo;
@@ -50,9 +70,6 @@
     mousemove: LayerClickInfo;
     mouseleave: Pick<LayerClickInfo, 'map' | 'layer' | 'source'>;
   }>();
-
-  $: clusterFilter = isClusterFilter(applyToClusters);
-  $: layerFilter = combineFilters('all', clusterFilter, filter);
 
   const {
     map,
@@ -64,23 +81,12 @@
     layerInfo,
   } = updatedLayerContext();
 
-  $: actualMinZoom = minzoom ?? $minZoomContext;
-  $: actualMaxZoom = maxzoom ?? $maxZoomContext;
-
-  $: if ($layer) {
-    layerInfo.set($layer, {
-      interactive,
-    });
-  }
-
   onDestroy(() => {
     if ($layer && $map) {
       layerInfo.delete($layer);
       $map?.removeLayer($layer);
     }
   });
-
-  $: actualSource = source || $sourceName;
 
   let hoverFeatureId: string | number | undefined = undefined;
 
@@ -214,50 +220,7 @@
     });
   }
 
-  let first = true;
-  $: if ($map && $layer !== id && actualSource) {
-    if ($layer) {
-      unsubEvents($layer);
-      layerInfo.delete($layer);
-    }
-
-    let actualBeforeId = beforeId;
-    if (!beforeId && beforeLayerType) {
-      let layers = $map.getStyle().layers;
-      let layerFunc =
-        typeof beforeLayerType === 'function'
-          ? beforeLayerType
-          : (l: maplibregl.LayerSpecification) => l.type === beforeLayerType;
-      let beforeLayer = layers?.find(layerFunc);
-      if (beforeLayer) {
-        actualBeforeId = beforeLayer.id;
-      }
-    }
-
-    $layer = id;
-    $map.addLayer(
-      flush({
-        id: $layer,
-        type,
-        source: actualSource,
-        'source-layer': sourceLayer,
-        filter: layerFilter,
-        paint,
-        layout,
-        minzoom: actualMinZoom,
-        maxzoom: actualMaxZoom,
-      }),
-      actualBeforeId
-    );
-    first = true;
-
-    $map.on('click', $layer, handleClick);
-    $map.on('dblclick', $layer, handleClick);
-    $map.on('contextmenu', $layer, handleClick);
-    $map.on('mouseenter', $layer, handleMouseEnter);
-    $map.on('mousemove', $layer, handleMouseMove);
-    $map.on('mouseleave', $layer, handleMouseLeave);
-  }
+  let first = $state(true);
 
   function unsubEvents(layerName: string) {
     if (!$map) {
@@ -278,39 +241,104 @@
     }
   });
 
-  $: applyPaint = $layer
-    ? diffApplier((key, value) => {
-        if ($map?.style._loaded) {
-          $map.setPaintProperty($layer!, key, value);
-        } else {
-          $map?.once('styledata', () => $map?.setPaintProperty($layer!, key, value));
+  let clusterFilter = $derived(isClusterFilter(applyToClusters));
+  let layerFilter = $derived(combineFilters('all', clusterFilter, filter));
+  let actualMinZoom = $derived(minzoom ?? $minZoomContext);
+  let actualMaxZoom = $derived(maxzoom ?? $maxZoomContext);
+  let actualSource = $derived(source || $sourceName);
+  run(() => {
+    if ($map && $layer !== id && actualSource) {
+      if ($layer) {
+        unsubEvents($layer);
+        layerInfo.delete($layer);
+      }
+
+      let actualBeforeId = beforeId;
+      if (!beforeId && beforeLayerType) {
+        let layers = $map.getStyle().layers;
+        let layerFunc =
+          typeof beforeLayerType === 'function'
+            ? beforeLayerType
+            : (l: maplibregl.LayerSpecification) => l.type === beforeLayerType;
+        let beforeLayer = layers?.find(layerFunc);
+        if (beforeLayer) {
+          actualBeforeId = beforeLayer.id;
         }
-      })
-    : void 0;
+      }
 
-  $: applyLayout = $layer
-    ? diffApplier((key, value) => {
-        if ($map?.style._loaded) {
-          $map.setLayoutProperty($layer!, key, value);
-        } else {
-          $map?.once('styledata', () => $map?.setLayoutProperty($layer!, key, value));
-        }
-      })
-    : void 0;
+      $layer = id;
+      $map.addLayer(
+        flush({
+          id: $layer,
+          type,
+          source: actualSource,
+          'source-layer': sourceLayer,
+          filter: layerFilter,
+          paint,
+          layout,
+          minzoom: actualMinZoom,
+          maxzoom: actualMaxZoom,
+        }),
+        actualBeforeId
+      );
+      first = true;
 
-  $: applyPaint?.(paint);
-  $: applyLayout?.(layout);
-
-  $: if ($layer) $map?.setLayerZoomRange($layer, actualMinZoom, actualMaxZoom);
-
-  // Don't set the filter again after we've just created it.
-  $: if ($layer) {
-    if (first) {
-      first = false;
-    } else {
-      $map?.setFilter($layer, layerFilter);
+      $map.on('click', $layer, handleClick);
+      $map.on('dblclick', $layer, handleClick);
+      $map.on('contextmenu', $layer, handleClick);
+      $map.on('mouseenter', $layer, handleMouseEnter);
+      $map.on('mousemove', $layer, handleMouseMove);
+      $map.on('mouseleave', $layer, handleMouseLeave);
     }
-  }
+  });
+  run(() => {
+    if ($layer) {
+      layerInfo.set($layer, {
+        interactive,
+      });
+    }
+  });
+  let applyPaint = $derived(
+    $layer
+      ? diffApplier((key, value) => {
+          if ($map?.style._loaded) {
+            $map.setPaintProperty($layer!, key, value);
+          } else {
+            $map?.once('styledata', () => $map?.setPaintProperty($layer!, key, value));
+          }
+        })
+      : void 0
+  );
+  let applyLayout = $derived(
+    $layer
+      ? diffApplier((key, value) => {
+          if ($map?.style._loaded) {
+            $map.setLayoutProperty($layer!, key, value);
+          } else {
+            $map?.once('styledata', () => $map?.setLayoutProperty($layer!, key, value));
+          }
+        })
+      : void 0
+  );
+  run(() => {
+    applyPaint?.(paint);
+  });
+  run(() => {
+    applyLayout?.(layout);
+  });
+  run(() => {
+    if ($layer) $map?.setLayerZoomRange($layer, actualMinZoom, actualMaxZoom);
+  });
+  // Don't set the filter again after we've just created it.
+  run(() => {
+    if ($layer) {
+      if (first) {
+        first = false;
+      } else {
+        $map?.setFilter($layer, layerFilter);
+      }
+    }
+  });
 </script>
 
 <!--
@@ -322,6 +350,6 @@ code instead of directly using this component.
 
 {#if $layer}
   {#key $layer}
-    <slot />
+    {@render children?.()}
   {/key}
 {/if}

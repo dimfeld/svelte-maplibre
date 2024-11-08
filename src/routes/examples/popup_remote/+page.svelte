@@ -45,7 +45,7 @@
     height: number;
   }
 
-  let cache: Record<string, APIResponse> = {};
+  let cache: Record<string, APIResponse> = $state({});
 </script>
 
 <MapLibre

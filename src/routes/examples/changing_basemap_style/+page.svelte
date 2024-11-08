@@ -12,11 +12,12 @@
   let showFill = true;
   let fillColor = '#006600';
   let borderColor = '#003300';
-  let selected: 'light' | 'dark' = 'light';
-  $: style =
+  let selected: 'light' | 'dark' = $state('light');
+  let style = $derived(
     selected === 'light'
       ? 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json'
-      : 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
+      : 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
+  );
 
   const coloradoPolygon = {
     type: 'FeatureCollection',
@@ -62,8 +63,8 @@
     ],
   } as FeatureCollection;
 
-  let dataOption: 'states' | 'colorado' = 'states';
-  $: dataset = dataOption === 'states' ? states : coloradoPolygon;
+  let dataOption: 'states' | 'colorado' = $state('states');
+  let dataset = $derived(dataOption === 'states' ? states : coloradoPolygon);
 </script>
 
 <div class="controls">

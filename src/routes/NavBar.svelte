@@ -5,11 +5,14 @@
   import { getDrawerStore } from '@skeletonlabs/skeleton';
   import LogoAndMenu from './LogoAndMenu.svelte';
 
-  const drawerStore = getDrawerStore();
+  interface Props {
+    inDrawer?: boolean;
+    class?: string;
+  }
 
-  export let inDrawer = false;
-  let classNames: string = '';
-  export { classNames as class };
+  let { inDrawer = false, class: classNames = '' }: Props = $props();
+
+  const drawerStore = getDrawerStore();
 
   const components = [];
   const examples = [

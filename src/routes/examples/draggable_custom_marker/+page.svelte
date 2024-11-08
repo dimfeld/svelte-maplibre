@@ -6,10 +6,10 @@
   import CodeSample from '$site/CodeSample.svelte';
   import type { MarkerClickInfo } from '$lib';
 
-  let markerPos = [-122.2993, 47.4464];
+  let markerPos = $state([-122.2993, 47.4464]);
   const handleDrag = (event: CustomEvent<MarkerClickInfo>) => (markerPos = event.detail.lngLat);
 
-  let boundPos = { lng: -10, lat: -20 };
+  let boundPos = $state({ lng: -10, lat: -20 });
 </script>
 
 <ul>

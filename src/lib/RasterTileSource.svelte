@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { onDestroy } from 'svelte';
   import { getId, updatedSourceContext } from './context';
   import { addSource, removeSource } from './source.js';
@@ -7,20 +9,36 @@
   import * as pmtiles from 'pmtiles';
   import maplibregl, { type RasterTileSource } from 'maplibre-gl';
 
-  export let id: string = getId('raster-source');
+  interface Props {
+    id?: string;
+    /** An array one or more tile source URLs pointing to the tiles.
+     * Either `tiles` or `url` must be provided. */
+    tiles?: string[] | undefined;
+    tileSize?: number | undefined;
+    /** A single URL pointing to a PMTiles archive. Either `tiles` or `url` must be provided. */
+    url?: string | undefined;
+    bounds?: Array<number> | null;
+    scheme?: Scheme | null;
+    attribution?: string | null;
+    minzoom?: number | null;
+    maxzoom?: number | null;
+    volatile?: boolean | null;
+    children?: import('svelte').Snippet;
+  }
 
-  /** An array one or more tile source URLs pointing to the tiles.
-   * Either `tiles` or `url` must be provided. */
-  export let tiles: string[] | undefined = undefined;
-  export let tileSize: number | undefined = undefined;
-  /** A single URL pointing to a PMTiles archive. Either `tiles` or `url` must be provided. */
-  export let url: string | undefined = undefined;
-  export let bounds: Array<number> | null = null;
-  export let scheme: Scheme | null = null;
-  export let attribution: string | null = null;
-  export let minzoom: number | null = null;
-  export let maxzoom: number | null = null;
-  export let volatile: boolean | null = null;
+  let {
+    id = getId('raster-source'),
+    tiles = undefined,
+    tileSize = undefined,
+    url = undefined,
+    bounds = null,
+    scheme = null,
+    attribution = null,
+    minzoom = null,
+    maxzoom = null,
+    volatile = null,
+    children,
+  }: Props = $props();
 
   if (url && url.includes('pmtiles://')) {
     if (!maplibregl.config.REGISTERED_PROTOCOLS.hasOwnProperty('pmtiles')) {
@@ -30,55 +48,61 @@
   }
 
   const { map, self: source } = updatedSourceContext();
-  let sourceObj: RasterTileSource | undefined;
+  let sourceObj: RasterTileSource | undefined = $state();
 
-  let first = true;
-  $: if ($map && $source !== id) {
-    $source = id;
-    addSource(
-      $map,
-      $source,
-      flush({
-        type: 'raster',
-        tiles,
-        tileSize,
-        url,
-        bounds,
-        scheme,
-        attribution,
-        minzoom,
-        maxzoom,
-        volatile,
-      }),
-      (sourceId: string) => $map && sourceId === $source,
-      () => {
-        if (!$source) {
-          return;
+  let first = $state(true);
+  run(() => {
+    if ($map && $source !== id) {
+      $source = id;
+      addSource(
+        $map,
+        $source,
+        flush({
+          type: 'raster',
+          tiles,
+          tileSize,
+          url,
+          bounds,
+          scheme,
+          attribution,
+          minzoom,
+          maxzoom,
+          volatile,
+        }),
+        (sourceId: string) => $map && sourceId === $source,
+        () => {
+          if (!$source) {
+            return;
+          }
+
+          sourceObj = $map?.getSource($source) as RasterTileSource;
+          first = true;
         }
+      );
 
-        sourceObj = $map?.getSource($source) as RasterTileSource;
-        first = true;
-      }
-    );
-
-    sourceObj;
-  }
+      sourceObj;
+    }
+  });
 
   // Don't set tiles/url again after we've just created it.
-  $: if (sourceObj) {
-    if (first) {
-      first = false;
-    } else if (tiles) {
-      sourceObj.setTiles(tiles);
-    } else {
-      sourceObj.setUrl(url);
+  run(() => {
+    if (sourceObj) {
+      if (first) {
+        first = false;
+      } else if (tiles) {
+        sourceObj.setTiles(tiles);
+      } else {
+        sourceObj.setUrl(url);
+      }
     }
-  }
+  });
 
-  $: $map?.on('style.load', () => {
-    // When the style changes the current sources are nuked and recreated. Because of this the
-    // source object no longer references the current source on the map so we update it here.
-    sourceObj = $map?.getSource(id) as RasterTileSource | undefined;
+  run(() => {
+    $map?.on('style.load', () => {
+      // When the style changes the current sources are nuked and recreated. Because of this the
+      // source object no longer references the current source on the map so we update it here.
+      sourceObj = $map?.getSource(id) as RasterTileSource | undefined;
+    });
   });
 
   onDestroy(() => {
@@ -92,6 +116,6 @@
 
 {#if $source}
   {#key $source}
-    <slot />
+    {@render children?.()}
   {/key}
 {/if}

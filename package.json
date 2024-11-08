@@ -86,7 +86,7 @@
     "@deck.gl/core": "^8.8.0",
     "@deck.gl/layers": "^8.8.0",
     "@deck.gl/mapbox": "^8.8.0",
-    "svelte": "^3.54.0 || ^4.0.0 || ^5.0.0"
+    "svelte": "^5.0.0"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.8",
@@ -106,6 +106,7 @@
     "@types/d3-geo": "^3.1.0",
     "@types/geojson": "^7946.0.14",
     "@types/mapbox__mapbox-gl-draw": "^1.4.8",
+    "@types/node": "^22.9.0",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "autoprefixer": "^10.4.20",

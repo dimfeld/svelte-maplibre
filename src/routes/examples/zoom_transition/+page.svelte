@@ -35,8 +35,8 @@
   const stateCenters = calculateCenters(states);
   const countyCenters = calculateCenters(counties);
 
-  let zoomThreshold = 5;
-  let currentZoom = 4;
+  let zoomThreshold = $state(5);
+  let currentZoom = $state(4);
 </script>
 
 <p>

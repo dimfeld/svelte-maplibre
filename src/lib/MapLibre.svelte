@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import flush from 'just-flush';
   import { createEventDispatcher } from 'svelte';
   import { createMapContext } from './context.js';
@@ -19,67 +21,105 @@
   import FullscreenControl from './FullscreenControl.svelte';
   import ScaleControl from './ScaleControl.svelte';
 
-  export let map: maplibregl.Map | null = null;
-  /** The `div` element that the Map is placed into. You can bind to this prop to access the element for yourself.
-   * Setting it externally will have no effect. */
-  export let mapContainer: HTMLDivElement | undefined = undefined;
-  let classNames: string | undefined = undefined;
-  export { classNames as class };
-  /** The style to use for the map. */
-  export let style: string | maplibregl.StyleSpecification;
-  /** Tell MapLibre to update the map in place when changing the style, diffing the old style against the new one to
-   * make minimal changes. If you enable this, be aware of https://github.com/maplibre/maplibre-gl-js/issues/2651,
-   * which may prevent some style changes from becoming visible when diffing is enabled. */
-  export let diffStyleUpdates = false;
-  export let center: LngLatLike | undefined = undefined;
-  export let zoom: number | undefined = undefined;
-  export let pitch = 0;
-  export let bearing = 0;
-  export let bounds: LngLatBoundsLike | undefined = undefined;
-  /** Set to true to track the map viewport in the URL hash. If the URL hash is set, that overrides initial viewport settings. */
-  export let hash = false;
-  /** Update the URL when the hash changes, if `hash` is true.
-   * The default behavior uses `window.history.replaceState`. For SvelteKit, you should
-   *  `import { replaceState } from '$app/navigation';` and pass something like
-   *  `updateHash={(u) => replaceState(u, $page.state)}` when instantiating the map.
-   */
-  export let updateHash: (url: URL) => void = (url) => {
-    window.history.replaceState(window.history.state, '', url);
-  };
-  export let loaded = false;
-  export let minZoom = 0;
-  export let maxZoom = 22;
-  export let minPitch: number | undefined = 0;
-  export let maxPitch: number | undefined = 60;
-  export let renderWorldCopies: boolean | undefined = undefined;
-  export let dragPan: boolean | undefined = undefined;
-  export let dragRotate: boolean | undefined = undefined;
-  export let pitchWithRotate: boolean | undefined = undefined;
-  export let antialias: boolean | undefined = undefined;
-  export let zoomOnDoubleClick = true;
-  /** Override MapLibre's default locale table */
-  export let locale: any = undefined;
-  export let interactive = true;
-  /** Set false to hide the default attribution control, so you can add your own. */
-  export let attributionControl = true;
-  /** Set true to require hitting ⌘/Ctrl while scrolling to zoom. Or use two fingers on phones. */
-  export let cooperativeGestures = false;
-  /** Set to true if you want to export the map as an image */
-  export let preserveDrawingBuffer = false;
-  export let maxBounds: LngLatBoundsLike | undefined = undefined;
-  /** Custom images to load into the map. */
-  export let images: CustomImageSpec[] = [];
-  /** Set to true or a position to add all the standard controls. */
-  export let standardControls: boolean | maplibregl.ControlPosition = false;
-  /** Filter the map's builtin layers, hiding any for which this function returns false. */
-  export let filterLayers: ((layer: maplibregl.LayerSpecification) => boolean) | undefined =
-    undefined;
+  interface Props {
+    map?: maplibregl.Map | null;
+    /** The `div` element that the Map is placed into. You can bind to this prop to access the element for yourself.
+     * Setting it externally will have no effect. */
+    mapContainer?: HTMLDivElement | undefined;
+    class?: string | undefined;
+    /** The style to use for the map. */
+    style: string | maplibregl.StyleSpecification;
+    /** Tell MapLibre to update the map in place when changing the style, diffing the old style against the new one to
+     * make minimal changes. If you enable this, be aware of https://github.com/maplibre/maplibre-gl-js/issues/2651,
+     * which may prevent some style changes from becoming visible when diffing is enabled. */
+    diffStyleUpdates?: boolean;
+    center?: LngLatLike | undefined;
+    zoom?: number | undefined;
+    pitch?: number;
+    bearing?: number;
+    bounds?: LngLatBoundsLike | undefined;
+    /** Set to true to track the map viewport in the URL hash. If the URL hash is set, that overrides initial viewport settings. */
+    hash?: boolean;
+    /** Update the URL when the hash changes, if `hash` is true.
+     * The default behavior uses `window.history.replaceState`. For SvelteKit, you should
+     *  `import { replaceState } from '$app/navigation';` and pass something like
+     *  `updateHash={(u) => replaceState(u, $page.state)}` when instantiating the map.
+     */
+    updateHash?: (url: URL) => void;
+    loaded?: boolean;
+    minZoom?: number;
+    maxZoom?: number;
+    minPitch?: number | undefined;
+    maxPitch?: number | undefined;
+    renderWorldCopies?: boolean | undefined;
+    dragPan?: boolean | undefined;
+    dragRotate?: boolean | undefined;
+    pitchWithRotate?: boolean | undefined;
+    antialias?: boolean | undefined;
+    zoomOnDoubleClick?: boolean;
+    /** Override MapLibre's default locale table */
+    locale?: any;
+    interactive?: boolean;
+    /** Set false to hide the default attribution control, so you can add your own. */
+    attributionControl?: boolean;
+    /** Set true to require hitting ⌘/Ctrl while scrolling to zoom. Or use two fingers on phones. */
+    cooperativeGestures?: boolean;
+    /** Set to true if you want to export the map as an image */
+    preserveDrawingBuffer?: boolean;
+    maxBounds?: LngLatBoundsLike | undefined;
+    /** Custom images to load into the map. */
+    images?: CustomImageSpec[];
+    /** Set to true or a position to add all the standard controls. */
+    standardControls?: boolean | maplibregl.ControlPosition;
+    /** Filter the map's builtin layers, hiding any for which this function returns false. */
+    filterLayers?: ((layer: maplibregl.LayerSpecification) => boolean) | undefined;
+    /** Function that modifies requests, such as by adding an API key. **/
+    transformRequest?: maplibregl.RequestTransformFunction | undefined;
+    children?: import('svelte').Snippet<[any]>;
+  }
 
-  /** Function that modifies requests, such as by adding an API key. **/
-  export let transformRequest: maplibregl.RequestTransformFunction | undefined = undefined;
+  let {
+    map = $bindable(null),
+    mapContainer = $bindable(undefined),
+    class: classNames = undefined,
+    style,
+    diffStyleUpdates = false,
+    center = $bindable(undefined),
+    zoom = $bindable(undefined),
+    pitch = $bindable(0),
+    bearing = $bindable(0),
+    bounds = $bindable(undefined),
+    hash = false,
+    updateHash = (url) => {
+      window.history.replaceState(window.history.state, '', url);
+    },
+    loaded = $bindable(false),
+    minZoom = 0,
+    maxZoom = 22,
+    minPitch = 0,
+    maxPitch = 60,
+    renderWorldCopies = undefined,
+    dragPan = undefined,
+    dragRotate = undefined,
+    pitchWithRotate = undefined,
+    antialias = undefined,
+    zoomOnDoubleClick = true,
+    locale = undefined,
+    interactive = true,
+    attributionControl = true,
+    cooperativeGestures = false,
+    preserveDrawingBuffer = false,
+    maxBounds = undefined,
+    images = [],
+    standardControls = false,
+    filterLayers = undefined,
+    transformRequest = undefined,
+    children,
+  }: Props = $props();
 
-  $: standardControlsPosition =
-    typeof standardControls === 'boolean' ? undefined : standardControls;
+  let standardControlsPosition = $derived(
+    typeof standardControls === 'boolean' ? undefined : standardControls
+  );
 
   const dispatch = createEventDispatcher<{
     load: maplibregl.Map;
@@ -96,9 +136,11 @@
   }>();
 
   const { map: mapInstance, loadedImages } = createMapContext();
-  $: map = $mapInstance;
+  run(() => {
+    map = $mapInstance;
+  });
 
-  let loadingImages = new Set();
+  let loadingImages = $state(new Set());
   async function loadImage(image: CustomImageSpec, force = false) {
     if (!$mapInstance) {
       return;
@@ -127,19 +169,21 @@
     }
   }
 
-  $: if (loaded && $mapInstance?.loaded()) {
-    for (let image of images) {
-      if (
-        !$loadedImages.has(image.id) &&
-        !loadingImages.has(image.id) &&
-        !$mapInstance.hasImage(image.id)
-      ) {
-        loadImage(image);
+  run(() => {
+    if (loaded && $mapInstance?.loaded()) {
+      for (let image of images) {
+        if (
+          !$loadedImages.has(image.id) &&
+          !loadingImages.has(image.id) &&
+          !$mapInstance.hasImage(image.id)
+        ) {
+          loadImage(image);
+        }
       }
     }
-  }
+  });
 
-  $: allImagesLoaded = images.every((image) => $loadedImages.has(image.id));
+  let allImagesLoaded = $derived(images.every((image) => $loadedImages.has(image.id)));
 
   // These variables are used to keep track of what sources / layers
   // are part of the basemap style vs those that are part of the
@@ -147,10 +191,11 @@
   // user defined sources and layers after a basemap style change which
   // overwrites all previous sources and layers
 
-  let lastStyleLayerIds: Array<string> | undefined = undefined;
-  let lastStyleSourceIds: Array<string> | undefined = undefined;
-  let layersToReAddAfterStyleChange: Array<LayerSpecification> | undefined = undefined;
-  let sourcesToReAddAfterStyleChange: Record<string, SourceSpecification> | undefined = undefined;
+  let lastStyleLayerIds: Array<string> | undefined = $state(undefined);
+  let lastStyleSourceIds: Array<string> | undefined = $state(undefined);
+  let layersToReAddAfterStyleChange: Array<LayerSpecification> | undefined = $state(undefined);
+  let sourcesToReAddAfterStyleChange: Record<string, SourceSpecification> | undefined =
+    $state(undefined);
 
   function createMap(element: HTMLDivElement) {
     onHashChange();
@@ -273,7 +318,7 @@
     };
   }
 
-  let lastStyle = style;
+  let lastStyle = $state(style);
 
   // If the last style is different from the current one
   // we grab a list of the currrent layers and sources
@@ -284,58 +329,66 @@
   // map which will in turn add the user defined sources and layers back
   // on to the map
 
-  $: if ($mapInstance && !compare(style, lastStyle)) {
-    const oldMapStyle = $mapInstance.getStyle();
+  run(() => {
+    if ($mapInstance && !compare(style, lastStyle)) {
+      const oldMapStyle = $mapInstance.getStyle();
 
-    if (lastStyleLayerIds) {
-      layersToReAddAfterStyleChange = oldMapStyle.layers.filter(
-        (l) => !lastStyleLayerIds!.includes(l.id)
-      );
+      if (lastStyleLayerIds) {
+        layersToReAddAfterStyleChange = oldMapStyle.layers.filter(
+          (l) => !lastStyleLayerIds!.includes(l.id)
+        );
+      }
+      if (lastStyleSourceIds) {
+        const nonStyleSourceIds = Object.keys(oldMapStyle.sources).filter(
+          (sourceId) => !lastStyleSourceIds!.includes(sourceId)
+        );
+        sourcesToReAddAfterStyleChange = {};
+        for (const id of nonStyleSourceIds) {
+          sourcesToReAddAfterStyleChange[id] = oldMapStyle.sources[id];
+        }
+      }
+      lastStyle = style;
+      $mapInstance.setStyle(style, { diff: diffStyleUpdates });
+
+      // Changing the style unloads the images. We'll reload them after the map finishes loading the new style.
+      $loadedImages = new Set();
+      loadingImages = new Set();
     }
-    if (lastStyleSourceIds) {
-      const nonStyleSourceIds = Object.keys(oldMapStyle.sources).filter(
-        (sourceId) => !lastStyleSourceIds!.includes(sourceId)
-      );
-      sourcesToReAddAfterStyleChange = {};
-      for (const id of nonStyleSourceIds) {
-        sourcesToReAddAfterStyleChange[id] = oldMapStyle.sources[id];
+  });
+
+  run(() => {
+    if ($mapInstance) {
+      let options: CenterZoomBearing & { pitch?: number } = {};
+      if (center != null && !compare(center, $mapInstance?.getCenter())) {
+        options.center = center;
+      }
+
+      if (zoom != null && !compare(zoom, $mapInstance?.getZoom())) {
+        options.zoom = zoom;
+      }
+
+      if (bearing != null && !compare(bearing, $mapInstance?.getBearing())) {
+        options.bearing = bearing;
+      }
+
+      if (pitch != null && !compare(pitch, $mapInstance?.getPitch())) {
+        options.pitch = pitch;
+      }
+
+      if (Object.keys(options).length) {
+        $mapInstance.easeTo(options);
       }
     }
-    lastStyle = style;
-    $mapInstance.setStyle(style, { diff: diffStyleUpdates });
+  });
 
-    // Changing the style unloads the images. We'll reload them after the map finishes loading the new style.
-    $loadedImages = new Set();
-    loadingImages = new Set();
-  }
-
-  $: if ($mapInstance) {
-    let options: CenterZoomBearing & { pitch?: number } = {};
-    if (center != null && !compare(center, $mapInstance?.getCenter())) {
-      options.center = center;
-    }
-
-    if (zoom != null && !compare(zoom, $mapInstance?.getZoom())) {
-      options.zoom = zoom;
-    }
-
-    if (bearing != null && !compare(bearing, $mapInstance?.getBearing())) {
-      options.bearing = bearing;
-    }
-
-    if (pitch != null && !compare(pitch, $mapInstance?.getPitch())) {
-      options.pitch = pitch;
-    }
-
-    if (Object.keys(options).length) {
-      $mapInstance.easeTo(options);
-    }
-  }
-
-  $: if (bounds && !compare(bounds, $mapInstance?.getBounds())) $mapInstance?.fitBounds(bounds);
-  $: zoomOnDoubleClick
-    ? $mapInstance?.doubleClickZoom.enable()
-    : $mapInstance?.doubleClickZoom.disable();
+  run(() => {
+    if (bounds && !compare(bounds, $mapInstance?.getBounds())) $mapInstance?.fitBounds(bounds);
+  });
+  run(() => {
+    zoomOnDoubleClick
+      ? $mapInstance?.doubleClickZoom.enable()
+      : $mapInstance?.doubleClickZoom.disable();
+  });
 
   // https://github.com/dummdidumm/rfcs/blob/ts-typedefs-within-svelte-components/text/ts-typing-props-slots-events.md#typing-slots
   interface $$Slots {
@@ -363,7 +416,7 @@
   }
 </script>
 
-<svelte:window on:hashchange={onHashChange} />
+<svelte:window onhashchange={onHashChange} />
 
 <div
   class={classNames}
@@ -379,7 +432,7 @@
       <FullscreenControl position={standardControlsPosition} />
       <ScaleControl position={standardControlsPosition} />
     {/if}
-    <slot map={$mapInstance} loadedImages={$loadedImages} {allImagesLoaded} />
+    {@render children?.({ map: $mapInstance, loadedImages: $loadedImages, allImagesLoaded })}
   {/if}
 </div>
 

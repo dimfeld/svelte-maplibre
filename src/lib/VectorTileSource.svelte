@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { onDestroy, tick } from 'svelte';
   import { getId, updatedSourceContext } from './context.js';
   import { addSource, removeSource } from './source.js';
@@ -7,16 +9,33 @@
   import maplibregl, { type VectorTileSource } from 'maplibre-gl';
   import flush from 'just-flush';
 
-  export let id: string = getId('vector');
-  export let url: string | null = null;
-  export let tiles: Array<string> | null = null;
-  export let promoteId: string | null = null;
-  export let bounds: Array<number> | null = null;
-  export let scheme: Scheme | null = null;
-  export let attribution: string | null = null;
-  export let minzoom: number | null = null;
-  export let maxzoom: number | null = null;
-  export let volatile: boolean | null = null;
+  interface Props {
+    id?: string;
+    url?: string | null;
+    tiles?: Array<string> | null;
+    promoteId?: string | null;
+    bounds?: Array<number> | null;
+    scheme?: Scheme | null;
+    attribution?: string | null;
+    minzoom?: number | null;
+    maxzoom?: number | null;
+    volatile?: boolean | null;
+    children?: import('svelte').Snippet;
+  }
+
+  let {
+    id = getId('vector'),
+    url = null,
+    tiles = null,
+    promoteId = null,
+    bounds = null,
+    scheme = null,
+    attribution = null,
+    minzoom = null,
+    maxzoom = null,
+    volatile = null,
+    children,
+  }: Props = $props();
 
   if (url && url.includes('pmtiles://')) {
     if (!maplibregl.config.REGISTERED_PROTOCOLS.hasOwnProperty('pmtiles')) {
@@ -26,39 +45,43 @@
   }
 
   const { map, self: source } = updatedSourceContext();
-  let sourceObj: VectorTileSource | undefined;
+  let sourceObj: VectorTileSource | undefined = $state();
 
-  $: if ($map && $source !== id) {
-    $source = id;
-    addSource(
-      $map,
-      $source,
-      flush({
-        type: 'vector',
-        url,
-        tiles,
-        promoteId,
-        bounds,
-        scheme,
-        attribution,
-        minzoom,
-        maxzoom,
-        volatile,
-      }),
-      (sourceId) => $map && sourceId === $source,
-      () => {
-        if (!$source) {
-          return;
+  run(() => {
+    if ($map && $source !== id) {
+      $source = id;
+      addSource(
+        $map,
+        $source,
+        flush({
+          type: 'vector',
+          url,
+          tiles,
+          promoteId,
+          bounds,
+          scheme,
+          attribution,
+          minzoom,
+          maxzoom,
+          volatile,
+        }),
+        (sourceId) => $map && sourceId === $source,
+        () => {
+          if (!$source) {
+            return;
+          }
+          sourceObj = $map?.getSource($source) as VectorTileSource;
         }
-        sourceObj = $map?.getSource($source) as VectorTileSource;
-      }
-    );
-  }
+      );
+    }
+  });
 
-  $: $map?.on('style.load', () => {
-    // When the style changes the current sources are nuked and recreated. Because of this the
-    // source object no longer references the current source on the map so we update it here.
-    sourceObj = $map?.getSource(id) as VectorTileSource | undefined;
+  run(() => {
+    $map?.on('style.load', () => {
+      // When the style changes the current sources are nuked and recreated. Because of this the
+      // source object no longer references the current source on the map so we update it here.
+      sourceObj = $map?.getSource(id) as VectorTileSource | undefined;
+    });
   });
 
   onDestroy(() => {
@@ -72,6 +95,6 @@
 
 {#if $source}
   {#key $source}
-    <slot />
+    {@render children?.()}
   {/key}
 {/if}

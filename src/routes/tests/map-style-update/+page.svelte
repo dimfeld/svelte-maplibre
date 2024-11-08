@@ -4,19 +4,23 @@
   import code from './+page.svelte?raw';
   import type { PageData } from './$types';
 
-  export let data: PageData;
+  interface Props {
+    data: PageData;
+  }
 
-  let styles = [
+  let { data }: Props = $props();
+
+  let styles = $state([
     'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
     'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
-  ];
+  ]);
 
   function swapStyle() {
     styles = [...styles].reverse();
   }
 </script>
 
-<button class="btn variant-filled mb-4" type="button" on:click={swapStyle}>Swap Style</button>
+<button class="variant-filled btn mb-4" type="button" onclick={swapStyle}>Swap Style</button>
 
 <MapLibre
   style={styles[0]}

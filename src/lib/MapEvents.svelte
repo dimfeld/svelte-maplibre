@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { createEventDispatcher, onDestroy } from 'svelte';
   import { mapContext } from './context';
   import maplibregl from 'maplibre-gl';
@@ -15,8 +17,12 @@
     zoomend: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
   }>();
 
-  /** Limit the event handlers to a certain layer. */
-  export let layer: string | undefined = undefined;
+  interface Props {
+    /** Limit the event handlers to a certain layer. */
+    layer?: string | undefined;
+  }
+
+  let { layer = undefined }: Props = $props();
 
   const { map } = mapContext();
 
@@ -53,17 +59,19 @@
     'zoomend',
   ];
 
-  $: if ($map) {
-    if (layer) {
-      for (const eventName of layerEvents) {
-        $map.on(eventName, layer, sendEvent);
-      }
-    } else {
-      for (const eventName of mapEvents) {
-        $map.on(eventName, sendEvent);
+  run(() => {
+    if ($map) {
+      if (layer) {
+        for (const eventName of layerEvents) {
+          $map.on(eventName, layer, sendEvent);
+        }
+      } else {
+        for (const eventName of mapEvents) {
+          $map.on(eventName, sendEvent);
+        }
       }
     }
-  }
+  });
 
   onDestroy(() => {
     if ($map) {

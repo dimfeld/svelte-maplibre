@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import type { Feature } from 'geojson';
@@ -11,29 +13,33 @@
   import { contrastingColor } from '$site/colors.js';
   import { hoverStateFilter } from '$lib/filters.js';
 
-  let showBorder = true;
-  let showFill = true;
-  let fillColor = '#006600';
-  let borderColor = '#003300';
+  let showBorder = $state(true);
+  let showFill = $state(true);
+  let fillColor = $state('#006600');
+  let borderColor = $state('#003300');
 
   // START EXTRACT
-  let map: maplibregl.Map | undefined;
-  let loaded: boolean;
-  let textLayers: maplibregl.LayerSpecification[] = [];
-  $: if (map && loaded) {
-    textLayers = map.getStyle().layers.filter((layer) => layer['source-layer'] === 'place');
-  }
-
-  $: colors = contrastingColor(fillColor);
-  $: if (map && loaded) {
-    for (let layer of textLayers) {
-      map.setPaintProperty(layer.id, 'text-color', colors.textColor);
-      map.setPaintProperty(layer.id, 'text-halo-color', colors.textOutlineColor);
+  let map: maplibregl.Map | undefined = $state();
+  let loaded: boolean = $state();
+  let textLayers: maplibregl.LayerSpecification[] = $state([]);
+  run(() => {
+    if (map && loaded) {
+      textLayers = map.getStyle().layers.filter((layer) => layer['source-layer'] === 'place');
     }
-  }
+  });
 
-  let filterStates = false;
-  $: filter = filterStates ? ['==', 'T', ['slice', ['get', 'NAME'], 0, 1]] : undefined;
+  let colors = $derived(contrastingColor(fillColor));
+  run(() => {
+    if (map && loaded) {
+      for (let layer of textLayers) {
+        map.setPaintProperty(layer.id, 'text-color', colors.textColor);
+        map.setPaintProperty(layer.id, 'text-halo-color', colors.textOutlineColor);
+      }
+    }
+  });
+
+  let filterStates = $state(false);
+  let filter = $derived(filterStates ? ['==', 'T', ['slice', ['get', 'NAME'], 0, 1]] : undefined);
   // END EXTRACT
 </script>
 

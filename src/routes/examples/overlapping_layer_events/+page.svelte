@@ -8,7 +8,11 @@
   import { hoverStateFilter } from '$lib/filters';
   import Popup from '$lib/Popup.svelte';
 
-  export let data: PageData;
+  interface Props {
+    data: PageData;
+  }
+
+  let { data }: Props = $props();
 
   function randomCircle(): GeoJSON.Feature {
     const lng = Math.random() * 360 - 180;
@@ -39,7 +43,7 @@
   ];
   // CODE1 END
 
-  const lastEvent = [];
+  const lastEvent = $state([]);
 
   function labelFeature(f: GeoJSON.Feature | undefined) {
     if (!f) {
@@ -49,9 +53,9 @@
     return f.geometry.coordinates.map((c) => c.toFixed(4)).join(' ,');
   }
 
-  let eventsIfTopMost = true;
-  let openIfTopMost = true;
-  let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = 'hover';
+  let eventsIfTopMost = $state(true);
+  let openIfTopMost = $state(true);
+  let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = $state('hover');
 </script>
 
 <div class="mx-auto mb-2 flex flex-col items-start gap-1">
@@ -109,17 +113,19 @@
           lastEvent[i] = e.detail.features?.[0];
         }}
       >
-        <Popup {openOn} {openIfTopMost} let:features>
-          <div style:background={color} style:color="white">
-            <p>{features?.length} features from {color} layer</p>
-            {#if color == 'red'}
-              <p>extra padding for lowest red layer</p>
-              <p>extra padding for lowest red layer</p>
-            {/if}
-            {#if color == 'green'}
-              <p>extra padding for middle green layer</p>
-            {/if}
-          </div>
+        <Popup {openOn} {openIfTopMost}>
+          {#snippet children({ features })}
+            <div style:background={color} style:color="white">
+              <p>{features?.length} features from {color} layer</p>
+              {#if color == 'red'}
+                <p>extra padding for lowest red layer</p>
+                <p>extra padding for lowest red layer</p>
+              {/if}
+              {#if color == 'green'}
+                <p>extra padding for middle green layer</p>
+              {/if}
+            </div>
+          {/snippet}
         </Popup>
       </CircleLayer>
     </GeoJson>
