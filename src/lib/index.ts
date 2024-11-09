@@ -26,6 +26,7 @@ export { default as RasterLayer } from './RasterLayer.svelte';
 export { default as RasterDEMTileSource } from './RasterDEMTileSource.svelte';
 export { default as RasterTileSource } from './RasterTileSource.svelte';
 export { default as ScaleControl } from './ScaleControl.svelte';
+export { default as StyleSelectControl } from './StyleSelectControl.svelte';
 export { default as SymbolLayer } from './SymbolLayer.svelte';
 export { default as Terrain } from './Terrain.svelte';
 export { default as TerrainControl } from './TerrainControl.svelte';

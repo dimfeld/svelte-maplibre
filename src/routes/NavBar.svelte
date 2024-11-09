@@ -23,6 +23,7 @@
     { href: '/examples/geojson_line_layer', title: `Styled Line` },
     { href: '/examples/heatmap', title: `Heatmap` },
     { href: '/examples/controls', title: `Controls` },
+    { href: '/examples/style_selector', title: `Style Selector` },
     { href: '/examples/clusters', title: `Clusters and Popups` },
     { href: '/examples/custom_marker_clusters', title: `Custom Markers and Clusters` },
     { href: '/examples/image_symbols', title: `Images in a Symbol Layer` },
