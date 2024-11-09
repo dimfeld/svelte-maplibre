@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { createEventDispatcher, onDestroy } from 'svelte';
   import { mapContext } from './context';
   import maplibregl from 'maplibre-gl';
@@ -59,7 +57,7 @@
     'zoomend',
   ];
 
-  run(() => {
+  $effect(() => {
     if ($map) {
       if (layer) {
         for (const eventName of layerEvents) {

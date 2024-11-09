@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { mapContext } from './context.js';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
@@ -15,7 +13,7 @@
   let { position = 'top-left', container = undefined }: Props = $props();
 
   let control: maplibregl.FullscreenControl | null = $state(null);
-  run(() => {
+  $effect(() => {
     if ($map && !control) {
       let containerEl: HTMLElement | undefined;
       if (typeof container === 'string') {

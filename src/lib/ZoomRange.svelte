@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { mapContext, setMapContext } from './context';
@@ -24,10 +22,10 @@
   const minZoom = writable(minzoom ?? $originalMinZoom);
   const maxZoom = writable(maxzoom ?? $originalMaxZoom);
 
-  run(() => {
+  $effect(() => {
     minZoom.set(minzoom ?? $originalMinZoom);
   });
-  run(() => {
+  $effect(() => {
     maxZoom.set(maxzoom ?? $originalMaxZoom);
   });
 

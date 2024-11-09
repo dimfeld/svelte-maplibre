@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import flush from 'just-flush';
   import { createEventDispatcher } from 'svelte';
   import { createMapContext } from './context.js';
@@ -136,7 +134,7 @@
   }>();
 
   const { map: mapInstance, loadedImages } = createMapContext();
-  run(() => {
+  $effect(() => {
     map = $mapInstance;
   });
 
@@ -169,7 +167,7 @@
     }
   }
 
-  run(() => {
+  $effect(() => {
     if (loaded && $mapInstance?.loaded()) {
       for (let image of images) {
         if (
@@ -329,7 +327,7 @@
   // map which will in turn add the user defined sources and layers back
   // on to the map
 
-  run(() => {
+  $effect(() => {
     if ($mapInstance && !compare(style, lastStyle)) {
       const oldMapStyle = $mapInstance.getStyle();
 
@@ -356,7 +354,7 @@
     }
   });
 
-  run(() => {
+  $effect(() => {
     if ($mapInstance) {
       let options: CenterZoomBearing & { pitch?: number } = {};
       if (center != null && !compare(center, $mapInstance?.getCenter())) {
@@ -381,10 +379,10 @@
     }
   });
 
-  run(() => {
+  $effect(() => {
     if (bounds && !compare(bounds, $mapInstance?.getBounds())) $mapInstance?.fitBounds(bounds);
   });
-  run(() => {
+  $effect(() => {
     zoomOnDoubleClick
       ? $mapInstance?.doubleClickZoom.enable()
       : $mapInstance?.doubleClickZoom.disable();

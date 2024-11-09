@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { mapContext } from './context';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
@@ -15,10 +13,10 @@
   let { source = undefined, exaggeration = undefined }: Props = $props();
 
   let specification: maplibregl.TerrainSpecification | null = $state(null);
-  run(() => {
+  $effect(() => {
     if ($map && source) {
-      (specification = { source: source, exaggeration: exaggeration }),
-        $map.setTerrain(specification);
+      specification = { source: source, exaggeration: exaggeration };
+      $map.setTerrain(specification);
     }
   });
 

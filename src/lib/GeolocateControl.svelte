@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { mapContext } from './context';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
@@ -26,7 +24,7 @@
     showUserLocation = true,
     control = $bindable(null),
   }: Props = $props();
-  run(() => {
+  $effect(() => {
     if ($map && !control) {
       control = new maplibregl.GeolocateControl({
         positionOptions,

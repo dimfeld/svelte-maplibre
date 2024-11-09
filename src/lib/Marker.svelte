@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run, stopPropagation, preventDefault } from 'svelte/legacy';
-
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import { createEventDispatcher } from 'svelte';
   import { updatedMarkerContext } from './context';
@@ -119,16 +117,16 @@
     };
   }
 
-  run(() => {
+  $effect(() => {
     $marker?.setLngLat(lngLat);
   });
-  run(() => {
+  $effect(() => {
     $marker?.setOffset(offset ?? [0, 0]);
   });
-  run(() => {
+  $effect(() => {
     $marker?.setRotation(rotation);
   });
-  run(() => {
+  $effect(() => {
     $marker?.setOpacity(opacity.toString());
   });
 
@@ -205,13 +203,19 @@
   style:z-index={zIndex}
   tabindex={asButton ? 0 : undefined}
   role={asButton ? 'button' : undefined}
-  onclick={stopPropagation(() => sendEvent('click'))}
-  ondblclick={stopPropagation(() => sendEvent('dblclick'))}
-  oncontextmenu={stopPropagation(
-    preventDefault(() => {
-      sendEvent('contextmenu');
-    })
-  )}
+  onclick={(e) => {
+    e.stopPropagation();
+    sendEvent('click');
+  }}
+  ondblclick={(e) => {
+    e.stopPropagation();
+    sendEvent('dblclick');
+  }}
+  oncontextmenu={(e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    sendEvent('contextmenu');
+  }}
   onmouseenter={() => {
     sendEvent('mouseenter');
   }}

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import { createEventDispatcher, onDestroy } from 'svelte';
   import { updatedMarkerContext } from './context';
@@ -79,16 +77,16 @@
     $marker?.remove();
   });
 
-  run(() => {
+  $effect(() => {
     $marker?.setLngLat(lngLat);
   });
-  run(() => {
+  $effect(() => {
     $marker?.setOffset(offset ?? [0, 0]);
   });
-  run(() => {
+  $effect(() => {
     $marker?.setRotation(rotation);
   });
-  run(() => {
+  $effect(() => {
     $marker?.setOpacity(opacity.toString());
   });
 

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { mapContext } from './context';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
@@ -16,7 +14,7 @@
   let { position = 'bottom-left', maxWidth = undefined, unit = 'metric' }: Props = $props();
 
   let control: maplibregl.ScaleControl | null = $state(null);
-  run(() => {
+  $effect(() => {
     if ($map && !control) {
       control = new maplibregl.ScaleControl({
         maxWidth,

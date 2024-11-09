@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { mapContext } from './context';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
@@ -22,10 +20,10 @@
   }: Props = $props();
 
   let control: maplibregl.NavigationControl | null = $state(null);
-  run(() => {
+  $effect(() => {
     if ($map && !control) {
-      (control = new maplibregl.NavigationControl({ showCompass, showZoom, visualizePitch })),
-        $map.addControl(control, position);
+      control = new maplibregl.NavigationControl({ showCompass, showZoom, visualizePitch });
+      $map.addControl(control, position);
     }
   });
 

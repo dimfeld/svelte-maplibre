@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { mapContext } from './context.js';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
@@ -16,7 +14,7 @@
   let { position = 'top-left', source, exaggeration }: Props = $props();
 
   let control: maplibregl.TerrainControl | null = $state(null);
-  run(() => {
+  $effect(() => {
     if ($map && !control) {
       (control = new maplibregl.TerrainControl({ source: source, exaggeration: exaggeration })),
         $map.addControl(control, position);

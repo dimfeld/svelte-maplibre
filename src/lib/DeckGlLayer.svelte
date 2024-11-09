@@ -1,6 +1,4 @@
-<script lang="ts">
-  import { run } from 'svelte/legacy';
-
+<script lang="ts" generics="DATA">
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
   import {
     getId,
@@ -10,8 +8,6 @@
     type DeckGlMouseEvent,
   } from './context';
   import { readable, writable } from 'svelte/store';
-
-  export type DATA = $$Generic;
 
   interface Props {
     id?: any;
@@ -114,7 +110,7 @@
       $map.off('zoomend', handleZoom);
     }
   });
-  run(() => {
+  $effect(() => {
     $layerId = id;
   });
   let actualMinZoom = $derived(minzoom ?? $minZoomContext);
@@ -128,7 +124,7 @@
     onClick: handleClick,
     onHover: handleHover,
   });
-  run(() => {
+  $effect(() => {
     if ($map && deckgl && !layer) {
       $map.on('zoom', handleZoom);
       $map.on('zoomend', handleZoom);
@@ -142,7 +138,7 @@
       $map.addLayer(layer);
     }
   });
-  run(() => {
+  $effect(() => {
     layer?.setProps(options);
   });
 </script>

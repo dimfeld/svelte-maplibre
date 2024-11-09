@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
+  import type maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
   import { mapContext } from './context';
 
@@ -20,17 +19,17 @@
 
   const { map } = mapContext();
 
-  let el: HTMLDivElement = $state();
+  let el: HTMLDivElement | undefined = $state();
   let control = {
     onAdd() {
-      return el;
+      return el!;
     },
     onRemove() {
       el?.parentNode?.removeChild(el);
     },
   };
 
-  run(() => {
+  $effect(() => {
     if ($map && el) {
       $map.addControl(control, position);
     }

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   // Import MapboxDraw and its CSS
   import MapboxDraw from '@mapbox/mapbox-gl-draw';
   import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
@@ -14,16 +12,9 @@
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
-  import type { PageData } from './$types';
 
-  interface Props {
-    data: PageData;
-  }
-
-  let { data }: Props = $props();
-
-  let map: maplibregl.Map = $state();
-  let draw: MapboxDraw = $state();
+  let map: maplibregl.Map | undefined = $state();
+  let draw: MapboxDraw | undefined = $state();
 
   function createMapboxDraw() {
     let draw = new MapboxDraw();
@@ -41,9 +32,10 @@
     return draw;
   }
 
-  run(() => {
+  $effect(() => {
     if (map && !draw) {
       draw = createMapboxDraw();
+      // @ts-expect-error Types don't quite match but that's ok
       map.addControl(draw);
     }
   });

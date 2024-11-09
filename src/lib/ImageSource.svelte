@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { onDestroy, tick } from 'svelte';
   import { getId, updatedSourceContext } from './context.js';
   import { addSource, removeSource } from './source.js';
@@ -20,7 +18,7 @@
   let sourceObj: ImageSource | undefined = $state();
 
   let first = $state(true);
-  run(() => {
+  $effect(() => {
     if ($map && $source !== id) {
       $source = id;
       addSource(
@@ -44,7 +42,7 @@
   });
 
   // Don't set coordinates again after we've just created it.
-  run(() => {
+  $effect(() => {
     if (sourceObj) {
       if (first) {
         first = false;
@@ -54,7 +52,7 @@
     }
   });
 
-  run(() => {
+  $effect(() => {
     $map?.on('style.load', () => {
       // When the style changes the current sources are nuked and recreated. Because of this the
       // source object no longer references the current source on the map so we update it here.

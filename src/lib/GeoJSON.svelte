@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { onDestroy } from 'svelte';
   import { getId, updatedSourceContext } from './context';
   import type { GeoJSON } from 'geojson';
@@ -46,12 +44,12 @@
   const { map, cluster: clusterStore, self: source } = updatedSourceContext();
   let sourceObj: GeoJSONSource | undefined = $state();
 
-  run(() => {
+  $effect(() => {
     $clusterStore = cluster;
   });
 
   let first = $state(true);
-  run(() => {
+  $effect(() => {
     if ($map && $source !== id) {
       $source = id;
       addSource(
@@ -90,7 +88,7 @@
   });
 
   // Don't set the data again after we've just created it.
-  run(() => {
+  $effect(() => {
     if (sourceObj) {
       if (first) {
         first = false;
@@ -100,7 +98,7 @@
     }
   });
 
-  run(() => {
+  $effect(() => {
     $map?.on('style.load', () => {
       // When the style changes the current sources are nuked and recreated. Because of this the
       // source object no longer references the current source on the map so we update it here.
@@ -108,7 +106,7 @@
     });
   });
 
-  run(() => {
+  $effect(() => {
     sourceObj?.setClusterOptions(
       flush({
         cluster: !!cluster,

@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
+  import type maplibregl from 'maplibre-gl';
   import { getId, updatedLayerContext } from './context.js';
   import { diffApplier } from './compare.js';
   import { combineFilters, isClusterFilter } from './filters.js';
@@ -246,7 +245,7 @@
   let actualMinZoom = $derived(minzoom ?? $minZoomContext);
   let actualMaxZoom = $derived(maxzoom ?? $maxZoomContext);
   let actualSource = $derived(source || $sourceName);
-  run(() => {
+  $effect(() => {
     if ($map && $layer !== id && actualSource) {
       if ($layer) {
         unsubEvents($layer);
@@ -291,7 +290,7 @@
       $map.on('mouseleave', $layer, handleMouseLeave);
     }
   });
-  run(() => {
+  $effect(() => {
     if ($layer) {
       layerInfo.set($layer, {
         interactive,
@@ -320,17 +319,17 @@
         })
       : void 0
   );
-  run(() => {
+  $effect(() => {
     applyPaint?.(paint);
   });
-  run(() => {
+  $effect(() => {
     applyLayout?.(layout);
   });
-  run(() => {
+  $effect(() => {
     if ($layer) $map?.setLayerZoomRange($layer, actualMinZoom, actualMaxZoom);
   });
   // Don't set the filter again after we've just created it.
-  run(() => {
+  $effect(() => {
     if ($layer) {
       if (first) {
         first = false;

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { updatedLayerContext } from './context';
   interface Props {
     data: Array<Record<string, string | number | undefined>>;
@@ -13,7 +11,7 @@
   let lastSeenIds: Set<string | number> = $state(new Set());
 
   const { map, source } = updatedLayerContext();
-  run(() => {
+  $effect(() => {
     if (data && $map && $source) {
       let seenIds: Set<string | number> = new Set();
       for (const row of data) {

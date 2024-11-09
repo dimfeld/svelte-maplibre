@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
-  import { onDestroy, tick } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { getId, updatedSourceContext } from './context.js';
   import { addSource, removeSource } from './source.js';
   import type { Scheme } from './types.js';
@@ -47,7 +45,7 @@
   const { map, self: source } = updatedSourceContext();
   let sourceObj: VectorTileSource | undefined = $state();
 
-  run(() => {
+  $effect(() => {
     if ($map && $source !== id) {
       $source = id;
       addSource(
@@ -76,7 +74,7 @@
     }
   });
 
-  run(() => {
+  $effect(() => {
     $map?.on('style.load', () => {
       // When the style changes the current sources are nuked and recreated. Because of this the
       // source object no longer references the current source on the map so we update it here.

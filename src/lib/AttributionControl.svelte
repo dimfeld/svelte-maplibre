@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { mapContext } from './context';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
@@ -20,7 +18,7 @@
   }: Props = $props();
 
   let control: maplibregl.AttributionControl | null = $state(null);
-  run(() => {
+  $effect(() => {
     if ($map && !control) {
       control = new maplibregl.AttributionControl({
         compact,

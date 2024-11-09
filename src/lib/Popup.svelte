@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import type { Feature } from 'geojson';
   import maplibregl, {
     type MapMouseEvent,
@@ -78,7 +76,7 @@
 
   const clickEvents = ['click', 'dblclick', 'contextmenu'];
 
-  let popup: maplibregl.Popup = $state();
+  let popup: maplibregl.Popup | undefined = $state();
 
   let hoveringOnPopup = $state(false);
   let popupElement: HTMLElement | undefined = $state();
@@ -218,7 +216,7 @@
       lngLat = e.lngLat;
       features = e.features ?? [];
 
-      if (popup.isOpen()) {
+      if (popup?.isOpen()) {
         // Pretend we just opened again to avoid the click handler closing the popup.
         touchOpenState = 'justOpened';
       } else {
@@ -270,7 +268,7 @@
 
     if (
       open &&
-      popup.isOpen() &&
+      popup?.isOpen() &&
       !checkElements.some((el) => el?.contains(e.originalEvent.target as Node))
     ) {
       if ((e.type === 'contextmenu' && openOn === 'contextmenu') || e.type !== 'contextmenu') {
@@ -281,7 +279,7 @@
 
   function globalMarkerClickHandler(info: MarkerClickInfo) {
     // Markers don't propagate clicks to the map, so we handle it separately here.
-    if (closeOnClickOutside && open && popup.isOpen() && info.marker !== $popupTarget) {
+    if (closeOnClickOutside && open && popup?.isOpen() && info.marker !== $popupTarget) {
       open = false;
     }
   }
@@ -294,7 +292,7 @@
 
   let popupEl: HTMLDivElement | undefined = $state();
   let actualCloseButton = $derived(closeButton ?? (!closeOnClickOutside && !closeOnClickInside));
-  run(() => {
+  $effect(() => {
     if (!popup) {
       popup = new maplibregl.Popup({
         closeButton: actualCloseButton,
@@ -313,20 +311,20 @@
       popup.on('open', () => {
         open = true;
         setPopupClickHandler();
-        dispatch('open', popup);
+        dispatch('open', popup!);
       });
 
       popup.on('close', () => {
         open = false;
-        dispatch('close', popup);
+        dispatch('close', popup!);
       });
 
       popup.on('hover', () => {
-        dispatch('hover', popup);
+        dispatch('hover', popup!);
       });
     }
   });
-  run(() => {
+  $effect(() => {
     if (popup && $popupTarget instanceof maplibregl.Marker) {
       if (openOn === 'click') {
         $popupTarget.setPopup(popup);
@@ -335,7 +333,7 @@
       }
     }
   });
-  run(() => {
+  $effect(() => {
     if (clickEvents.includes(openOn) && $layerEvent?.type === openOn) {
       handleLayerClick($layerEvent);
       $layerEvent = null;
@@ -344,7 +342,7 @@
   let hoveringOnLayer = $derived(
     openOn === 'hover' && ($layerEvent?.type === 'mousemove' || $layerEvent?.type === 'mouseenter')
   );
-  run(() => {
+  $effect(() => {
     if (openOn === 'hover' && layerEvent) {
       if (hoveringOnLayer && $layerEvent) {
         handleLayerEvent($layerEvent);
@@ -352,17 +350,17 @@
       open = (hoveringOnLayer || hoveringOnPopup) ?? false;
     }
   });
-  run(() => {
+  $effect(() => {
     if (popupEl) {
       popup.setDOMContent(popupEl);
     } else if (html) {
       popup.setHTML(html);
     }
   });
-  run(() => {
+  $effect(() => {
     if (lngLat) popup.setLngLat(lngLat);
   });
-  run(() => {
+  $effect(() => {
     if ($map) {
       let isOpen = popup.isOpen();
       if (open && !isOpen) {

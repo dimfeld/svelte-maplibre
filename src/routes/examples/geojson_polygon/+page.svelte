@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
+  import type maplibregl from 'maplibre-gl';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import type { Feature } from 'geojson';
@@ -20,16 +19,16 @@
 
   // START EXTRACT
   let map: maplibregl.Map | undefined = $state();
-  let loaded: boolean = $state();
+  let loaded = $state(false);
   let textLayers: maplibregl.LayerSpecification[] = $state([]);
-  run(() => {
+  $effect(() => {
     if (map && loaded) {
       textLayers = map.getStyle().layers.filter((layer) => layer['source-layer'] === 'place');
     }
   });
 
   let colors = $derived(contrastingColor(fillColor));
-  run(() => {
+  $effect(() => {
     if (map && loaded) {
       for (let layer of textLayers) {
         map.setPaintProperty(layer.id, 'text-color', colors.textColor);

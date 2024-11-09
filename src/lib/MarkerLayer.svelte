@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
+  import type maplibregl from 'maplibre-gl';
   import type { Feature } from 'geojson';
   import { createEventDispatcher, onDestroy } from 'svelte';
   import { getId, mapContext } from './context';
@@ -46,7 +45,7 @@
     hovered?: Feature | null;
     /** The z-index of the markers. This can also be set via CSS classes using the `class` prop.
      * If a function is provided, it will be called with each feature as an argument. */
-    zIndex?: number | ((feature: GeoJSON.Feature) => number) | undefined;
+    zIndex?: number | ((feature: Feature) => number) | undefined;
     class?: string | undefined;
     children?: import('svelte').Snippet<[any]>;
   }
@@ -109,7 +108,7 @@
     $map.off('sourcedata', handleData);
   });
 
-  run(() => {
+  $effect(() => {
     if ($map && $source) {
       let sourceObj = $map.getSource($source);
       if (sourceObj?.loaded()) {

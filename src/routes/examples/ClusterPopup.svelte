@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { mapContext } from '$lib/context.js';
   import type { Feature } from 'geojson';
 
@@ -13,21 +11,18 @@
   let { feature }: Props = $props();
 
   let innerFeatures: Feature[] = $state([]);
-  run(() => {
+  $effect(() => {
     if ($map && $source && feature) {
       $map
         ?.getSource($source)
         ?.getClusterLeaves(feature.properties.cluster_id, 10000, 0)
         .then((features) => {
+          features.sort((a, b) => {
+            return b.properties.time - a.properties.time;
+          });
           innerFeatures = features;
         });
     }
-  });
-
-  run(() => {
-    innerFeatures.sort((a, b) => {
-      return b.properties.time - a.properties.time;
-    });
   });
 </script>
 
