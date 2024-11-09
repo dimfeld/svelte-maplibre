@@ -45,12 +45,12 @@
   }
 
   let zoom = $state(3);
-  let hovered = $state(null);
+  let hovered: Feature | null = $state(null);
 
   let mode: 'showAll' | 'showOne' = $state('showOne');
   let arcs = $derived(calculateArcs(mode === 'showAll' ? states : counties));
   let activeState = $state('');
-  $effect(() => (activeState = arcs[0].fromState));
+  $effect.pre(() => (activeState = arcs[0].fromState));
 </script>
 
 <p>A deck.gl ArcLayer integrated into a MapLibre map, with hover and popup support.</p>
@@ -128,7 +128,7 @@
   {#if hovered && mode === 'showAll'}
     From {hovered.fromName} to {hovered.toName}
   {:else if mode === 'showOne'}
-    {states.features.find((f) => f.properties.STATEFP === activeState).properties.NAME}
+    {states.features.find((f) => f.properties.STATEFP === activeState)?.properties.NAME}
   {:else}
     Hover over an arc to see its endpoints
   {/if}
