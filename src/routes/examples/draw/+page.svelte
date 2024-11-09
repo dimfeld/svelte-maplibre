@@ -8,13 +8,12 @@
   // import 'svelte-maplibre/draw-plugin.css';
   import '$lib/draw-plugin.css';
 
-  import maplibregl from 'maplibre-gl';
+  import type maplibregl from 'maplibre-gl';
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
 
   let map: maplibregl.Map | undefined = $state();
-  let draw: MapboxDraw | undefined = $state();
 
   function createMapboxDraw() {
     let draw = new MapboxDraw();
@@ -32,13 +31,8 @@
     return draw;
   }
 
-  $effect(() => {
-    if (map && !draw) {
-      draw = createMapboxDraw();
-      // @ts-expect-error Types don't quite match but that's ok
-      map.addControl(draw);
-    }
-  });
+  let draw = createMapboxDraw();
+  $effect(() => map?.addControl(draw));
 </script>
 
 <MapLibre
