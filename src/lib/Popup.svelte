@@ -324,6 +324,7 @@
       });
     }
   });
+
   $effect(() => {
     if (popup && $popupTarget instanceof maplibregl.Marker) {
       if (openOn === 'click') {
@@ -333,15 +334,18 @@
       }
     }
   });
+
   $effect(() => {
     if (clickEvents.includes(openOn) && $layerEvent?.type === openOn) {
       handleLayerClick($layerEvent);
       $layerEvent = null;
     }
   });
+
   let hoveringOnLayer = $derived(
     openOn === 'hover' && ($layerEvent?.type === 'mousemove' || $layerEvent?.type === 'mouseenter')
   );
+
   $effect(() => {
     if (openOn === 'hover' && layerEvent) {
       if (hoveringOnLayer && $layerEvent) {
@@ -350,18 +354,21 @@
       open = (hoveringOnLayer || hoveringOnPopup) ?? false;
     }
   });
+
   $effect(() => {
     if (popupEl) {
-      popup.setDOMContent(popupEl);
+      popup?.setDOMContent(popupEl);
     } else if (html) {
-      popup.setHTML(html);
+      popup?.setHTML(html);
     }
   });
+
   $effect(() => {
-    if (lngLat) popup.setLngLat(lngLat);
+    if (lngLat) popup?.setLngLat(lngLat);
   });
+
   $effect(() => {
-    if ($map) {
+    if ($map && popup) {
       let isOpen = popup.isOpen();
       if (open && !isOpen) {
         popup.addTo($map);

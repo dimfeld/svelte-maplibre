@@ -13,15 +13,21 @@
   let { position = 'top-left', container = undefined }: Props = $props();
 
   let control: maplibregl.FullscreenControl | null = $state(null);
-  $effect(() => {
-    if ($map && !control) {
-      let containerEl: HTMLElement | undefined;
-      if (typeof container === 'string') {
-        containerEl = (document.querySelector(container) as HTMLElement) ?? undefined;
-      } else {
-        containerEl = container;
-      }
 
+  let containerEl = $derived.by(() => {
+    if (!$map) {
+      return;
+    }
+
+    if (typeof container === 'string') {
+      return (document.querySelector(container) as HTMLElement) ?? undefined;
+    } else {
+      return container;
+    }
+  });
+
+  $effect(() => {
+    if ($map && containerEl && !control) {
       control = new maplibregl.FullscreenControl({
         container: containerEl,
       });

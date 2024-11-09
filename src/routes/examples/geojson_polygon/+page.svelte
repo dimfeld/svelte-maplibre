@@ -20,20 +20,15 @@
   // START EXTRACT
   let map: maplibregl.Map | undefined = $state();
   let loaded = $state(false);
-  let textLayers: maplibregl.LayerSpecification[] = $state([]);
-  $effect(() => {
-    if (map && loaded) {
-      textLayers = map.getStyle().layers.filter((layer) => layer['source-layer'] === 'place');
-    }
-  });
+  let textLayers: maplibregl.LayerSpecification[] = $derived(
+    map && loaded ? map.getStyle().layers.filter((layer) => layer['source-layer'] === 'place') : []
+  );
 
   let colors = $derived(contrastingColor(fillColor));
   $effect(() => {
-    if (map && loaded) {
-      for (let layer of textLayers) {
-        map.setPaintProperty(layer.id, 'text-color', colors.textColor);
-        map.setPaintProperty(layer.id, 'text-halo-color', colors.textOutlineColor);
-      }
+    for (let layer of textLayers) {
+      map.setPaintProperty(layer.id, 'text-color', colors.textColor);
+      map.setPaintProperty(layer.id, 'text-halo-color', colors.textOutlineColor);
     }
   });
 

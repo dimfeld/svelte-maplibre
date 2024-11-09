@@ -108,17 +108,21 @@
     $map.off('sourcedata', handleData);
   });
 
+  let sourceObj = $derived($map && $source ? $map.getSource($source) : null);
+
   $effect(() => {
-    if ($map && $source) {
-      let sourceObj = $map.getSource($source);
-      if (sourceObj?.loaded()) {
-        setupHandlers();
-      } else {
-        // Need to wait for the data to load
-        $map.on('sourcedata', handleData);
-      }
+    if (!$map) {
+      return;
+    }
+
+    if (sourceObj?.loaded()) {
+      setupHandlers();
+    } else {
+      // Need to wait for the data to load
+      $map.on('sourcedata', handleData);
     }
   });
+
   let features: Array<FeatureWithId> = $state([]);
   function stripAutoFeatId(f: FeatureWithId) {
     if (f.id.toString().startsWith('autocluster_')) {
@@ -129,6 +133,7 @@
     }
     return f.id;
   }
+
   function someFeaturesChanged(current: Array<FeatureWithId>, next: Array<FeatureWithId>) {
     return (
       current.length !== next.length ||
@@ -147,6 +152,7 @@
       })
     );
   }
+
   function updateMarkers() {
     if (!$map || !$source) {
       return;

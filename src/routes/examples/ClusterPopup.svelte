@@ -10,20 +10,25 @@
 
   let { feature }: Props = $props();
 
-  let innerFeatures: Feature[] = $state([]);
-  $effect(() => {
-    if ($map && $source && feature) {
-      $map
-        ?.getSource($source)
-        ?.getClusterLeaves(feature.properties.cluster_id, 10000, 0)
-        .then((features) => {
-          features.sort((a, b) => {
-            return b.properties.time - a.properties.time;
-          });
-          innerFeatures = features;
-        });
+  let innerFeaturesPromise = $derived.by(async () => {
+    if (!$map || !$source || !feature) {
+      return [];
     }
+
+    const features = await $map
+      .getSource($source)
+      .getClusterLeaves(feature.properties.cluster_id, 10000, 0);
+
+    features.sort((a, b) => {
+      return b.properties.time - a.properties.time;
+    });
+
+    return features;
   });
+
+  // Use this instead of an await template tag to avoid flickering
+  let innerFeatures: Feature[] = $state([]);
+  $effect(() => innerFeaturesPromise.then((f) => (innerFeatures = f)));
 </script>
 
 <p>Most recent quakes</p>
