@@ -35,7 +35,7 @@
     <Control class="flex flex-col gap-y-2">
       <ControlGroup>
         <ControlButton
-          on:click={() => {
+          onclick={() => {
             map.flyTo({
               center: [-5, 54],
               zoom: 4,
@@ -45,7 +45,7 @@
           UK
         </ControlButton>
         <ControlButton
-          on:click={() =>
+          onclick={() =>
             map.fitBounds([
               [-120, 50],
               [-70, 20],
@@ -54,7 +54,7 @@
           US
         </ControlButton>
         <ControlButton
-          on:click={() =>
+          onclick={() =>
             map.fitBounds([
               [110, 20],
               [140, 0],
@@ -65,7 +65,7 @@
       </ControlGroup>
 
       <ControlGroup>
-        <ControlButton on:click={() => alert('!')}>!</ControlButton>
+        <ControlButton onclick={() => alert('!')}>!</ControlButton>
       </ControlGroup>
     </Control>
   {/snippet}

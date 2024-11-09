@@ -1,8 +1,4 @@
 <script lang="ts">
-  import { createBubbler } from 'svelte/legacy';
-
-  const bubble = createBubbler();
-
   interface Props {
     /** True if this is an icon button. This will both enable the built-in MapLibre
      * icon button styling and center the element inside the button.
@@ -12,6 +8,8 @@
     title?: string | undefined;
     class?: string | undefined;
     children?: import('svelte').Snippet;
+
+    onclick?: (e: MouseEvent) => void;
   }
 
   let {
@@ -20,10 +18,11 @@
     title = undefined,
     class: classNames = undefined,
     children,
+    onclick,
   }: Props = $props();
 </script>
 
-<button type="button" {title} onclick={bubble('click')}>
+<button type="button" {title} {onclick}>
   <div class:maplibregl-ctrl-icon={icon} class:ctrl-btn-center={center} class={classNames}>
     {@render children?.()}
   </div>

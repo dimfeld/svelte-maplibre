@@ -1,5 +1,5 @@
 <script lang="ts" generics="DATA">
-  import { createEventDispatcher, onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import {
     getId,
     mapContext,
@@ -14,9 +14,6 @@
     minzoom?: number | undefined;
     maxzoom?: number | undefined;
     visible?: boolean;
-    /** Whether to handle mouse events on this layer.
-     * @deprecated Use `interactive` instead. */
-    pickable?: boolean | undefined;
     /** Handle mouse events on this layer. */
     interactive?: boolean;
     /** This indicates the currently hovered feature. Setting this attribute has no effect. */
@@ -25,6 +22,11 @@
     type: any;
     data: DATA[];
     children?: import('svelte').Snippet;
+
+    onclick?: (e: DeckGlMouseEvent<DATA>) => void;
+    onmousemove?: (e: DeckGlMouseEvent<DATA>) => void;
+    onmouseleave?: (e: DeckGlMouseEvent<DATA>) => void;
+
     [key: string]: any;
   }
 
@@ -33,20 +35,18 @@
     minzoom = undefined,
     maxzoom = undefined,
     visible = true,
-    pickable = undefined,
     interactive = true,
     hovered = $bindable(null),
     type,
     data,
     children,
+
+    onclick = undefined,
+    onmousemove = undefined,
+    onmouseleave = undefined,
+
     ...rest
   }: Props = $props();
-
-  const dispatch = createEventDispatcher<{
-    click: DeckGlMouseEvent<DATA>;
-    mousemove: DeckGlMouseEvent<DATA>;
-    mouseleave: DeckGlMouseEvent<DATA>;
-  }>();
 
   const context = mapContext();
   const { map, minzoom: minZoomContext, maxzoom: maxZoomContext } = context;
@@ -78,7 +78,7 @@
       return;
     }
 
-    dispatch('click', e);
+    onclick?.(e);
     $layerEvent = {
       ...e,
       layerType: 'deckgl',
@@ -93,7 +93,8 @@
 
     const type = e.index !== -1 ? 'mousemove' : 'mouseleave';
     hovered = e.object ?? null;
-    dispatch(type, e);
+    const handler = type === 'mousemove' ? onmousemove : onmouseleave;
+    handler?.(e);
     $layerEvent = {
       ...e,
       layerType: 'deckgl',
@@ -120,7 +121,7 @@
     ...rest,
     visible: visibility,
     data,
-    pickable: pickable ?? interactive,
+    pickable: interactive,
     onClick: handleClick,
     onHover: handleHover,
   });

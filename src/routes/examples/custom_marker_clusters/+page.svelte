@@ -19,7 +19,7 @@
 
 <p>
   Data and layer configuration derived from <a
-    href="https://maplibre.org/maplibre-gl-js-docs/example/cluster/">MapLibre cluster Example.</a
+    href="https://maplibre.org/maplibre-gl-js-docs/example/cluster/">MapLibre Cluster Example.</a
   >
 </p>
 
@@ -51,11 +51,7 @@
       },
     }}
   >
-    <MarkerLayer
-      applyToClusters
-      asButton
-      on:click={(e) => (clickedFeature = e.detail.feature?.properties)}
-    >
+    <MarkerLayer applyToClusters asButton onclick={(e) => (clickedFeature = e.feature?.properties)}>
       {#snippet children({ feature })}
         <div class="rounded-full bg-orange-200 p-1">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -74,7 +70,7 @@
     <MarkerLayer
       applyToClusters={false}
       asButton
-      on:click={(e) => (clickedFeature = e.detail.feature?.properties)}
+      onclick={(e) => (clickedFeature = e.feature?.properties)}
     >
       {#snippet children({ feature })}
         <img src={feature.properties.tsunami ? tsunamiImageUrl : quakeImageUrl} alt="Earthquake" />

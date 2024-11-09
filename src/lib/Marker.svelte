@@ -1,6 +1,5 @@
 <script lang="ts">
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
-  import { createEventDispatcher } from 'svelte';
   import { updatedMarkerContext } from './context';
   import type { MarkerClickInfo } from './types';
   import type * as GeoJSON from 'geojson';
@@ -27,6 +26,16 @@
     /** The opacity of the marker */
     opacity?: number;
     children?: import('svelte').Snippet<[any]>;
+
+    ondrag?: (e: MarkerClickInfo) => void;
+    ondragstart?: (e: MarkerClickInfo) => void;
+    ondragend?: (e: MarkerClickInfo) => void;
+    onclick?: (e: MarkerClickInfo) => void;
+    ondblclick?: (e: MarkerClickInfo) => void;
+    oncontextmenu?: (e: MarkerClickInfo) => void;
+    onmouseenter?: (e: MarkerClickInfo) => void;
+    onmouseleave?: (e: MarkerClickInfo) => void;
+    onmousemove?: (e: MarkerClickInfo) => void;
   }
 
   let {
@@ -42,19 +51,10 @@
     rotation = 0,
     opacity = 1,
     children,
+
+    ...eventCbs
   }: Props = $props();
 
-  const dispatch = createEventDispatcher<{
-    drag: MarkerClickInfo;
-    dragstart: MarkerClickInfo;
-    dragend: MarkerClickInfo;
-    click: MarkerClickInfo;
-    dblclick: MarkerClickInfo;
-    contextmenu: MarkerClickInfo;
-    mouseenter: MarkerClickInfo;
-    mouseleave: MarkerClickInfo;
-    mousemove: MarkerClickInfo;
-  }>();
   const { map, layerEvent, self: marker, markerClickManager } = updatedMarkerContext();
 
   function addMarker(node: HTMLDivElement) {
@@ -154,7 +154,18 @@
     }
   }
 
-  function sendEvent(eventName: Parameters<typeof dispatch>[0]) {
+  function sendEvent(
+    eventName:
+      | 'click'
+      | 'drag'
+      | 'dragstart'
+      | 'dragend'
+      | 'dblclick'
+      | 'contextmenu'
+      | 'mouseenter'
+      | 'mouseleave'
+      | 'mousemove'
+  ) {
     if (!interactive) {
       return;
     }
@@ -192,7 +203,8 @@
       type: eventName,
     };
 
-    dispatch(eventName, data);
+    const cb = eventCbs[('on' + eventName) as keyof typeof eventCbs];
+    cb?.(data);
   }
 </script>
 

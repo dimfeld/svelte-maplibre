@@ -3,6 +3,7 @@
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
+  import type { MapMoveEvent } from '$lib';
 
   let coords = [
     {
@@ -49,8 +50,8 @@
   let currentBearing = $state(bearing);
   let currentPitch = $state(pitch);
 
-  function handleMoveEnd(ev: CustomEvent<MapMouseEvent>) {
-    const map = ev.detail.target;
+  function handleMoveEnd(ev: MapMoveEvent) {
+    const map = ev.target;
     let center = map.getCenter();
     currentCoords = [center.lng, center.lat];
     currentZoom = map.getZoom();
@@ -78,7 +79,7 @@
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class="relative aspect-[9/16] max-h-[70vh] w-full sm:aspect-video sm:max-h-full"
-  on:moveend={handleMoveEnd}
+  onmoveend={handleMoveEnd}
   {bearing}
   {pitch}
   {center}

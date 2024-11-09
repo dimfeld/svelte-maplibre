@@ -1,33 +1,11 @@
 <script lang="ts">
-  import type { Feature } from 'geojson';
   import { getId } from './context';
   import Layer from './Layer.svelte';
+  import type { CommonLayerProps } from './types.js';
 
-  interface Props {
-    id?: any;
-    /** Set the source for this layer. This can be omitted when the Layer is created in the slot
-     * of a source component. */
-    source?: string | undefined;
-    /** When setting up a layer for a vector tile source, the source layer to which this layer corresponds. */
-    sourceLayer?: string | undefined;
-    /** Draw this layer under another layer. This is only evaluated when the component is created. */
-    beforeId?: string | undefined;
-    /** Draw this layer all layers of this type. This is only evaluated when the component is created. */
-    beforeLayerType?: string | ((layer: maplibregl.LayerSpecification) => boolean) | undefined;
+  interface Props extends CommonLayerProps {
     paint: maplibregl.HeatmapLayerSpecification['paint'];
     layout?: maplibregl.HeatmapLayerSpecification['layout'] | undefined;
-    filter?: maplibregl.ExpressionSpecification | undefined;
-    minzoom?: number | undefined;
-    maxzoom?: number | undefined;
-    /** Set the cursor style to this value when the mouse is over the layer. */
-    hoverCursor?: string | undefined;
-    /** Enable to use hoverStateFilter or filter on `hover-state`. Features must have an `id` property for this to work. */
-    manageHoverState?: boolean;
-    hovered?: Feature | null;
-    eventsIfTopMost?: boolean;
-    /** Handle mouse events on this layer. */
-    interactive?: boolean;
-    children?: import('svelte').Snippet;
   }
 
   let {
@@ -43,10 +21,17 @@
     maxzoom = undefined,
     hoverCursor = undefined,
     manageHoverState = false,
-    hovered = $bindable(null),
+    hovered = $bindable(),
     eventsIfTopMost = false,
     interactive = true,
     children,
+
+    onclick = undefined,
+    ondblclick = undefined,
+    oncontextmenu = undefined,
+    onmouseenter = undefined,
+    onmousemove = undefined,
+    onmouseleave = undefined,
   }: Props = $props();
 </script>
 
@@ -67,12 +52,12 @@
   {eventsIfTopMost}
   {interactive}
   bind:hovered
-  on:click
-  on:dblclick
-  on:contextmenu
-  on:mouseenter
-  on:mousemove
-  on:mouseleave
+  {onclick}
+  {ondblclick}
+  {oncontextmenu}
+  {onmouseenter}
+  {onmousemove}
+  {onmouseleave}
 >
   {@render children?.()}
 </Layer>

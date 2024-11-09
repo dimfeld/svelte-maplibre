@@ -9,8 +9,8 @@
   let markers: { lngLat: LngLat }[] = $state([]);
 
   // START SAMPLE 1
-  function addMarker(e: CustomEvent<MapMouseEvent>) {
-    markers = [...markers, { lngLat: e.detail.lngLat }];
+  function addMarker(e: MapMouseEvent) {
+    markers = [...markers, { lngLat: e.lngLat }];
   }
   // END SAMPLE 1
 </script>
@@ -23,7 +23,7 @@
   <!-- MapEvents gives you access to map events even from other components inside the map,
   where you might not have access to the top-level `MapLibre` component. In this case
   it would also work to just use on:click on the MapLibre component itself. -->
-  <MapEvents on:click={addMarker} />
+  <MapEvents onclick={addMarker} />
 
   {#each markers as marker}
     <DefaultMarker lngLat={marker.lngLat} />

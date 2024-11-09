@@ -3,41 +3,16 @@
   import { getId, updatedLayerContext } from './context.js';
   import { diffApplier } from './compare.js';
   import { combineFilters, isClusterFilter } from './filters.js';
-  import type { LayerClickInfo } from './types.js';
+  import type { CommonLayerProps, LayerClickInfo } from './types.js';
   import flush from 'just-flush';
-  import { onDestroy, createEventDispatcher } from 'svelte';
+  import { onDestroy } from 'svelte';
   import type { MapMouseEvent, MapGeoJSONFeature } from 'maplibre-gl';
-  import type * as GeoJSON from 'geojson';
 
-  interface Props {
-    id?: any;
-    /** Set the source for this layer. This can be omitted when the Layer is created in the slot
-     * of a source component. */
-    source?: string | undefined;
-    /** When setting up a layer for a vector tile source, the source layer to which this layer corresponds. */
-    sourceLayer?: string | undefined;
-    /** Draw this layer under another layer. This is only evaluated when the component is created. */
-    beforeId?: string | undefined;
-    /** Calculate beforeId so that this layer appears below all layers of a particular type.
-     * If this is a function, this layer will be added before the first layer for which
-     * the function returns true.*/
-    beforeLayerType?: string | ((layer: maplibregl.LayerSpecification) => boolean) | undefined;
+  interface Props extends CommonLayerProps {
     type: maplibregl.LayerSpecification['type'];
     paint?: object | undefined;
     layout?: object | undefined;
-    filter?: maplibregl.ExpressionSpecification | undefined;
-    applyToClusters?: boolean | undefined;
-    minzoom?: number | undefined;
-    maxzoom?: number | undefined;
-    /** Enable to use hoverStateFilter or filter on `hover-state`. Features must have an `id` property for this to work. */
-    manageHoverState?: boolean;
-    /** The feature currently being hovered. */
-    hovered?: GeoJSON.Feature | null;
-    /** Handle mouse events on this layer. */
-    interactive?: boolean;
-    hoverCursor?: string | undefined;
-    eventsIfTopMost?: boolean;
-    children?: import('svelte').Snippet;
+    applyToClusters?: boolean;
   }
 
   let {
@@ -54,21 +29,19 @@
     minzoom = undefined,
     maxzoom = undefined,
     manageHoverState = false,
-    hovered = $bindable(null),
+    hovered = $bindable(),
     interactive = true,
     hoverCursor = undefined,
     eventsIfTopMost = false,
-    children,
-  }: Props = $props();
+    children = undefined,
 
-  const dispatch = createEventDispatcher<{
-    click: LayerClickInfo;
-    dblclick: LayerClickInfo;
-    contextmenu: LayerClickInfo;
-    mouseenter: LayerClickInfo;
-    mousemove: LayerClickInfo;
-    mouseleave: Pick<LayerClickInfo, 'map' | 'layer' | 'source'>;
-  }>();
+    onclick = undefined,
+    ondblclick = undefined,
+    oncontextmenu = undefined,
+    onmouseenter = undefined,
+    onmousemove = undefined,
+    onmouseleave = undefined,
+  }: Props = $props();
 
   const {
     map,
@@ -109,7 +82,17 @@
       features,
     };
 
-    dispatch(e.type as 'click' | 'dblclick' | 'contextmenu', eventData);
+    switch (e.type) {
+      case 'click':
+        onclick?.(eventData);
+        break;
+      case 'dblclick':
+        ondblclick?.(eventData);
+        break;
+      case 'contextmenu':
+        oncontextmenu?.(eventData);
+        break;
+    }
   }
 
   function handleMouseEnter(e: MapMouseEvent) {
@@ -138,7 +121,7 @@
       features,
     };
 
-    dispatch('mouseenter', data);
+    onmouseenter?.(data);
   }
 
   function handleMouseMove(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
@@ -186,7 +169,7 @@
       hovered = features[0] ?? null;
     }
 
-    dispatch('mousemove', {
+    onmousemove?.({
       event: e,
       map: $map!,
       clusterId,
@@ -212,7 +195,7 @@
       hoverFeatureId = undefined;
     }
 
-    dispatch('mouseleave', {
+    onmouseleave?.({
       map: $map!,
       layer: $layer,
       source: actualSource!,

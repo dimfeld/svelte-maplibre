@@ -1,6 +1,6 @@
 <script lang="ts">
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
-  import { createEventDispatcher, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { updatedMarkerContext } from './context';
   import type { MarkerClickInfo } from './types';
   import type * as GeoJSON from 'geojson';
@@ -23,6 +23,10 @@
     /** The opacity of the marker */
     opacity?: number;
     children?: import('svelte').Snippet<[any]>;
+
+    ondrag?: (e: MarkerClickInfo) => void;
+    ondragstart?: (e: MarkerClickInfo) => void;
+    ondragend?: (e: MarkerClickInfo) => void;
   }
 
   let {
@@ -35,23 +39,22 @@
     rotation = 0,
     opacity = 1,
     children,
+
+    ondrag = undefined,
+    ondragstart = undefined,
+    ondragend = undefined,
   }: Props = $props();
 
-  const dispatch = createEventDispatcher<{
-    drag: MarkerClickInfo;
-    dragstart: MarkerClickInfo;
-    dragend: MarkerClickInfo;
-  }>();
   const { map, layerEvent, self: marker } = updatedMarkerContext();
 
-  const dragStartListener = () => sendEvent('dragstart');
+  const dragStartListener = () => sendEvent(ondragstart, 'dragstart');
   const dragListener = () => {
     propagateLngLatChange();
-    sendEvent('drag');
+    sendEvent(ondrag, 'drag');
   };
   const dragEndListener = () => {
     propagateLngLatChange();
-    sendEvent('dragend');
+    sendEvent(ondragend, 'dragend');
   };
 
   $marker = new maplibre.Marker(
@@ -106,7 +109,7 @@
     }
   }
 
-  function sendEvent(eventName: Parameters<typeof dispatch>[0]) {
+  function sendEvent(eventCb: ((e: MarkerClickInfo) => void) | undefined, eventName: string) {
     let loc = $marker?.getLngLat();
     if (!loc) {
       return;
@@ -136,7 +139,7 @@
       type: eventName,
     };
 
-    dispatch(eventName, data);
+    eventCb?.(data);
   }
 </script>
 

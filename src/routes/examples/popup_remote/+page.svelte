@@ -61,7 +61,7 @@
     <DefaultMarker {lngLat} draggable>
       <Popup
         offset={[0, -10]}
-        on:open={async () => {
+        onopen={async () => {
           if (!(name in cache)) {
             const resp = await fetch(`/examples/popup_remote/${name}`);
             const result = await resp.json();

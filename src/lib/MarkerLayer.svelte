@@ -1,7 +1,7 @@
 <script lang="ts">
   import type maplibregl from 'maplibre-gl';
   import type { Feature } from 'geojson';
-  import { createEventDispatcher, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { getId, mapContext } from './context';
   import { combineFilters, isClusterFilter } from './filters';
   import { geoCentroid } from 'd3-geo';
@@ -19,14 +19,6 @@
   }
 
   const { map, source, minzoom: minZoomContext, maxzoom: maxZoomContext } = mapContext();
-  const dispatch = createEventDispatcher<{
-    click: ExtendedMarkerClickInfo;
-    dblclick: ExtendedMarkerClickInfo;
-    contextmenu: ExtendedMarkerClickInfo;
-    drag: ExtendedMarkerClickInfo;
-    dragstart: ExtendedMarkerClickInfo;
-    dragend: ExtendedMarkerClickInfo;
-  }>();
 
   /** CSS classes to apply to each marker */
   interface Props {
@@ -48,6 +40,13 @@
     zIndex?: number | ((feature: Feature) => number) | undefined;
     class?: string | undefined;
     children?: import('svelte').Snippet<[any]>;
+
+    onclick?: (e: ExtendedMarkerClickInfo) => void;
+    ondblclick?: (e: ExtendedMarkerClickInfo) => void;
+    oncontextmenu?: (e: ExtendedMarkerClickInfo) => void;
+    ondrag?: (e: ExtendedMarkerClickInfo) => void;
+    ondragstart?: (e: ExtendedMarkerClickInfo) => void;
+    ondragend?: (e: ExtendedMarkerClickInfo) => void;
   }
 
   let {
@@ -63,6 +62,13 @@
     zIndex = undefined,
     class: className = undefined,
     children,
+
+    onclick = undefined,
+    ondblclick = undefined,
+    oncontextmenu = undefined,
+    ondrag = undefined,
+    ondragstart = undefined,
+    ondragend = undefined,
   }: Props = $props();
 
   let actualMinZoom = $derived(minzoom ?? $minZoomContext);
@@ -218,20 +224,20 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
       class={className}
       zIndex={z}
       lngLat={c}
-      on:mouseenter={() => {
+      onmouseenter={() => {
         hovered = feature;
       }}
-      on:mouseleave={() => {
+      onmouseleave={() => {
         if (hovered?.id === feature.id) {
           hovered = null;
         }
       }}
-      on:dragstart={(e) => dispatch('dragstart', { ...e.detail, source: $source, feature })}
-      on:drag={(e) => dispatch('drag', { ...e.detail, source: $source, feature })}
-      on:dragend={(e) => dispatch('dragend', { ...e.detail, source: $source, feature })}
-      on:click={(e) => dispatch('click', { ...e.detail, source: $source, feature })}
-      on:dblclick={(e) => dispatch('dblclick', { ...e.detail, source: $source, feature })}
-      on:contextmenu={(e) => dispatch('contextmenu', { ...e.detail, source: $source, feature })}
+      ondragstart={(e) => ondragstart?.({ ...e, source: $source, feature })}
+      ondrag={(e) => ondrag?.({ ...e, source: $source, feature })}
+      ondragend={(e) => ondragend?.({ ...e, source: $source, feature })}
+      onclick={(e) => onclick?.({ ...e, source: $source, feature })}
+      ondblclick={(e) => ondblclick?.({ ...e, source: $source, feature })}
+      oncontextmenu={(e) => oncontextmenu?.({ ...e, source: $source, feature })}
     >
       {@render children?.({ feature, position: c })}
     </Marker>

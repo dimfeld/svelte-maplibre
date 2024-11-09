@@ -103,14 +103,14 @@
           'circle-radius': ['get', 'radius'],
           'circle-opacity': hoverStateFilter(1.0, 0.5),
         }}
-        on:click={(e) => {
-          lastEvent[i] = e.detail.features?.[0];
+        onclick={(e) => {
+          lastEvent[i] = e.features?.[0];
         }}
-        on:mouseleave={(e) => {
+        onmouseleave={(e) => {
           lastEvent[i] = undefined;
         }}
-        on:mousemove={(e) => {
-          lastEvent[i] = e.detail.features?.[0];
+        onmousemove={(e) => {
+          lastEvent[i] = e.features?.[0];
         }}
       >
         <Popup {openOn} {openIfTopMost}>

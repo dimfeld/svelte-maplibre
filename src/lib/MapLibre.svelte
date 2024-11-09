@@ -1,6 +1,5 @@
 <script lang="ts">
   import flush from 'just-flush';
-  import { createEventDispatcher } from 'svelte';
   import { createMapContext } from './context.js';
   import { getViewportHash, parseViewportHash } from './hash.js';
   import maplibre, {
@@ -13,7 +12,7 @@
   } from 'maplibre-gl';
   import compare from 'just-compare';
   import 'maplibre-gl/dist/maplibre-gl.css';
-  import type { CustomImageSpec } from './types.js';
+  import type { CustomImageSpec, MapMoveEvent } from './types.js';
   import NavigationControl from './NavigationControl.svelte';
   import GeolocateControl from './GeolocateControl.svelte';
   import FullscreenControl from './FullscreenControl.svelte';
@@ -74,6 +73,24 @@
     /** Function that modifies requests, such as by adding an API key. **/
     transformRequest?: maplibregl.RequestTransformFunction | undefined;
     children?: import('svelte').Snippet<[any]>;
+
+    onload?: (map: maplibregl.Map) => void;
+    onerror?: (error: Partial<ErrorEvent>) => void;
+    onclick?: (e: maplibregl.MapMouseEvent) => void;
+    ondblclick?: (e: maplibregl.MapMouseEvent) => void;
+    onmousemove?: (e: maplibregl.MapMouseEvent) => void;
+    oncontextmenu?: (e: maplibregl.MapMouseEvent) => void;
+    onmovestart?: (e: MapMoveEvent) => void;
+    onmoveend?: (e: MapMoveEvent) => void;
+    onzoomstart?: (e: maplibregl.MapLibreZoomEvent) => void;
+    onzoom?: (e: maplibregl.MapLibreZoomEvent) => void;
+    onzoomend?: (e: maplibregl.MapLibreZoomEvent) => void;
+    onpitch?: (e: maplibregl.MapLibreEvent<MouseEvent | TouchEvent | undefined>) => void;
+    onrotate?: (e: maplibregl.MapLibreEvent<MouseEvent | TouchEvent | undefined>) => void;
+    onwheel?: (e: maplibregl.MapWheelEvent) => void;
+    ondata?: (e: maplibregl.MapDataEvent) => void;
+    onstyledata?: (e: maplibregl.MapStyleDataEvent) => void;
+    onidle?: (e: maplibregl.MapLibreEvent) => void;
   }
 
   let {
@@ -113,25 +130,29 @@
     filterLayers = undefined,
     transformRequest = undefined,
     children,
+
+    onload,
+    onerror,
+    onclick,
+    ondblclick,
+    onmousemove,
+    oncontextmenu,
+    onmovestart,
+    onmoveend,
+    onzoomstart,
+    onzoom,
+    onzoomend,
+    onpitch,
+    onrotate,
+    onwheel,
+    ondata,
+    onstyledata,
+    onidle,
   }: Props = $props();
 
   let standardControlsPosition = $derived(
     typeof standardControls === 'boolean' ? undefined : standardControls
   );
-
-  const dispatch = createEventDispatcher<{
-    load: maplibregl.Map;
-    error: Error;
-    click: maplibregl.MapMouseEvent & { map: maplibregl.Map };
-    dblclick: maplibregl.MapMouseEvent & { map: maplibregl.Map };
-    contextmenu: maplibregl.MapMouseEvent & { map: maplibregl.Map };
-    movestart: maplibregl.MapMouseEvent & { map: maplibregl.Map };
-    moveend: maplibregl.MapMouseEvent & { map: maplibregl.Map };
-    zoomstart: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
-    zoom: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
-    zoomend: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
-    styledata: maplibregl.MapStyleDataEvent & { map: maplibregl.Map };
-  }>();
 
   const { map: mapInstance, loadedImages } = createMapContext();
   $effect(() => {
@@ -156,7 +177,11 @@
         $loadedImages.add(image.id);
         $loadedImages = $loadedImages; // trigger reactivity
       } catch (e) {
-        dispatch('error', e as Error);
+        if (onerror) {
+          onerror({ error: e as Error });
+        } else {
+          console.error(e);
+        }
       } finally {
         loadingImages.delete(image.id);
       }
@@ -230,37 +255,66 @@
       e.target.getContainer().setAttribute('data-testid', 'map');
       e.target.getCanvas().setAttribute('data-testid', 'map-canvas');
       loaded = true;
-      dispatch('load', $mapInstance!);
+      onload?.($mapInstance!);
     });
 
-    $mapInstance.on('error', (e) => dispatch('error', { ...e, map: $mapInstance }));
+    if (onerror) {
+      $mapInstance.on('error', onerror);
+    }
 
-    $mapInstance.on('movestart', (ev) => dispatch('movestart', { ...ev, map: $mapInstance }));
+    if (onmovestart) {
+      $mapInstance.on('movestart', onmovestart);
+    }
+
     $mapInstance.on('moveend', (ev) => {
       center = ev.target.getCenter();
       zoom = ev.target.getZoom();
       pitch = ev.target.getPitch();
       bearing = ev.target.getBearing();
       bounds = ev.target.getBounds();
-      dispatch('moveend', { ...ev, map: $mapInstance });
+      onmoveend?.(ev);
       if (hash) {
-        let location = new URL(
-          window.location.href.replace(/(#.+)?$/, getViewportHash($mapInstance))
-        );
+        let location = new URL(window.location.href.replace(/(#.+)?$/, getViewportHash(ev.target)));
         updateHash(location);
       }
     });
 
-    $mapInstance.on('click', (ev) => dispatch('click', { ...ev, map: $mapInstance }));
-    $mapInstance.on('dblclick', (ev) => dispatch('dblclick', { ...ev, map: $mapInstance }));
-    $mapInstance.on('contextmenu', (ev) => dispatch('contextmenu', { ...ev, map: $mapInstance }));
-    $mapInstance.on('zoomstart', (ev) => dispatch('zoomstart', { ...ev, map: $mapInstance }));
-    $mapInstance.on('zoom', (ev) => {
-      dispatch('zoom', { ...ev, map: $mapInstance });
-    });
-    $mapInstance.on('zoomend', (ev) => {
-      dispatch('zoomend', { ...ev, map: $mapInstance });
-    });
+    if (onclick) {
+      $mapInstance.on('click', onclick);
+    }
+    if (ondblclick) {
+      $mapInstance.on('dblclick', ondblclick);
+    }
+    if (oncontextmenu) {
+      $mapInstance.on('contextmenu', oncontextmenu);
+    }
+    if (onmousemove) {
+      $mapInstance.on('mousemove', onmousemove);
+    }
+    if (onzoomstart) {
+      $mapInstance.on('zoomstart', onzoomstart);
+    }
+    if (onzoom) {
+      $mapInstance.on('zoom', onzoom);
+    }
+    if (onzoomend) {
+      $mapInstance.on('zoomend', onzoomend);
+    }
+    if (onpitch) {
+      $mapInstance.on('pitch', onpitch);
+    }
+    if (onrotate) {
+      $mapInstance.on('rotate', onrotate);
+    }
+    if (onwheel) {
+      $mapInstance.on('wheel', onwheel);
+    }
+    if (ondata) {
+      $mapInstance.on('data', ondata);
+    }
+    if (onidle) {
+      $mapInstance.on('idle', onidle);
+    }
 
     // When the basemap style is changed, it nukes all existing layers and sources
     // Here we listen for style.load events, store the layers and sources that
@@ -304,7 +358,7 @@
         }
       }
 
-      dispatch('styledata', { ...ev, map: $mapInstance });
+      onstyledata?.(ev);
     });
 
     return {

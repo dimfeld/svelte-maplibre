@@ -5,7 +5,7 @@
     type MapLayerMouseEvent,
     type MapLayerTouchEvent,
   } from 'maplibre-gl';
-  import { onDestroy, onMount, createEventDispatcher } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { mapContext, type LayerEvent, isDeckGlMouseEvent } from './context.js';
   import type { MarkerClickInfo } from './types.js';
 
@@ -46,6 +46,10 @@
     /** Whether the popup is open or not. Can be set to manualy open the popup at `lngLat`. */
     open?: boolean;
     children?: import('svelte').Snippet<[any]>;
+
+    onopen?: (popup: maplibregl.Popup) => void;
+    onclose?: (popup: maplibregl.Popup) => void;
+    onhover?: (popup: maplibregl.Popup) => void;
   }
 
   let {
@@ -64,13 +68,11 @@
     html = undefined,
     open = $bindable(false),
     children,
-  }: Props = $props();
 
-  const dispatch = createEventDispatcher<{
-    open: maplibregl.Popup;
-    close: maplibregl.Popup;
-    hover: maplibregl.Popup;
-  }>();
+    onopen = undefined,
+    onclose = undefined,
+    onhover = undefined,
+  }: Props = $props();
 
   const { map, popupTarget, layerEvent, layer, eventTopMost, markerClickManager } = mapContext();
 
@@ -311,17 +313,19 @@
       popup.on('open', () => {
         open = true;
         setPopupClickHandler();
-        dispatch('open', popup!);
+        onopen?.(popup!);
       });
 
       popup.on('close', () => {
         open = false;
-        dispatch('close', popup!);
+        onclose?.(popup!);
       });
 
-      popup.on('hover', () => {
-        dispatch('hover', popup!);
-      });
+      if (onhover) {
+        popup.on('hover', () => {
+          onhover?.(popup!);
+        });
+      }
     }
   });
 

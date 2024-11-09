@@ -68,7 +68,7 @@
           'circle-stroke-opacity': hoverStateFilter(0, 1),
         }}
         manageHoverState
-        on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
+        onclick={(e) => (clickedFeature = e.features?.[0]?.properties)}
       />
 
       <SymbolLayer
@@ -104,7 +104,7 @@
           'text-offset': [0, -2],
           'text-size': 12,
         }}
-        on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
+        onclick={(e) => (clickedFeature = e.features?.[0]?.properties)}
       />
     </GeoJSON>
   {/snippet}

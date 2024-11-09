@@ -1,5 +1,5 @@
 import type { Feature, Point } from 'geojson';
-import type { MapMouseEvent, Marker } from 'maplibre-gl';
+import type { MapLibreEvent, MapMouseEvent, Marker } from 'maplibre-gl';
 
 export type {
   ControlPosition,
@@ -15,6 +15,8 @@ export type {
   StyleSpecification,
   GeolocateControl as GeolocateControlInterface,
 } from 'maplibre-gl';
+
+export type MapMoveEvent = MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined>;
 
 export interface ClusterOptions {
   /** The minimum number of points required to form a cluster.
@@ -75,3 +77,36 @@ export type DeckGlAccessor<DATA, RETVAL> = RETVAL | ((data: DATA) => RETVAL);
 export type DeckGlColorAccessor<DATA> = DeckGlAccessor<DATA, number[]>;
 
 export type Scheme = 'xyz' | 'tms';
+
+export interface CommonLayerProps {
+  id?: any;
+  /** Set the source for this layer. This can be omitted when the Layer is created in the slot
+   * of a source component. */
+  source?: string | undefined;
+  /** When setting up a layer for a vector tile source, the source layer to which this layer corresponds. */
+  sourceLayer?: string | undefined;
+  /** Draw this layer under another layer. This is only evaluated when the component is created. */
+  beforeId?: string | undefined;
+  /** Draw this layer all layers of this type. This is only evaluated when the component is created. */
+  beforeLayerType?: string | ((layer: maplibregl.LayerSpecification) => boolean) | undefined;
+  filter?: maplibregl.ExpressionSpecification | undefined;
+  minzoom?: number | undefined;
+  maxzoom?: number | undefined;
+  /** Set the cursor style to this value when the mouse is over the layer. */
+  hoverCursor?: string | undefined;
+  /** Enable to use hoverStateFilter or filter on `hover-state`. Features must have an `id` property for this to work. */
+  manageHoverState?: boolean;
+  hovered?: Feature;
+  eventsIfTopMost?: boolean;
+  /** Handle mouse events on this layer. */
+  interactive?: boolean;
+
+  children?: import('svelte').Snippet;
+
+  onclick?: (e: LayerClickInfo) => void;
+  ondblclick?: (e: LayerClickInfo) => void;
+  oncontextmenu?: (e: LayerClickInfo) => void;
+  onmouseenter?: (e: LayerClickInfo) => void;
+  onmousemove?: (e: LayerClickInfo) => void;
+  onmouseleave?: (e: Pick<LayerClickInfo, 'map' | 'layer' | 'source'>) => void;
+}

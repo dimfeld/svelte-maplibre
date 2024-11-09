@@ -58,7 +58,7 @@
   standardControls
   center={[-98.137, 40.137]}
   zoom={4}
-  on:zoomend={({ detail: { map } }) => (currentZoom = map.getZoom())}
+  onzoomend={({ detail: { map } }) => (currentZoom = map.getZoom())}
   filterLayers={(l) => !isTextLayer(l, 'carto')}
 >
   <ZoomRange maxzoom={zoomThreshold + 0.5}>
