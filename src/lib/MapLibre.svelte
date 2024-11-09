@@ -77,7 +77,7 @@
   }
 
   let {
-    map = $bindable(null),
+    map = $bindable(),
     mapContainer = $bindable(undefined),
     class: classNames = undefined,
     style,
