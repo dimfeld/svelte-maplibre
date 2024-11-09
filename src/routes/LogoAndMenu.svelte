@@ -1,8 +1,6 @@
 <script lang="ts">
   import { getDrawerStore } from '@skeletonlabs/skeleton';
 
-  const drawerStore = getDrawerStore();
-
   interface Props {
     menuButton?: boolean;
   }
