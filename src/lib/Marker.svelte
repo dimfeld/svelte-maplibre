@@ -16,11 +16,11 @@
     draggable?: boolean;
     /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
      * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
-    feature?: GeoJSON.Feature | null;
+    feature?: GeoJSON.Feature;
     /** An offset in pixels to apply to the marker. */
-    offset?: PointLike | undefined;
+    offset?: PointLike;
     /** The z-index of the marker. This can also be set via CSS classes using the `class` prop */
-    zIndex?: number | undefined;
+    zIndex?: number;
     /** The rotation angle of the marker (clockwise, in degrees) */
     rotation?: number;
     /** The opacity of the marker */
@@ -45,7 +45,7 @@
     interactive = true,
     asButton = false,
     draggable = false,
-    feature = null,
+    feature = undefined,
     offset = undefined,
     zIndex = undefined,
     rotation = 0,

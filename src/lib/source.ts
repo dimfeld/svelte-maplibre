@@ -66,7 +66,7 @@ export function addSource(
  * A helper function that removes a source from the map after all of the layers inside it have
  * had a chance to remove themselves.
  *
- * @param {Readable<Map|null>} mapStore - The store containing the Map instance
+ * @param {Readable<Map|undefined>} mapStore - The store containing the Map instance
  * @param {string} sourceId - The ID of the source to remove
  * @param {unknown} sourceObj - The source object that was originally added
  *
@@ -76,7 +76,11 @@ export function addSource(
  * If so, it removes the source from the map. This avoids removing a source that was
  * already replaced by another source reusing the same ID.
  */
-export function removeSource(mapStore: Readable<Map | null>, sourceId: string, sourceObj: unknown) {
+export function removeSource(
+  mapStore: Readable<Map | undefined>,
+  sourceId: string,
+  sourceObj: unknown
+) {
   tick().then(() => {
     // Wait a tick so that the layers inside this source can all be removed.
     // But make sure that the source wasn't already replaced with another source with the same ID.

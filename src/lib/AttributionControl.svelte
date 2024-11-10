@@ -17,7 +17,7 @@
     customAttribution = undefined,
   }: Props = $props();
 
-  let control: maplibregl.AttributionControl | null = $state(null);
+  let control: maplibregl.AttributionControl | undefined = $state();
   $effect(() => {
     if ($map && !control) {
       control = new maplibregl.AttributionControl({

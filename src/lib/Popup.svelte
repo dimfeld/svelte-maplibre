@@ -9,19 +9,10 @@
   import { mapContext, type LayerEvent, isDeckGlMouseEvent } from './context.js';
   import type { MarkerClickInfo } from './types.js';
 
-  interface $$Slots {
-    default: {
-      features: Array<Feature> | null;
-      data: Feature | null;
-      map: maplibregl.Map | null;
-      close: () => void;
-    };
-  }
-
   interface Props {
     /** Show the built-in close button. By default the close button will be shown
      * only if closeOnClickOutside and closeOnClickInside are not set. */
-    closeButton?: boolean | undefined;
+    closeButton?: boolean;
     /** Close on click outside the popup. */
     closeOnClickOutside?: boolean;
     /** Close on click inside the popup. This should only be used for non-interactive popups. */
@@ -34,18 +25,27 @@
     /** Only open the popup if there's no feature from a higher layer covering this one. */
     openIfTopMost?: boolean;
     focusAfterOpen?: boolean;
-    anchor?: maplibregl.PositionAnchor | undefined;
-    offset?: maplibregl.Offset | undefined;
+    anchor?: maplibregl.PositionAnchor;
+    offset?: maplibregl.Offset;
     /** Classes to apply to the map's popup container */
-    popupClass?: string | undefined;
-    maxWidth?: string | undefined;
+    popupClass?: string;
+    maxWidth?: string;
     /** Where to show the popup. */
-    lngLat?: maplibregl.LngLatLike | undefined;
+    lngLat?: maplibregl.LngLatLike;
     /** If set and the slot is omitted, use this string as HTML to pass into the popup. */
-    html?: string | undefined;
+    html?: string;
     /** Whether the popup is open or not. Can be set to manualy open the popup at `lngLat`. */
     open?: boolean;
-    children?: import('svelte').Snippet<[any]>;
+    children?: import('svelte').Snippet<
+      [
+        {
+          features: Array<Feature> | undefined;
+          data: Feature | undefined;
+          map: maplibregl.Map | undefined;
+          close: () => void;
+        },
+      ]
+    >;
 
     onopen?: (popup: maplibregl.Popup) => void;
     onclose?: (popup: maplibregl.Popup) => void;
@@ -177,13 +177,13 @@
     return !('marker' in e) && !isDeckGlMouseEvent(e) && eventTopMost(e) !== $layer;
   }
 
-  let features: Feature[] | null = $state(null);
+  let features: Feature[] | undefined = $state();
   let touchOpenState: 'normal' | 'opening' | 'justOpened' = $state('normal');
 
   function handleLayerEvent(e: MapLayerMouseEvent | LayerEvent) {
     if ('layerType' in e && e.layerType === 'deckgl') {
       lngLat = e.coordinate;
-      features = e.object ? [e.object as Feature] : null;
+      features = e.object ? [e.object as Feature] : undefined;
     } else {
       lngLat = e.lngLat;
       features = e.features ?? [];
@@ -202,7 +202,7 @@
     setTimeout(() => (open = true));
   }
 
-  let touchStartCoords: MapLayerTouchEvent['point'] | null = null;
+  let touchStartCoords: MapLayerTouchEvent['point'] | undefined = undefined;
   function handleLayerTouchStart(e: MapLayerTouchEvent) {
     touchStartCoords = e.point;
   }
@@ -213,7 +213,7 @@
     }
 
     let distance = touchStartCoords.dist(e.point);
-    touchStartCoords = null;
+    touchStartCoords = undefined;
     if (distance < 3) {
       lngLat = e.lngLat;
       features = e.features ?? [];
@@ -234,7 +234,7 @@
     }
 
     open = false;
-    features = null;
+    features = undefined;
   }
 
   function handleLayerMouseMove(e: MapLayerMouseEvent) {
@@ -244,7 +244,7 @@
 
     if (skipHandlingEvent(e)) {
       open = false;
-      features = null;
+      features = undefined;
       return;
     }
 
@@ -265,7 +265,7 @@
 
     let checkElements = [
       popupElement,
-      $popupTarget instanceof maplibregl.Marker ? $popupTarget?.getElement() : null,
+      $popupTarget instanceof maplibregl.Marker ? $popupTarget?.getElement() : undefined,
     ];
 
     if (
@@ -342,7 +342,7 @@
   $effect(() => {
     if (clickEvents.includes(openOn) && $layerEvent?.type === openOn) {
       handleLayerClick($layerEvent);
-      $layerEvent = null;
+      $layerEvent = undefined;
     }
   });
 
@@ -391,7 +391,7 @@
     {#if features?.length || $popupTarget instanceof maplibregl.Marker}
       {@render children?.({
         features,
-        data: features?.[0] ?? null,
+        data: features?.[0] ?? undefined,
         map: $map,
         close: () => (open = false),
       })}

@@ -12,11 +12,11 @@
 
   let { source = undefined, exaggeration = undefined }: Props = $props();
 
-  let specification: maplibregl.TerrainSpecification | null = $state(null);
+  let specification: maplibregl.TerrainSpecification | undefined = $state();
   $effect(() => {
     if ($map && source) {
       specification = { source: source, exaggeration: exaggeration };
-      $map.setTerrain(specification);
+      $map.setTerrain(specification ?? null);
     }
   });
 

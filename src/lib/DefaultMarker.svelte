@@ -4,7 +4,7 @@
   import { updatedMarkerContext } from './context';
   import type { MarkerClickInfo } from './types';
   import type * as GeoJSON from 'geojson';
-  import flush from 'just-flush';
+  import { flush } from '$lib/flush.js';
 
   interface Props {
     /** The Marker instance which was added to the map */
@@ -15,14 +15,14 @@
     draggable?: boolean;
     /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
      * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
-    feature?: GeoJSON.Feature | null;
+    feature?: GeoJSON.Feature;
     /** An offset in pixels to apply to the marker. */
     offset?: PointLike | undefined;
     /** The rotation angle of the marker (clockwise, in degrees) */
     rotation?: number;
     /** The opacity of the marker */
     opacity?: number;
-    children?: import('svelte').Snippet<[any]>;
+    children?: import('svelte').Snippet<[{ marker: maplibre.Marker }]>;
 
     ondrag?: (e: MarkerClickInfo) => void;
     ondragstart?: (e: MarkerClickInfo) => void;
@@ -34,7 +34,7 @@
     lngLat = $bindable(),
     class: classNames = undefined,
     draggable = false,
-    feature = null,
+    feature = undefined,
     offset = undefined,
     rotation = 0,
     opacity = 1,

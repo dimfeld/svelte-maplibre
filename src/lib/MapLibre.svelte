@@ -1,10 +1,9 @@
 <script lang="ts">
-  import flush from 'just-flush';
+  import { flush } from '$lib/flush.js';
   import { createMapContext } from './context.js';
   import { getViewportHash, parseViewportHash } from './hash.js';
   import maplibre, {
     type CenterZoomBearing,
-    type GestureOptions,
     type LayerSpecification,
     type LngLatBoundsLike,
     type LngLatLike,
@@ -19,7 +18,7 @@
   import ScaleControl from './ScaleControl.svelte';
 
   interface Props {
-    map?: maplibregl.Map | null;
+    map?: maplibregl.Map;
     /** The `div` element that the Map is placed into. You can bind to this prop to access the element for yourself.
      * Setting it externally will have no effect. */
     mapContainer?: HTMLDivElement | undefined;
@@ -58,7 +57,7 @@
     locale?: any;
     interactive?: boolean;
     /** Set false to hide the default attribution control, so you can add your own. */
-    attributionControl?: boolean;
+    attributionControl?: false | maplibre.AttributionControlOptions;
     /** Set true to require hitting ⌘/Ctrl while scrolling to zoom. Or use two fingers on phones. */
     cooperativeGestures?: boolean;
     /** Set to true if you want to export the map as an image */
@@ -72,7 +71,17 @@
     filterLayers?: ((layer: maplibregl.LayerSpecification) => boolean) | undefined;
     /** Function that modifies requests, such as by adding an API key. **/
     transformRequest?: maplibregl.RequestTransformFunction | undefined;
-    children?: import('svelte').Snippet<[any]>;
+    children?: import('svelte').Snippet<
+      [
+        {
+          // `map` is always a MaplibreMap, never `null`
+          map: maplibregl.Map;
+          // the other slot props are correctly autodetected
+          loadedImages: Set<string>;
+          allImagesLoaded: boolean;
+        },
+      ]
+    >;
 
     onload?: (map: maplibregl.Map) => void;
     onerror?: (error: Partial<ErrorEvent>) => void;
@@ -121,7 +130,7 @@
     zoomOnDoubleClick = true,
     locale = undefined,
     interactive = true,
-    attributionControl = true,
+    attributionControl = undefined,
     cooperativeGestures = false,
     preserveDrawingBuffer = false,
     maxBounds = undefined,
@@ -155,7 +164,7 @@
   );
 
   const { map: mapInstance, loadedImages } = createMapContext();
-  $effect(() => {
+  $effect.pre(() => {
     map = $mapInstance;
   });
 
@@ -365,7 +374,7 @@
       destroy() {
         loaded = false;
         $mapInstance?.remove();
-        $mapInstance = null;
+        $mapInstance = undefined;
       },
     };
   }
@@ -441,17 +450,6 @@
       ? $mapInstance?.doubleClickZoom.enable()
       : $mapInstance?.doubleClickZoom.disable();
   });
-
-  // https://github.com/dummdidumm/rfcs/blob/ts-typedefs-within-svelte-components/text/ts-typing-props-slots-events.md#typing-slots
-  interface $$Slots {
-    default: {
-      // `map` is always a MaplibreMap, never `null`
-      map: maplibregl.Map;
-      // the other slot props are correctly autodetected
-      loadedImages: Set<string>;
-      allImagesLoaded: boolean;
-    };
-  }
 
   function onHashChange() {
     if (hash) {

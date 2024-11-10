@@ -12,8 +12,9 @@
   import quakeImageUrl from '$site/earthquake.png';
   import tsunamiImageUrl from '$site/tsunami.png';
   import earthquakes from '$site/earthquakes.geojson?url';
+  import type { GeoJsonProperties } from 'geojson';
 
-  let clickedFeature: Record<string, any> | null = $state(null);
+  let clickedFeature: GeoJsonProperties | undefined = $state();
 </script>
 
 <p>

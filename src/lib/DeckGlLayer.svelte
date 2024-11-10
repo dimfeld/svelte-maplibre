@@ -17,7 +17,7 @@
     /** Handle mouse events on this layer. */
     interactive?: boolean;
     /** This indicates the currently hovered feature. Setting this attribute has no effect. */
-    hovered?: DATA | null;
+    hovered?: DATA;
     /** The deck.gl layer class to create */
     type: any;
     data: DATA[];
@@ -36,7 +36,7 @@
     maxzoom = undefined,
     visible = true,
     interactive = true,
-    hovered = $bindable(null),
+    hovered = $bindable(),
     type,
     data,
     children,
@@ -56,11 +56,11 @@
     deckgl = await import('@deck.gl/mapbox');
   });
 
-  let layerEvent = writable<DeckGlMouseEvent | null>(null);
+  let layerEvent = writable<DeckGlMouseEvent | undefined>();
   let layerId = writable(id);
   setMapContext({
     ...context,
-    popupTarget: readable(null),
+    popupTarget: readable(),
     layer: layerId,
     layerEvent,
   });
@@ -92,7 +92,7 @@
     }
 
     const type = e.index !== -1 ? 'mousemove' : 'mouseleave';
-    hovered = e.object ?? null;
+    hovered = e.object ?? undefined;
     const handler = type === 'mousemove' ? onmousemove : onmouseleave;
     handler?.(e);
     $layerEvent = {

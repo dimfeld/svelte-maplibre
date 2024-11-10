@@ -4,7 +4,7 @@
   import type { GeoJSON } from 'geojson';
   import type { ClusterOptions } from './types.js';
   import { addSource, removeSource } from './source.js';
-  import flush from 'just-flush';
+  import { flush } from '$lib/flush.js';
   import type { GeoJSONSource, ExpressionSpecification } from 'maplibre-gl';
 
   interface Props {
@@ -119,7 +119,7 @@
   onDestroy(() => {
     if ($source && sourceObj && $map) {
       removeSource(map, $source, sourceObj);
-      $source = null;
+      $source = undefined;
       sourceObj = undefined;
     }
   });

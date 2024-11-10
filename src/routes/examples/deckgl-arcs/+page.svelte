@@ -12,7 +12,7 @@
   import clamp from 'just-clamp';
   import counties from '$site/counties.json';
   import states from '$site/states.json';
-  import type { FeatureCollection } from 'geojson';
+  import type { Feature, FeatureCollection } from 'geojson';
   import Popup from '$lib/Popup.svelte';
   import FillLayer from '$lib/FillLayer.svelte';
   import GeoJson from '$lib/GeoJSON.svelte';
@@ -45,7 +45,7 @@
   }
 
   let zoom = $state(3);
-  let hovered: Feature | null = $state(null);
+  let hovered: Feature | undefined = $state();
 
   let mode: 'showAll' | 'showOne' = $state('showOne');
   let arcs = $derived(calculateArcs(mode === 'showAll' ? states : counties));
@@ -93,7 +93,7 @@
           let newGeoId = e.features[0]?.properties?.STATEFP;
           if (newGeoId !== activeState) {
             activeState = newGeoId;
-            hovered = null;
+            hovered = undefined;
           }
         }
       }}

@@ -12,7 +12,7 @@
 
   let { position = 'top-left', container = undefined }: Props = $props();
 
-  let control: maplibregl.FullscreenControl | null = $state(null);
+  let control: maplibregl.FullscreenControl | undefined = $state();
 
   let containerEl = $derived.by(() => {
     if (!$map) {

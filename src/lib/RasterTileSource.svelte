@@ -3,7 +3,7 @@
   import { getId, updatedSourceContext } from './context';
   import { addSource, removeSource } from './source.js';
   import type { Scheme } from './types.js';
-  import flush from 'just-flush';
+  import { flush } from '$lib/flush.js';
   import * as pmtiles from 'pmtiles';
   import maplibregl, { type RasterTileSource } from 'maplibre-gl';
 
@@ -11,16 +11,16 @@
     id?: string;
     /** An array one or more tile source URLs pointing to the tiles.
      * Either `tiles` or `url` must be provided. */
-    tiles?: string[] | undefined;
-    tileSize?: number | undefined;
+    tiles?: string[];
+    tileSize?: number;
     /** A single URL pointing to a PMTiles archive. Either `tiles` or `url` must be provided. */
-    url?: string | undefined;
-    bounds?: Array<number> | null;
-    scheme?: Scheme | null;
-    attribution?: string | null;
-    minzoom?: number | null;
-    maxzoom?: number | null;
-    volatile?: boolean | null;
+    url?: string;
+    bounds?: [number, number, number, number];
+    scheme?: Scheme;
+    attribution?: string;
+    minzoom?: number;
+    maxzoom?: number;
+    volatile?: boolean;
     children?: import('svelte').Snippet;
   }
 
@@ -29,17 +29,17 @@
     tiles = undefined,
     tileSize = undefined,
     url = undefined,
-    bounds = null,
-    scheme = null,
-    attribution = null,
-    minzoom = null,
-    maxzoom = null,
-    volatile = null,
+    bounds = undefined,
+    scheme = undefined,
+    attribution = undefined,
+    minzoom = undefined,
+    maxzoom = undefined,
+    volatile = undefined,
     children,
   }: Props = $props();
 
   if (url && url.includes('pmtiles://')) {
-    if (!maplibregl.config.REGISTERED_PROTOCOLS.hasOwnProperty('pmtiles')) {
+    if (!Object.hasOwn(maplibregl.config.REGISTERED_PROTOCOLS.hasOwnProperty, 'pmtiles')) {
       let protocol = new pmtiles.Protocol();
       maplibregl.addProtocol('pmtiles', protocol.tile);
     }
@@ -106,7 +106,7 @@
   onDestroy(() => {
     if ($source && sourceObj && $map) {
       removeSource(map, $source, sourceObj);
-      $source = null;
+      $source = undefined;
       sourceObj = undefined;
     }
   });

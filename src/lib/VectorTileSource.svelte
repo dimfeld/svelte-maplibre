@@ -5,38 +5,38 @@
   import type { Scheme } from './types.js';
   import * as pmtiles from 'pmtiles';
   import maplibregl, { type VectorTileSource } from 'maplibre-gl';
-  import flush from 'just-flush';
+  import { flush } from '$lib/flush.js';
 
   interface Props {
     id?: string;
-    url?: string | null;
-    tiles?: Array<string> | null;
-    promoteId?: string | null;
-    bounds?: Array<number> | null;
-    scheme?: Scheme | null;
-    attribution?: string | null;
-    minzoom?: number | null;
-    maxzoom?: number | null;
-    volatile?: boolean | null;
+    url?: string;
+    tiles?: Array<string> | undefined;
+    promoteId?: string | undefined;
+    bounds?: [number, number, number, number] | undefined;
+    scheme?: Scheme | undefined;
+    attribution?: string | undefined;
+    minzoom?: number | undefined;
+    maxzoom?: number | undefined;
+    volatile?: boolean | undefined;
     children?: import('svelte').Snippet;
   }
 
   let {
     id = getId('vector'),
-    url = null,
-    tiles = null,
-    promoteId = null,
-    bounds = null,
-    scheme = null,
-    attribution = null,
-    minzoom = null,
-    maxzoom = null,
-    volatile = null,
+    url = undefined,
+    tiles = undefined,
+    promoteId = undefined,
+    bounds = undefined,
+    scheme = undefined,
+    attribution = undefined,
+    minzoom = undefined,
+    maxzoom = undefined,
+    volatile = undefined,
     children,
   }: Props = $props();
 
   if (url && url.includes('pmtiles://')) {
-    if (!Object.hasOwnProperty(maplibregl.config.REGISTERED_PROTOCOLS, 'pmtiles')) {
+    if (!Object.hasOwn(maplibregl.config.REGISTERED_PROTOCOLS, 'pmtiles')) {
       let protocol = new pmtiles.Protocol();
       maplibregl.addProtocol('pmtiles', protocol.tile);
     }
@@ -85,7 +85,7 @@
   onDestroy(() => {
     if ($source && $map) {
       removeSource(map, $source, sourceObj);
-      $source = null;
+      $source = undefined;
       sourceObj = undefined;
     }
   });

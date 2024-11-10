@@ -13,7 +13,7 @@
 
   import earthquakes from '$site/earthquakes.geojson?url';
 
-  let clickedFeature: Record<string, any> | null = $state(null);
+  let clickedFeature: Record<string, any> | undefined = $state();
 
   let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = $state('hover');
 </script>

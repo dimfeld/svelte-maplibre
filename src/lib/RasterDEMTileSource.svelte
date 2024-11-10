@@ -2,23 +2,23 @@
   import { onDestroy } from 'svelte';
   import { getId, updatedSourceContext } from './context';
   import { addSource, removeSource } from './source.js';
-  import flush from 'just-flush';
+  import { flush } from '$lib/flush.js';
   import type { DEMEncoding, RasterDEMTileSource } from 'maplibre-gl';
 
   interface Props {
     id?: string;
     tiles: string[];
     tileSize?: number | undefined;
-    bounds?: Array<number> | null;
-    attribution?: string | null;
-    minzoom?: number | null;
-    maxzoom?: number | null;
-    volatile?: boolean | null;
-    encoding?: DEMEncoding | null;
-    redFactor?: number | null;
-    greenFactor: number | null;
-    blueFactor: number | null;
-    baseShift: number | null;
+    bounds?: [number, number, number, number];
+    attribution?: string;
+    minzoom?: number;
+    maxzoom?: number;
+    volatile?: boolean;
+    encoding?: DEMEncoding;
+    redFactor?: number;
+    greenFactor?: number;
+    blueFactor?: number;
+    baseShift?: number;
     children?: import('svelte').Snippet;
   }
 
@@ -26,16 +26,16 @@
     id = getId('raster-source'),
     tiles,
     tileSize = undefined,
-    bounds = null,
-    attribution = null,
-    minzoom = null,
-    maxzoom = null,
-    volatile = null,
-    encoding = null,
-    redFactor = null,
-    greenFactor,
-    blueFactor,
-    baseShift,
+    bounds = undefined,
+    attribution = undefined,
+    minzoom = undefined,
+    maxzoom = undefined,
+    volatile = undefined,
+    encoding = undefined,
+    redFactor = undefined,
+    greenFactor = undefined,
+    blueFactor = undefined,
+    baseShift = undefined,
     children,
   }: Props = $props();
 
@@ -101,7 +101,7 @@
   onDestroy(() => {
     if ($source && sourceObj && $map) {
       removeSource(map, $source, sourceObj);
-      $source = null;
+      $source = undefined;
       sourceObj = undefined;
     }
   });

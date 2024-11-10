@@ -14,7 +14,7 @@
   type FeatureWithId = Feature & { id: string | number };
 
   interface ExtendedMarkerClickInfo extends MarkerClickInfo {
-    source: string | null;
+    source: string | undefined;
     feature: FeatureWithId;
   }
 
@@ -32,9 +32,9 @@
     /** Make markers tabbable and add the button role. */
     asButton?: boolean;
     draggable?: boolean;
-    minzoom?: number | undefined;
-    maxzoom?: number | undefined;
-    hovered?: Feature | null;
+    minzoom?: number;
+    maxzoom?: number;
+    hovered?: Feature;
     /** The z-index of the markers. This can also be set via CSS classes using the `class` prop.
      * If a function is provided, it will be called with each feature as an argument. */
     zIndex?: number | ((feature: Feature) => number) | undefined;
@@ -58,7 +58,7 @@
     draggable = false,
     minzoom = undefined,
     maxzoom = undefined,
-    hovered = $bindable(null),
+    hovered = $bindable(),
     zIndex = undefined,
     class: className = undefined,
     children,
@@ -114,7 +114,7 @@
     $map.off('sourcedata', handleData);
   });
 
-  let sourceObj = $derived($map && $source ? $map.getSource($source) : null);
+  let sourceObj = $derived($map && $source ? $map.getSource($source) : undefined);
 
   $effect(() => {
     if (!$map) {
@@ -229,7 +229,7 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
       }}
       onmouseleave={() => {
         if (hovered?.id === feature.id) {
-          hovered = null;
+          hovered = undefined;
         }
       }}
       ondragstart={(e) => ondragstart?.({ ...e, source: $source, feature })}

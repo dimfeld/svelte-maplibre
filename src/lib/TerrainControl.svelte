@@ -13,11 +13,11 @@
 
   let { position = 'top-left', source, exaggeration }: Props = $props();
 
-  let control: maplibregl.TerrainControl | null = $state(null);
+  let control: maplibregl.TerrainControl | undefined = $state();
   $effect(() => {
     if ($map && !control) {
-      (control = new maplibregl.TerrainControl({ source: source, exaggeration: exaggeration })),
-        $map.addControl(control, position);
+      control = new maplibregl.TerrainControl({ source: source, exaggeration: exaggeration });
+      $map.addControl(control, position);
     }
   });
 

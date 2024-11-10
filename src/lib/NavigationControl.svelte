@@ -19,7 +19,7 @@
     visualizePitch = false,
   }: Props = $props();
 
-  let control: maplibregl.NavigationControl | null = $state(null);
+  let control: maplibregl.NavigationControl | undefined = $state();
   $effect(() => {
     if ($map && !control) {
       control = new maplibregl.NavigationControl({ showCompass, showZoom, visualizePitch });

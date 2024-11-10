@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { onDestroy, tick } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { getId, updatedSourceContext } from './context.js';
   import { addSource, removeSource } from './source.js';
   import type { ImageSource, Coordinates } from 'maplibre-gl';
-  import flush from 'just-flush';
+  import { flush } from '$lib/flush.js';
 
   interface Props {
     id?: string;
@@ -63,7 +63,7 @@
   onDestroy(() => {
     if ($source && $map) {
       removeSource(map, $source, sourceObj);
-      $source = null;
+      $source = undefined;
       sourceObj = undefined;
     }
   });

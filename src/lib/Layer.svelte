@@ -4,7 +4,7 @@
   import { diffApplier } from './compare.js';
   import { combineFilters, isClusterFilter } from './filters.js';
   import type { CommonLayerProps, LayerClickInfo } from './types.js';
-  import flush from 'just-flush';
+  import { flush } from '$lib/flush.js';
   import { onDestroy } from 'svelte';
   import type { MapMouseEvent, MapGeoJSONFeature } from 'maplibre-gl';
 
@@ -109,7 +109,7 @@
     }
 
     let features = e.features ?? [];
-    hovered = features[0] ?? null;
+    hovered = features[0] ?? undefined;
     let clusterId = features[0]?.properties?.cluster_id;
 
     let data: LayerClickInfo = {
@@ -130,7 +130,7 @@
     }
 
     if (eventsIfTopMost && eventTopMost(e) !== $layer) {
-      hovered = null;
+      hovered = undefined;
       if (manageHoverState && hoverFeatureId !== undefined) {
         $map?.setFeatureState(
           { source: actualSource!, sourceLayer, id: hoverFeatureId },
@@ -143,7 +143,9 @@
     }
 
     // This may get out of sync, if this layer regains focus from a higher layer.
-    $map.getCanvas().style.cursor = hoverCursor;
+    if (hoverCursor) {
+      $map.getCanvas().style.cursor = hoverCursor;
+    }
 
     let features = e.features ?? [];
 
@@ -166,7 +168,7 @@
       }
 
       hoverFeatureId = featureId;
-      hovered = features[0] ?? null;
+      hovered = features[0] ?? undefined;
     }
 
     onmousemove?.({
@@ -188,7 +190,7 @@
       $map.getCanvas().style.cursor = '';
     }
 
-    hovered = null;
+    hovered = undefined;
     if (manageHoverState && hoverFeatureId !== undefined) {
       const featureSelector = { source: actualSource!, id: hoverFeatureId, sourceLayer };
       $map?.setFeatureState(featureSelector, { hover: false });

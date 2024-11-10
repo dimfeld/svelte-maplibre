@@ -16,11 +16,11 @@ export interface LayerInfo {
 }
 
 export interface MapContext {
-  map: Readable<MapLibre | null>;
-  source: Readable<string | null>;
-  layer: Readable<string | null>;
+  map: Readable<MapLibre | undefined>;
+  source: Readable<string | undefined>;
+  layer: Readable<string | undefined>;
   cluster: Writable<ClusterOptions | undefined>;
-  popupTarget: Readable<Marker | string | null>;
+  popupTarget: Readable<Marker | string | undefined>;
   /** A list of images that have been successfully loaded. */
   loadedImages: Writable<Set<string>>;
   minzoom: Writable<number>;
@@ -31,7 +31,7 @@ export interface MapContext {
 
   eventTopMost: (event: MapMouseEvent) => string;
 
-  layerEvent: Writable<LayerEvent | null>;
+  layerEvent: Writable<LayerEvent | undefined>;
   /** Subscribe to marker clicks globally. Marker clicks intentionally do not propagate their events
    * to the map, but some internal components such as Popups need to know when any click happens, on the
    * map or on a marker, and MarkerClickManager facilitates that functionality. */
@@ -85,15 +85,15 @@ function eventTopMost(layerInfo: Map<string, LayerInfo>): (event: MapMouseEvent)
 export function createMapContext(): MapContext {
   let layerInfo = new Map();
   return setContext(MAP_CONTEXT_KEY, {
-    map: writable<MapLibre | null>(null),
-    source: readable(null),
-    layer: readable(null),
-    popupTarget: readable(null),
+    map: writable<MapLibre | undefined>(),
+    source: readable(),
+    layer: readable(),
+    popupTarget: readable(),
     cluster: writable(),
     loadedImages: writable(new Set()),
     minzoom: writable(0),
     maxzoom: writable(24),
-    layerEvent: writable(null),
+    layerEvent: writable(),
     layerInfo,
     eventTopMost: eventTopMost(layerInfo),
     markerClickManager: new MarkerClickManager(),
@@ -108,7 +108,7 @@ function readableFromWritable<T>(writable: Readable<T>): Readable<T> {
 }
 
 export interface UpdatedContext<TYPE> extends MapContext {
-  self: Writable<TYPE | null>;
+  self: Writable<TYPE | undefined>;
 }
 
 interface UpdatedContextOptions {
@@ -127,7 +127,7 @@ function updatedContext<T extends string | Marker>({
 }: UpdatedContextOptions): UpdatedContext<T> {
   let currentContext = mapContext();
 
-  let newValue = writable<T | null>(null);
+  let newValue = writable<T | undefined>();
   let ctxValue = readableFromWritable(newValue);
   let newCtx = {
     ...currentContext,
@@ -140,7 +140,7 @@ function updatedContext<T extends string | Marker>({
   }
 
   if (setMouseEvent) {
-    let layerEvent = writable(null);
+    let layerEvent = writable();
     newCtx.layerEvent = layerEvent;
     currentContext.layerEvent = layerEvent;
   }

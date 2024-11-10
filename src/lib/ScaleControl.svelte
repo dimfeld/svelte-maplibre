@@ -13,7 +13,7 @@
 
   let { position = 'bottom-left', maxWidth = undefined, unit = 'metric' }: Props = $props();
 
-  let control: maplibregl.ScaleControl | null = $state(null);
+  let control: maplibregl.ScaleControl | undefined = $state();
   $effect(() => {
     if ($map && !control) {
       control = new maplibregl.ScaleControl({

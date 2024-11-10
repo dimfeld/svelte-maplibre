@@ -26,7 +26,7 @@
 
   let data = $derived(
     size === 0
-      ? null
+      ? undefined
       : ({
           type: 'FeatureCollection',
           features: [

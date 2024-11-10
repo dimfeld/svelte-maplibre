@@ -12,7 +12,7 @@
     trackUserLocation?: boolean;
     showAccuracyCircle?: boolean;
     showUserLocation?: boolean;
-    control?: maplibregl.GeolocateControl | null;
+    control?: maplibregl.GeolocateControl;
   }
 
   let {
@@ -22,7 +22,7 @@
     trackUserLocation = false,
     showAccuracyCircle = true,
     showUserLocation = true,
-    control = $bindable(null),
+    control = $bindable(),
   }: Props = $props();
   $effect(() => {
     if ($map && !control) {
