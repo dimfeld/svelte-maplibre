@@ -39,7 +39,7 @@
      * If a function is provided, it will be called with each feature as an argument. */
     zIndex?: number | ((feature: Feature) => number) | undefined;
     class?: string | undefined;
-    children?: import('svelte').Snippet<[any]>;
+    children?: import('svelte').Snippet<[{ feature: Feature; position: [number, number] }]>;
 
     onclick?: (e: ExtendedMarkerClickInfo) => void;
     ondblclick?: (e: ExtendedMarkerClickInfo) => void;

@@ -74,9 +74,7 @@
     children?: import('svelte').Snippet<
       [
         {
-          // `map` is always a MaplibreMap, never `null`
           map: maplibregl.Map;
-          // the other slot props are correctly autodetected
           loadedImages: Set<string>;
           allImagesLoaded: boolean;
         },
