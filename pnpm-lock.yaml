@@ -17,9 +17,6 @@ importers:
       just-compare:
         specifier: ^2.3.0
         version: 2.3.0
-      just-flush:
-        specifier: ^2.3.0
-        version: 2.3.0
       maplibre-gl:
         specifier: ^4.0.0
         version: 4.0.0
@@ -2025,9 +2022,6 @@ packages:
 
   just-compare@2.3.0:
     resolution: {integrity: sha512-6shoR7HDT+fzfL3gBahx1jZG3hWLrhPAf+l7nCwahDdT9XDtosB9kIF0ZrzUp5QY8dJWfQVr5rnsPqsbvflDzg==}
-
-  just-flush@2.3.0:
-    resolution: {integrity: sha512-fBuxQ1gJ61BurmhwKS5LYTzhkbrT5j/2U7ax+UbLm9aRvCTh2h6AfzLteOckE4KKomqOf0Y3zIG3Xu57sRsKUg==}
 
   kdbush@4.0.2:
     resolution: {integrity: sha512-WbCVYJ27Sz8zi9Q7Q0xHC+05iwkm3Znipc2XTlrnJbsHMYktW4hPhXUE8Ys1engBrvffoSCqbil1JQAa7clRpA==}
@@ -5398,8 +5392,6 @@ snapshots:
   just-clamp@4.2.0: {}
 
   just-compare@2.3.0: {}
-
-  just-flush@2.3.0: {}
 
   kdbush@4.0.2: {}
 
