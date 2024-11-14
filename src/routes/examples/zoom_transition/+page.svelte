@@ -32,8 +32,8 @@
     };
   }
 
-  const stateCenters = calculateCenters(states);
-  const countyCenters = calculateCenters(counties);
+  const stateCenters = calculateCenters(states as unknown as FeatureCollection);
+  const countyCenters = calculateCenters(counties as unknown as FeatureCollection);
 
   let zoomThreshold = $state(5);
   let currentZoom = $state(4);
@@ -58,13 +58,13 @@
   standardControls
   center={[-98.137, 40.137]}
   zoom={4}
-  onzoomend={({ detail: { map } }) => (currentZoom = map.getZoom())}
+  onzoomend={({ target: map }) => (currentZoom = map.getZoom())}
   filterLayers={(l) => !isTextLayer(l, 'carto')}
 >
   <ZoomRange maxzoom={zoomThreshold + 0.5}>
     {@const fadeStates = zoomTransition(zoomThreshold - 1, 0.8, zoomThreshold + 0.5, 0)}
     {@const fadeStatesText = zoomTransition(zoomThreshold - 1, 1, zoomThreshold, 0.2)}
-    <GeoJSON id="states" data={states} promoteId="GEOID">
+    <GeoJSON id="states" data={states as unknown as FeatureCollection} promoteId="GEOID">
       <FillLayer
         paint={{
           'fill-color': 'green',
@@ -103,7 +103,7 @@
   <ZoomRange minzoom={zoomThreshold - 0.5}>
     {@const fadeCounties = zoomTransition(zoomThreshold - 0.5, 0, zoomThreshold + 0.5, 0.8)}
     {@const fadeCountiesText = zoomTransition(zoomThreshold, 0.2, zoomThreshold + 0.5, 1)}
-    <GeoJSON id="counties" data={counties} promoteId="GEOID">
+    <GeoJSON id="counties" data={counties as unknown as FeatureCollection} promoteId="GEOID">
       <FillLayer
         paint={{
           'fill-color': 'orange',

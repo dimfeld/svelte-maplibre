@@ -14,7 +14,9 @@
 
   let { data }: Props = $props();
 
-  function randomCircle(): GeoJSON.Feature {
+  type PointFeature = GeoJSON.Feature<GeoJSON.Point, { radius: number }>;
+
+  function randomCircle(): PointFeature {
     const lng = Math.random() * 360 - 180;
     const lat = Math.random() * 180 - 90;
     const radius = Math.random() * 50;
@@ -43,9 +45,9 @@
   ];
   // CODE1 END
 
-  const lastEvent = $state([]);
+  const lastEvent: (GeoJSON.Feature<GeoJSON.Point> | undefined)[] = $state([]);
 
-  function labelFeature(f: GeoJSON.Feature | undefined) {
+  function labelFeature(f: GeoJSON.Feature<GeoJSON.Point> | undefined) {
     if (!f) {
       return 'None';
     }
@@ -104,13 +106,13 @@
           'circle-opacity': hoverStateFilter(1.0, 0.5),
         }}
         onclick={(e) => {
-          lastEvent[i] = e.features?.[0];
+          lastEvent[i] = e.features?.[0] as PointFeature;
         }}
         onmouseleave={(e) => {
           lastEvent[i] = undefined;
         }}
         onmousemove={(e) => {
-          lastEvent[i] = e.features?.[0];
+          lastEvent[i] = e.features?.[0] as PointFeature;
         }}
       >
         <Popup {openOn} {openIfTopMost}>

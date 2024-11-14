@@ -11,6 +11,7 @@
   import states from '$site/states.json?url';
   import { contrastingColor } from '$site/colors.js';
   import { hoverStateFilter } from '$lib/filters.js';
+  import type { ExpressionSpecification } from 'maplibre-gl';
 
   let showBorder = $state(true);
   let showFill = $state(true);
@@ -21,7 +22,11 @@
   let map: maplibregl.Map | undefined = $state();
   let loaded = $state(false);
   let textLayers: maplibregl.LayerSpecification[] = $derived(
-    map && loaded ? map.getStyle().layers.filter((layer) => layer['source-layer'] === 'place') : []
+    map && loaded
+      ? map.getStyle().layers.filter((layer) => {
+          return layer.type === 'symbol' && layer['source-layer'] === 'place';
+        })
+      : []
   );
 
   let colors = $derived(contrastingColor(fillColor));
@@ -33,7 +38,9 @@
   });
 
   let filterStates = $state(false);
-  let filter = $derived(filterStates ? ['==', 'T', ['slice', ['get', 'NAME'], 0, 1]] : undefined);
+  let filter: ExpressionSpecification | undefined = $derived(
+    filterStates ? ['==', 'T', ['slice', ['get', 'NAME'], 0, 1]] : undefined
+  );
   // END EXTRACT
 </script>
 

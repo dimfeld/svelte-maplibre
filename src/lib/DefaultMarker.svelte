@@ -1,7 +1,7 @@
 <script lang="ts">
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import { onDestroy } from 'svelte';
-  import { updatedMarkerContext } from './context';
+  import { mapContext, updatedMarkerContext } from './context.svelte.js';
   import type { MarkerClickInfo } from './types';
   import type * as GeoJSON from 'geojson';
   import { flush } from '$lib/flush.js';
@@ -45,7 +45,8 @@
     ondragend = undefined,
   }: Props = $props();
 
-  const { map, layerEvent, self: marker } = updatedMarkerContext();
+  const { map } = mapContext();
+  const { layerEvent, marker } = updatedMarkerContext();
 
   const dragStartListener = () => sendEvent(ondragstart, 'dragstart');
   const dragListener = () => {
@@ -57,7 +58,7 @@
     sendEvent(ondragend, 'dragend');
   };
 
-  $marker = new maplibre.Marker(
+  marker.value = new maplibre.Marker(
     flush({
       draggable,
       rotation,
@@ -67,34 +68,34 @@
     })
   )
     .setLngLat(lngLat)
-    .addTo($map!);
-  markerProp = $marker;
+    .addTo(map!);
+  markerProp = marker.value;
   if (draggable) {
-    $marker.on('dragstart', dragStartListener);
-    $marker.on('drag', dragListener);
-    $marker.on('dragend', dragEndListener);
+    marker.value.on('dragstart', dragStartListener);
+    marker.value.on('drag', dragListener);
+    marker.value.on('dragend', dragEndListener);
   }
 
   onDestroy(() => {
     markerProp = undefined;
-    $marker?.remove();
+    marker.value?.remove();
   });
 
   $effect(() => {
-    $marker?.setLngLat(lngLat);
+    marker.value?.setLngLat(lngLat);
   });
   $effect(() => {
-    $marker?.setOffset(offset ?? [0, 0]);
+    marker.value?.setOffset(offset ?? [0, 0]);
   });
   $effect(() => {
-    $marker?.setRotation(rotation);
+    marker.value?.setRotation(rotation);
   });
   $effect(() => {
-    $marker?.setOpacity(opacity.toString());
+    marker.value?.setOpacity(opacity.toString());
   });
 
   function propagateLngLatChange() {
-    let newPos = $marker?.getLngLat();
+    let newPos = marker.value?.getLngLat();
     if (!newPos) {
       return;
     }
@@ -110,15 +111,15 @@
   }
 
   function sendEvent(eventCb: ((e: MarkerClickInfo) => void) | undefined, eventName: string) {
-    let loc = $marker?.getLngLat();
+    let loc = marker.value?.getLngLat();
     if (!loc) {
       return;
     }
 
     const lngLat: [number, number] = [loc.lng, loc.lat];
     let data: MarkerClickInfo = {
-      map: $map!,
-      marker: $marker!,
+      map: map!,
+      marker: marker.value!,
       lngLat,
       features: [
         {
@@ -133,7 +134,7 @@
       ],
     };
 
-    $layerEvent = {
+    layerEvent.value = {
       ...data,
       layerType: 'marker',
       type: eventName,
@@ -143,4 +144,6 @@
   }
 </script>
 
-{@render children?.({ marker: $marker })}
+{#if marker.value}
+  {@render children?.({ marker: marker.value })}
+{/if}

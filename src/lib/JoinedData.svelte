@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { updatedLayerContext } from './context';
+  import { getSource, mapContext, updatedLayerContext } from './context.svelte.js';
   interface Props {
     data: Array<Record<string, string | number | undefined>>;
     idCol: string;
@@ -10,9 +10,10 @@
 
   let lastSeenIds: Set<string | number> = $state(new Set());
 
-  const { map, source } = updatedLayerContext();
+  const { map } = mapContext();
+  const source = getSource();
   $effect(() => {
-    if (data && $map && $source) {
+    if (data && map && source?.value) {
       let seenIds: Set<string | number> = new Set();
       for (const row of data) {
         const id = row[idCol];
@@ -22,8 +23,8 @@
         lastSeenIds.delete(id);
         seenIds.add(id);
 
-        const featureSelector = { id, source: $source, sourceLayer };
-        const oldState = $map.getFeatureState(featureSelector);
+        const featureSelector = { id, source: source.value, sourceLayer };
+        const oldState = map.getFeatureState(featureSelector);
 
         let needsUpdate = false;
 
@@ -36,18 +37,18 @@
         }
 
         if (needsUpdate) {
-          $map.setFeatureState(featureSelector, row);
+          map.setFeatureState(featureSelector, row);
         }
       }
 
       for (const removeId of lastSeenIds) {
-        const featureSelector = { id: removeId, source: $source, sourceLayer };
+        const featureSelector = { id: removeId, source: source.value, sourceLayer };
 
         // MapLibre manages each key in the feature state independently, and we don't want to
         // clear state set from elsewhere such as hover state, so we need to clear each key explicitly.
-        const oldState = $map.getFeatureState(featureSelector);
+        const oldState = map.getFeatureState(featureSelector);
         for (const property of Object.keys(oldState)) {
-          $map.removeFeatureState(featureSelector, property);
+          map.removeFeatureState(featureSelector, property);
         }
       }
 

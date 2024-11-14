@@ -1,7 +1,7 @@
 <script lang="ts">
   import type maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
-  import { mapContext } from './context';
+  import { mapContext } from './context.svelte.js';
 
   interface Props {
     defaultStyling?: boolean;
@@ -30,13 +30,13 @@
   };
 
   $effect(() => {
-    if ($map && el) {
-      $map.addControl(control, position);
+    if (el) {
+      map.addControl(control, position);
     }
   });
 
   onDestroy(() => {
-    $map?.removeControl(control);
+    map.removeControl(control);
   });
 </script>
 

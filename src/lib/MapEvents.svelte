@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { mapContext } from './context';
+  import { mapContext } from './context.svelte.js';
   import maplibregl from 'maplibre-gl';
   import type { MapEventType, MapLayerEventType } from 'maplibre-gl';
   import type { MapMoveEvent } from './types.js';
@@ -72,17 +72,17 @@
   ];
 
   $effect(() => {
-    if ($map) {
+    if (map) {
       if (layer) {
         for (const eventName of layerEvents) {
           if (getHandler(eventName as EventName)) {
-            $map.on(eventName, layer, sendEvent);
+            map.on(eventName, layer, sendEvent);
           }
         }
       } else {
         for (const eventName of mapEvents) {
           if (getHandler(eventName as EventName)) {
-            $map.on(eventName, sendEvent);
+            map.on(eventName, sendEvent);
           }
         }
       }
@@ -90,17 +90,17 @@
   });
 
   onDestroy(() => {
-    if ($map) {
+    if (map) {
       if (layer) {
         for (const eventName of layerEvents) {
           if (getHandler(eventName as EventName)) {
-            $map.off(eventName, layer, sendEvent);
+            map.off(eventName, layer, sendEvent);
           }
         }
       } else {
         for (const eventName of mapEvents) {
           if (getHandler(eventName as EventName)) {
-            $map.off(eventName, sendEvent);
+            map.off(eventName, sendEvent);
           }
         }
       }

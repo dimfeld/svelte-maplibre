@@ -36,7 +36,7 @@
   <GeoJSON id="states" data={states} promoteId="STATEFP">
     <MarkerLayer draggable class="rounded-full p-2 shadow {colors[0]}">
       {#snippet children({ feature })}
-        <div class="text-sm font-bold">{feature.properties.NAME}</div>
+        <div class="text-sm font-bold">{feature.properties?.NAME}</div>
       {/snippet}
     </MarkerLayer>
   </GeoJSON>

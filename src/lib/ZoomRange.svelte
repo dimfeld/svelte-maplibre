@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import { mapContext, setMapContext } from './context';
+  import { mapContext, setZoomLimits } from './context.svelte.js';
 
   interface Props {
     minzoom?: number | undefined;
@@ -16,35 +15,23 @@
 
   const context = mapContext();
   const map = context.map;
-  const originalMinZoom = context.minzoom;
-  const originalMaxZoom = context.maxzoom;
 
-  const minZoom = writable(minzoom ?? $originalMinZoom);
-  const maxZoom = writable(maxzoom ?? $originalMaxZoom);
-
-  $effect(() => {
-    minZoom.set(minzoom ?? $originalMinZoom);
-  });
-  $effect(() => {
-    maxZoom.set(maxzoom ?? $originalMaxZoom);
+  let zoomLimits = setZoomLimits(minzoom, maxzoom);
+  $effect.pre(() => {
+    zoomLimits.minzoomSetting = minzoom;
+    zoomLimits.maxzoomSetting = maxzoom;
   });
 
-  setMapContext({
-    ...context,
-    minzoom: minZoom,
-    maxzoom: maxZoom,
-  });
-
-  let zoom = $state($map?.getZoom() ?? 0);
+  let zoom = $state(map.getZoom() ?? 0);
   function handleZoom() {
-    zoom = $map.getZoom();
+    zoom = map.getZoom();
   }
 
   onMount(() => {
-    $map.on('zoom', handleZoom);
+    map.on('zoom', handleZoom);
     return () => {
-      if ($map?.loaded()) {
-        $map.off('zoom', handleZoom);
+      if (map.loaded()) {
+        map.off('zoom', handleZoom);
       }
     };
   });
@@ -59,6 +46,6 @@ is outside the range. This is usually bad for performance, so it is not recommen
 but can have other uses such as creating and removing map controls or other behaviors depending on zoom level.
 -->
 
-{#if !enforce || ($minZoom <= zoom && zoom <= $maxZoom)}
+{#if !enforce || (zoomLimits.minzoom <= zoom && zoom <= zoomLimits.maxzoom)}
   {@render children?.()}
 {/if}

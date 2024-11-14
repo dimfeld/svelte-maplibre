@@ -6,7 +6,14 @@
     type MapLayerTouchEvent,
   } from 'maplibre-gl';
   import { onDestroy, onMount } from 'svelte';
-  import { mapContext, type LayerEvent, isDeckGlMouseEvent } from './context.js';
+  import {
+    mapContext,
+    type LayerEvent,
+    isDeckGlMouseEvent,
+    getLayer,
+    getLayerEvent,
+    getPopupTarget,
+  } from './context.svelte.js';
   import type { MarkerClickInfo } from './types.js';
 
   interface Props {
@@ -74,7 +81,10 @@
     onhover = undefined,
   }: Props = $props();
 
-  const { map, popupTarget, layerEvent, layer, eventTopMost, markerClickManager } = mapContext();
+  const { map, eventTopMost, markerClickManager } = mapContext();
+  const layer = getLayer();
+  const layerEvent = getLayerEvent();
+  const popupTarget = getPopupTarget();
 
   const clickEvents = ['click', 'dblclick', 'contextmenu'];
 
@@ -128,42 +138,42 @@
   }
 
   onMount(() => {
-    if (!$map) {
+    if (!map) {
       return;
     }
 
-    $map.on('click', globalClickHandler);
-    $map.on('contextmenu', globalClickHandler);
+    map.on('click', globalClickHandler);
+    map.on('contextmenu', globalClickHandler);
     markerClickManager.add(globalMarkerClickHandler);
-    if (typeof $popupTarget === 'string') {
-      $map.on('click', $popupTarget, handleLayerClick);
-      $map.on('dblclick', $popupTarget, handleLayerClick);
-      $map.on('contextmenu', $popupTarget, handleLayerClick);
-      $map.on('mousemove', $popupTarget, handleLayerMouseMove);
-      $map.on('mouseleave', $popupTarget, handleLayerMouseLeave);
-      $map.on('touchstart', $popupTarget, handleLayerTouchStart);
-      $map.on('touchend', $popupTarget, handleLayerTouchEnd);
+    if (typeof popupTarget?.value === 'string') {
+      map.on('click', popupTarget.value, handleLayerClick);
+      map.on('dblclick', popupTarget.value, handleLayerClick);
+      map.on('contextmenu', popupTarget.value, handleLayerClick);
+      map.on('mousemove', popupTarget.value, handleLayerMouseMove);
+      map.on('mouseleave', popupTarget.value, handleLayerMouseLeave);
+      map.on('touchstart', popupTarget.value, handleLayerTouchStart);
+      map.on('touchend', popupTarget.value, handleLayerTouchEnd);
     }
 
     return () => {
-      if ($map?.loaded()) {
+      if (map.loaded()) {
         popup?.remove();
-        $map.off('click', globalClickHandler);
-        $map.off('contextmenu', globalClickHandler);
+        map.off('click', globalClickHandler);
+        map.off('contextmenu', globalClickHandler);
         markerClickManager.remove(globalMarkerClickHandler);
 
-        if ($popupTarget instanceof maplibregl.Marker) {
-          if ($popupTarget.getPopup() === popup) {
-            $popupTarget.setPopup(undefined);
+        if (popupTarget?.value instanceof maplibregl.Marker) {
+          if (popupTarget.value.getPopup() === popup) {
+            popupTarget.value.setPopup(undefined);
           }
-        } else if (typeof $popupTarget === 'string') {
-          $map.off('click', $popupTarget, handleLayerClick);
-          $map.off('dblclick', $popupTarget, handleLayerClick);
-          $map.off('contextmenu', $popupTarget, handleLayerClick);
-          $map.off('mousemove', $popupTarget, handleLayerMouseMove);
-          $map.off('mouseleave', $popupTarget, handleLayerMouseLeave);
-          $map.off('touchstart', $popupTarget, handleLayerTouchStart);
-          $map.off('touchend', $popupTarget, handleLayerTouchEnd);
+        } else if (typeof popupTarget?.value === 'string') {
+          map.off('click', popupTarget.value, handleLayerClick);
+          map.off('dblclick', popupTarget.value, handleLayerClick);
+          map.off('contextmenu', popupTarget.value, handleLayerClick);
+          map.off('mousemove', popupTarget.value, handleLayerMouseMove);
+          map.off('mouseleave', popupTarget.value, handleLayerMouseLeave);
+          map.off('touchstart', popupTarget.value, handleLayerTouchStart);
+          map.off('touchend', popupTarget.value, handleLayerTouchEnd);
         }
       }
     };
@@ -174,7 +184,7 @@
       return false;
     }
     // Marker clicks are always only on the top-most marker. Otherwise check for the top-most layer.
-    return !('marker' in e) && !isDeckGlMouseEvent(e) && eventTopMost(e) !== $layer;
+    return !('marker' in e) && !isDeckGlMouseEvent(e) && eventTopMost(e) !== layer?.value;
   }
 
   let features: Feature[] | undefined = $state();
@@ -265,7 +275,7 @@
 
     let checkElements = [
       popupElement,
-      $popupTarget instanceof maplibregl.Marker ? $popupTarget?.getElement() : undefined,
+      popupTarget?.value instanceof maplibregl.Marker ? popupTarget.value?.getElement() : undefined,
     ];
 
     if (
@@ -281,13 +291,13 @@
 
   function globalMarkerClickHandler(info: MarkerClickInfo) {
     // Markers don't propagate clicks to the map, so we handle it separately here.
-    if (closeOnClickOutside && open && popup?.isOpen() && info.marker !== $popupTarget) {
+    if (closeOnClickOutside && open && popup?.isOpen() && info.marker !== popupTarget?.value) {
       open = false;
     }
   }
 
   onDestroy(() => {
-    if ($map && popup?.isOpen()) {
+    if (map && popup?.isOpen()) {
       popup.remove();
     }
   });
@@ -330,30 +340,31 @@
   });
 
   $effect(() => {
-    if (popup && $popupTarget instanceof maplibregl.Marker) {
+    if (popup && popupTarget?.value instanceof maplibregl.Marker) {
       if (openOn === 'click') {
-        $popupTarget.setPopup(popup);
-      } else if ($popupTarget.getPopup() === popup) {
-        $popupTarget.setPopup(undefined);
+        popupTarget.value.setPopup(popup);
+      } else if (popupTarget.value.getPopup() === popup) {
+        popupTarget.value.setPopup(undefined);
       }
     }
   });
 
   $effect(() => {
-    if (clickEvents.includes(openOn) && $layerEvent?.type === openOn) {
-      handleLayerClick($layerEvent);
-      $layerEvent = undefined;
+    if (clickEvents.includes(openOn) && layerEvent.value?.type === openOn) {
+      handleLayerClick(layerEvent.value);
+      layerEvent.value = undefined;
     }
   });
 
   let hoveringOnLayer = $derived(
-    openOn === 'hover' && ($layerEvent?.type === 'mousemove' || $layerEvent?.type === 'mouseenter')
+    openOn === 'hover' &&
+      (layerEvent.value?.type === 'mousemove' || layerEvent.value?.type === 'mouseenter')
   );
 
   $effect(() => {
     if (openOn === 'hover' && layerEvent) {
-      if (hoveringOnLayer && $layerEvent) {
-        handleLayerEvent($layerEvent);
+      if (hoveringOnLayer && layerEvent.value) {
+        handleLayerEvent(layerEvent.value);
       }
       open = (hoveringOnLayer || hoveringOnPopup) ?? false;
     }
@@ -372,10 +383,10 @@
   });
 
   $effect(() => {
-    if ($map && popup) {
+    if (map && popup) {
       let isOpen = popup.isOpen();
       if (open && !isOpen) {
-        popup.addTo($map);
+        popup.addTo(map);
         if (touchOpenState === 'opening') {
           touchOpenState = 'justOpened';
         }
@@ -388,11 +399,11 @@
 
 {#if children}
   <div bind:this={popupEl}>
-    {#if features?.length || $popupTarget instanceof maplibregl.Marker}
+    {#if features?.length || popupTarget?.value instanceof maplibregl.Marker}
       {@render children?.({
         features,
         data: features?.[0] ?? undefined,
-        map: $map,
+        map: map,
         close: () => (open = false),
       })}
     {/if}

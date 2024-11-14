@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getId } from './context';
+  import { getId } from './context.svelte.js';
   import Layer from './Layer.svelte';
   import type { CommonLayerProps } from './types.js';
 

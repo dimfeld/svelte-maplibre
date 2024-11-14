@@ -1,5 +1,6 @@
 import type { Map as MapLibre, MapMouseEvent, Marker } from 'maplibre-gl';
 import { getContext, setContext } from 'svelte';
+import { SvelteSet } from 'svelte/reactivity';
 import type { ClusterOptions, MarkerClickInfo } from './types';
 
 // Choose current time instead of 0 to avoid possible reuse during HMR.
@@ -26,7 +27,7 @@ export class MapContext {
   map = $state() as MapLibre;
   // cluster: Box<ClusterOptions | undefined>;
   /** A list of images that have been successfully loaded. */
-  loadedImages = new Set<string>();
+  loadedImages = new SvelteSet<string>();
   minzoom = $state(0);
   maxzoom = $state(24);
 
@@ -54,6 +55,27 @@ export class MapContext {
   markerClickManager = new MarkerClickManager();
 }
 
+export class ZoomRange {
+  minzoomSetting: number | undefined = $state();
+  maxzoomSetting: number | undefined = $state();
+  parent: { minzoom: number; maxzoom: number };
+
+  minzoom: number;
+  maxzoom: number;
+
+  constructor(
+    minzoom: number | undefined,
+    maxzoom: number | undefined,
+    parent: { minzoom: number; maxzoom: number }
+  ) {
+    this.minzoomSetting = minzoom;
+    this.maxzoomSetting = maxzoom;
+    this.parent = parent;
+    this.minzoom = $derived(this.minzoomSetting ?? this.parent?.minzoom ?? 0);
+    this.maxzoom = $derived(this.maxzoomSetting ?? this.parent?.maxzoom ?? 24);
+  }
+}
+
 export function setLayer(value: Box<string | undefined>) {
   setContext(LAYER_KEY, value);
 }
@@ -79,28 +101,20 @@ export function getPopupTarget(): Box<Marker | string> | undefined {
 }
 
 export function setCluster(value: Box<ClusterOptions | undefined>) {
-  setContext(LAYER_KEY, value);
+  setContext(CLUSTER_KEY, value);
 }
 
 export function getCluster(): Box<ClusterOptions | undefined> | undefined {
   return getContext(CLUSTER_KEY);
 }
 
-export function setZoomLimits(min: number, max: number) {
-  setContext(ZOOM_KEY, { minzoom: min, maxzoom: max });
+export function setZoomLimits(min: number | undefined, max: number | undefined) {
+  const existing = getZoomLimits();
+  return setContext(ZOOM_KEY, new ZoomRange(min, max, existing));
 }
 
 export function getZoomLimits(): { minzoom: number; maxzoom: number } {
-  const zoom = getContext<{ minzoom: number; maxzoom: number }>(ZOOM_KEY);
-  if (zoom) {
-    return zoom;
-  }
-
-  const map = mapContext();
-  return {
-    minzoom: map.minzoom,
-    maxzoom: map.maxzoom,
-  };
+  return getContext<ZoomRange>(ZOOM_KEY) || mapContext();
 }
 
 export function getLayerEvent(): Box<LayerEvent | undefined> {

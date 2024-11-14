@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { mapContext } from './context';
+  import { mapContext } from './context.svelte.js';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
@@ -25,7 +25,7 @@
     control = $bindable(),
   }: Props = $props();
   $effect(() => {
-    if ($map && !control) {
+    if (map && !control) {
       control = new maplibregl.GeolocateControl({
         positionOptions,
         fitBoundsOptions,
@@ -33,13 +33,13 @@
         showAccuracyCircle,
         showUserLocation,
       });
-      $map.addControl(control, position);
+      map.addControl(control, position);
     }
   });
 
   onDestroy(() => {
-    if ($map?.loaded() && control) {
-      $map.removeControl(control);
+    if (map.loaded() && control) {
+      map.removeControl(control);
     }
   });
 </script>

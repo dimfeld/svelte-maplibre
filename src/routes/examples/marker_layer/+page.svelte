@@ -20,10 +20,10 @@
     <MarkerLayer interactive>
       {#snippet children({ feature })}
         <div class="rounded-full bg-gray-200 p-2 shadow">
-          <div class="text-sm font-bold">{feature.properties.NAME}</div>
+          <div class="text-sm font-bold">{feature.properties?.NAME}</div>
         </div>
         <Popup openOn="hover">
-          {feature.properties.NAME} has FIPS code {feature.properties.STATEFP}
+          {feature.properties?.NAME} has FIPS code {feature.properties?.STATEFP}
         </Popup>
       {/snippet}
     </MarkerLayer>

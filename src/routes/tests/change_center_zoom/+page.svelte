@@ -45,10 +45,10 @@
     setTimeout(() => toggle(), 200);
   }
 
-  let currentCoords = $state(center);
-  let currentZoom = $state(zoom);
-  let currentBearing = $state(bearing);
-  let currentPitch = $state(pitch);
+  let currentCoords = $state(coords[0].center);
+  let currentZoom = $state(coords[0].zoom);
+  let currentBearing = $state(coords[0].bearing);
+  let currentPitch = $state(coords[0].pitch);
 
   function handleMoveEnd(ev: MapMoveEvent) {
     const map = ev.target;

@@ -1,13 +1,14 @@
 <script lang="ts" generics="DATA">
   import { onMount, onDestroy } from 'svelte';
   import {
+    Box,
     getId,
     mapContext,
-    setMapContext,
+    setPopupTarget,
+    updatedDeckGlContext,
     updatedLayerContext,
     type DeckGlMouseEvent,
-  } from './context';
-  import { readable, writable } from 'svelte/store';
+  } from './context.svelte.js';
 
   interface Props {
     id?: any;
@@ -56,21 +57,14 @@
     deckgl = await import('@deck.gl/mapbox');
   });
 
-  let layerEvent = writable<DeckGlMouseEvent | undefined>();
-  let layerId = writable(id);
-  setMapContext({
-    ...context,
-    popupTarget: readable(),
-    layer: layerId,
-    layerEvent,
-  });
+  const { layer: layerId, layerEvent } = updatedDeckGlContext();
+  layerId.value = id;
+  setPopupTarget(new Box(undefined));
 
-  let zoom = $state($map?.getZoom() ?? 1);
+  let zoom = $state(map.getZoom() ?? 1);
 
   function handleZoom() {
-    if ($map) {
-      zoom = $map.getZoom();
-    }
+    zoom = map.getZoom();
   }
 
   function handleClick(e: DeckGlMouseEvent<DATA>) {
@@ -79,7 +73,7 @@
     }
 
     onclick?.(e);
-    $layerEvent = {
+    layerEvent.value = {
       ...e,
       layerType: 'deckgl',
       type: 'click',
@@ -95,7 +89,7 @@
     hovered = e.object ?? undefined;
     const handler = type === 'mousemove' ? onmousemove : onmouseleave;
     handler?.(e);
-    $layerEvent = {
+    layerEvent.value = {
       ...e,
       layerType: 'deckgl',
       type,
@@ -105,17 +99,17 @@
   let layer: typeof import('@deck.gl/mapbox').MapboxLayer = $state();
 
   onDestroy(() => {
-    if ($map?.loaded() && layer) {
-      $map.removeLayer(id);
-      $map.off('zoom', handleZoom);
-      $map.off('zoomend', handleZoom);
+    if (map.loaded() && layer) {
+      map.removeLayer(id);
+      map.off('zoom', handleZoom);
+      map.off('zoomend', handleZoom);
     }
   });
   $effect(() => {
-    $layerId = id;
+    layerId.value = id;
   });
-  let actualMinZoom = $derived(minzoom ?? $minZoomContext);
-  let actualMaxZoom = $derived(maxzoom ?? $maxZoomContext);
+  let actualMinZoom = $derived(minzoom ?? minZoomContext);
+  let actualMaxZoom = $derived(maxzoom ?? maxZoomContext);
   let visibility = $derived(visible && zoom >= actualMinZoom && zoom <= actualMaxZoom);
   let options = $derived({
     ...rest,
@@ -126,9 +120,9 @@
     onHover: handleHover,
   });
   $effect(() => {
-    if ($map && deckgl && !layer) {
-      $map.on('zoom', handleZoom);
-      $map.on('zoomend', handleZoom);
+    if (map && deckgl && !layer) {
+      map.on('zoom', handleZoom);
+      map.on('zoomend', handleZoom);
       handleZoom();
 
       layer = new deckgl.MapboxLayer({
@@ -136,7 +130,7 @@
         type,
         ...options,
       });
-      $map.addLayer(layer);
+      map.addLayer(layer);
     }
   });
   $effect(() => {

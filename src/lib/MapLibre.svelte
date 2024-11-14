@@ -1,6 +1,6 @@
 <script lang="ts">
   import { flush } from '$lib/flush.js';
-  import { createMapContext } from './context.js';
+  import { createMapContext } from './context.svelte.js';
   import { getViewportHash, parseViewportHash } from './hash.js';
   import maplibre, {
     type CenterZoomBearing,
@@ -101,7 +101,7 @@
   }
 
   let {
-    map = $bindable(),
+    map = $bindable(undefined),
     mapContainer = $bindable(undefined),
     class: classNames = undefined,
     style,
@@ -161,28 +161,27 @@
     typeof standardControls === 'boolean' ? undefined : standardControls
   );
 
-  const { map: mapInstance, loadedImages } = createMapContext();
+  const mapContext = createMapContext();
   $effect.pre(() => {
-    map = $mapInstance;
+    map = mapContext.map;
   });
 
   let loadingImages = $state(new Set());
   async function loadImage(image: CustomImageSpec, force = false) {
-    if (!$mapInstance) {
+    if (!mapContext.map) {
       return;
     }
 
-    if (!$mapInstance.loaded() && !force) {
+    if (!mapContext.map.loaded() && !force) {
       return;
     }
 
     if ('url' in image) {
       loadingImages.add(image.id);
       try {
-        let imageData = await $mapInstance.loadImage(image.url);
-        $mapInstance?.addImage(image.id, imageData.data, image.options);
-        $loadedImages.add(image.id);
-        $loadedImages = $loadedImages; // trigger reactivity
+        let imageData = await mapContext.map.loadImage(image.url);
+        mapContext.map.addImage(image.id, imageData.data, image.options);
+        mapContext.loadedImages.add(image.id);
       } catch (e) {
         if (onerror) {
           onerror({ error: e as Error });
@@ -193,19 +192,18 @@
         loadingImages.delete(image.id);
       }
     } else {
-      $mapInstance.addImage(image.id, image.data, image.options);
-      $loadedImages.add(image.id);
-      $loadedImages = $loadedImages; // trigger reactivity
+      mapContext.map.addImage(image.id, image.data, image.options);
+      mapContext.loadedImages.add(image.id);
     }
   }
 
   $effect(() => {
-    if (loaded && $mapInstance?.loaded()) {
+    if (loaded && mapContext.map.loaded()) {
       for (let image of images) {
         if (
-          !$loadedImages.has(image.id) &&
+          !mapContext.loadedImages.has(image.id) &&
           !loadingImages.has(image.id) &&
-          !$mapInstance.hasImage(image.id)
+          !mapContext.map.hasImage(image.id)
         ) {
           loadImage(image);
         }
@@ -213,7 +211,7 @@
     }
   });
 
-  let allImagesLoaded = $derived(images.every((image) => $loadedImages.has(image.id)));
+  let allImagesLoaded = $derived(images.every((image) => mapContext.loadedImages.has(image.id)));
 
   // These variables are used to keep track of what sources / layers
   // are part of the basemap style vs those that are part of the
@@ -230,7 +228,7 @@
   function createMap(element: HTMLDivElement) {
     onHashChange();
 
-    $mapInstance = new maplibre.Map(
+    mapContext.map = new maplibre.Map(
       flush({
         container: element,
         style,
@@ -258,22 +256,22 @@
       })
     );
 
-    $mapInstance.on('load', (e) => {
+    mapContext.map.on('load', (e) => {
       e.target.getContainer().setAttribute('data-testid', 'map');
       e.target.getCanvas().setAttribute('data-testid', 'map-canvas');
       loaded = true;
-      onload?.($mapInstance!);
+      onload?.(mapContext.map!);
     });
 
     if (onerror) {
-      $mapInstance.on('error', onerror);
+      mapContext.map.on('error', onerror);
     }
 
     if (onmovestart) {
-      $mapInstance.on('movestart', onmovestart);
+      mapContext.map.on('movestart', onmovestart);
     }
 
-    $mapInstance.on('moveend', (ev) => {
+    mapContext.map.on('moveend', (ev) => {
       center = ev.target.getCenter();
       zoom = ev.target.getZoom();
       pitch = ev.target.getPitch();
@@ -287,40 +285,40 @@
     });
 
     if (onclick) {
-      $mapInstance.on('click', onclick);
+      mapContext.map.on('click', onclick);
     }
     if (ondblclick) {
-      $mapInstance.on('dblclick', ondblclick);
+      mapContext.map.on('dblclick', ondblclick);
     }
     if (oncontextmenu) {
-      $mapInstance.on('contextmenu', oncontextmenu);
+      mapContext.map.on('contextmenu', oncontextmenu);
     }
     if (onmousemove) {
-      $mapInstance.on('mousemove', onmousemove);
+      mapContext.map.on('mousemove', onmousemove);
     }
     if (onzoomstart) {
-      $mapInstance.on('zoomstart', onzoomstart);
+      mapContext.map.on('zoomstart', onzoomstart);
     }
     if (onzoom) {
-      $mapInstance.on('zoom', onzoom);
+      mapContext.map.on('zoom', onzoom);
     }
     if (onzoomend) {
-      $mapInstance.on('zoomend', onzoomend);
+      mapContext.map.on('zoomend', onzoomend);
     }
     if (onpitch) {
-      $mapInstance.on('pitch', onpitch);
+      mapContext.map.on('pitch', onpitch);
     }
     if (onrotate) {
-      $mapInstance.on('rotate', onrotate);
+      mapContext.map.on('rotate', onrotate);
     }
     if (onwheel) {
-      $mapInstance.on('wheel', onwheel);
+      mapContext.map.on('wheel', onwheel);
     }
     if (ondata) {
-      $mapInstance.on('data', ondata);
+      mapContext.map.on('data', ondata);
     }
     if (onidle) {
-      $mapInstance.on('idle', onidle);
+      mapContext.map.on('idle', onidle);
     }
 
     // When the basemap style is changed, it nukes all existing layers and sources
@@ -328,38 +326,38 @@
     // have come from the new basemap style and then add back in any layers and
     // styles that where added by the user as sub elements
 
-    $mapInstance.on('style.load', () => {
-      if ($mapInstance) {
-        const mapStyle = $mapInstance.getStyle();
+    mapContext.map.on('style.load', () => {
+      if (mapContext.map) {
+        const mapStyle = mapContext.map.getStyle();
         lastStyleLayerIds = mapStyle.layers.map((l) => l.id);
         lastStyleSourceIds = Object.keys(mapStyle.sources);
         if (sourcesToReAddAfterStyleChange) {
           for (const [id, source] of Object.entries(sourcesToReAddAfterStyleChange)) {
-            $mapInstance.addSource(id, source);
+            mapContext.map.addSource(id, source);
           }
         }
         if (layersToReAddAfterStyleChange) {
           for (const layer of layersToReAddAfterStyleChange) {
-            $mapInstance.addLayer(layer);
+            mapContext.map.addLayer(layer);
           }
         }
 
         // Need to reload images as well when the style is changed.
         for (const image of images) {
-          // Force the image to reload, since when this runs $mapInstance.loaded() == false
+          // Force the image to reload, since when this runs mapContext.map.loaded() == false
           // but it's actually safe to do so.
           loadImage(image, true);
         }
       }
     });
 
-    $mapInstance.on('styledata', (ev) => {
-      if ($mapInstance && filterLayers) {
-        const layers = $mapInstance.getStyle().layers;
+    mapContext.map.on('styledata', (ev) => {
+      if (mapContext.map && filterLayers) {
+        const layers = mapContext.map.getStyle().layers;
         if (layers) {
           for (let layer of layers) {
             if (!filterLayers(layer)) {
-              $mapInstance.setLayoutProperty(layer.id, 'visibility', 'none');
+              mapContext.map.setLayoutProperty(layer.id, 'visibility', 'none');
             }
           }
         }
@@ -371,8 +369,7 @@
     return {
       destroy() {
         loaded = false;
-        $mapInstance?.remove();
-        $mapInstance = undefined;
+        mapContext.map.remove();
       },
     };
   }
@@ -389,8 +386,8 @@
   // on to the map
 
   $effect(() => {
-    if ($mapInstance && !compare(style, lastStyle)) {
-      const oldMapStyle = $mapInstance.getStyle();
+    if (mapContext.map && !compare(style, lastStyle)) {
+      const oldMapStyle = mapContext.map.getStyle();
 
       if (lastStyleLayerIds) {
         layersToReAddAfterStyleChange = oldMapStyle.layers.filter(
@@ -407,46 +404,46 @@
         }
       }
       lastStyle = style;
-      $mapInstance.setStyle(style, { diff: diffStyleUpdates });
+      mapContext.map.setStyle(style, { diff: diffStyleUpdates });
 
       // Changing the style unloads the images. We'll reload them after the map finishes loading the new style.
-      $loadedImages = new Set();
+      mapContext.loadedImages.clear();
       loadingImages = new Set();
     }
   });
 
   $effect(() => {
-    if ($mapInstance) {
+    if (mapContext.map) {
       let options: CenterZoomBearing & { pitch?: number } = {};
-      if (center != null && !compare(center, $mapInstance?.getCenter())) {
+      if (center != null && !compare(center, mapContext.map.getCenter())) {
         options.center = center;
       }
 
-      if (zoom != null && !compare(zoom, $mapInstance?.getZoom())) {
+      if (zoom != null && !compare(zoom, mapContext.map.getZoom())) {
         options.zoom = zoom;
       }
 
-      if (bearing != null && !compare(bearing, $mapInstance?.getBearing())) {
+      if (bearing != null && !compare(bearing, mapContext.map.getBearing())) {
         options.bearing = bearing;
       }
 
-      if (pitch != null && !compare(pitch, $mapInstance?.getPitch())) {
+      if (pitch != null && !compare(pitch, mapContext.map.getPitch())) {
         options.pitch = pitch;
       }
 
       if (Object.keys(options).length) {
-        $mapInstance.easeTo(options);
+        mapContext.map.easeTo(options);
       }
     }
   });
 
   $effect(() => {
-    if (bounds && !compare(bounds, $mapInstance?.getBounds())) $mapInstance?.fitBounds(bounds);
+    if (bounds && !compare(bounds, mapContext.map.getBounds())) mapContext.map.fitBounds(bounds);
   });
   $effect(() => {
     zoomOnDoubleClick
-      ? $mapInstance?.doubleClickZoom.enable()
-      : $mapInstance?.doubleClickZoom.disable();
+      ? mapContext.map.doubleClickZoom.enable()
+      : mapContext.map.doubleClickZoom.disable();
   });
 
   function onHashChange() {
@@ -473,14 +470,18 @@
   use:createMap
   data-testid="map-container"
 >
-  {#if $mapInstance && loaded}
+  {#if mapContext.map && loaded}
     {#if standardControls}
       <NavigationControl position={standardControlsPosition} />
       <GeolocateControl position={standardControlsPosition} fitBoundsOptions={{ maxZoom: 12 }} />
       <FullscreenControl position={standardControlsPosition} />
       <ScaleControl position={standardControlsPosition} />
     {/if}
-    {@render children?.({ map: $mapInstance, loadedImages: $loadedImages, allImagesLoaded })}
+    {@render children?.({
+      map: mapContext.map,
+      loadedImages: mapContext.loadedImages,
+      allImagesLoaded,
+    })}
   {/if}
 </div>
 

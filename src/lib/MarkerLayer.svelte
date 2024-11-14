@@ -2,7 +2,7 @@
   import type maplibregl from 'maplibre-gl';
   import type { Feature } from 'geojson';
   import { onDestroy } from 'svelte';
-  import { getId, mapContext } from './context';
+  import { getId, getSource, getZoomLimits, mapContext } from './context.svelte.js';
   import { combineFilters, isClusterFilter } from './filters';
   import { geoCentroid } from 'd3-geo';
   import Marker from './Marker.svelte';
@@ -18,7 +18,9 @@
     feature: FeatureWithId;
   }
 
-  const { map, source, minzoom: minZoomContext, maxzoom: maxZoomContext } = mapContext();
+  const { map } = mapContext();
+  const source = getSource();
+  const zoomLimits = getZoomLimits();
 
   /** CSS classes to apply to each marker */
   interface Props {
@@ -71,30 +73,30 @@
     ondragend = undefined,
   }: Props = $props();
 
-  let actualMinZoom = $derived(minzoom ?? $minZoomContext);
-  let actualMaxZoom = $derived(maxzoom ?? $maxZoomContext);
+  let actualMinZoom = $derived(minzoom ?? zoomLimits.minzoom);
+  let actualMaxZoom = $derived(maxzoom ?? zoomLimits.maxzoom);
   let actualFilter = $derived(combineFilters('all', isClusterFilter(applyToClusters), filter));
 
   let installedHandlers = false;
   function setupHandlers() {
-    if (!$map) {
+    if (!map) {
       return;
     }
 
     installedHandlers = true;
 
-    $map.on('zoom', handleZoom);
-    $map.on('move', updateMarkers);
-    $map.on('moveend', updateMarkers);
-    if (!$map.loaded()) {
+    map.on('zoom', handleZoom);
+    map.on('move', updateMarkers);
+    map.on('moveend', updateMarkers);
+    if (!map.loaded()) {
       updateMarkers();
     } else {
-      $map.once('load', updateMarkers);
+      map.once('load', updateMarkers);
     }
   }
 
   function handleData(e: maplibregl.MapSourceDataEvent) {
-    if (e.sourceId === $source && e.isSourceLoaded) {
+    if (e.sourceId === source?.value && e.isSourceLoaded) {
       if (installedHandlers) {
         updateMarkers();
       } else {
@@ -104,20 +106,20 @@
   }
 
   onDestroy(() => {
-    if (!$map) {
+    if (!map) {
       return;
     }
 
-    $map.off('zoom', handleZoom);
-    $map.off('move', updateMarkers);
-    $map.off('moveend', updateMarkers);
-    $map.off('sourcedata', handleData);
+    map.off('zoom', handleZoom);
+    map.off('move', updateMarkers);
+    map.off('moveend', updateMarkers);
+    map.off('sourcedata', handleData);
   });
 
-  let sourceObj = $derived($map && $source ? $map.getSource($source) : undefined);
+  let sourceObj = $derived(map && source?.value ? map.getSource(source.value) : undefined);
 
   $effect(() => {
-    if (!$map) {
+    if (!map) {
       return;
     }
 
@@ -125,7 +127,7 @@
       setupHandlers();
     } else {
       // Need to wait for the data to load
-      $map.on('sourcedata', handleData);
+      map.on('sourcedata', handleData);
     }
   });
 
@@ -160,11 +162,11 @@
   }
 
   function updateMarkers() {
-    if (!$map || !$source) {
+    if (!source?.value) {
       return;
     }
 
-    let featureList = $map.querySourceFeatures($source, {
+    let featureList = map.querySourceFeatures(source.value, {
       filter: actualFilter,
     });
 
@@ -197,9 +199,9 @@
     features = sorted;
   }
 
-  let zoom = $state($map?.getZoom() ?? 0);
+  let zoom = $state(map.getZoom() ?? 0);
   function handleZoom(e: MapLibreZoomEvent) {
-    zoom = $map!.getZoom();
+    zoom = map!.getZoom();
     updateMarkers();
   }
 </script>
@@ -232,12 +234,12 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
           hovered = undefined;
         }
       }}
-      ondragstart={(e) => ondragstart?.({ ...e, source: $source, feature })}
-      ondrag={(e) => ondrag?.({ ...e, source: $source, feature })}
-      ondragend={(e) => ondragend?.({ ...e, source: $source, feature })}
-      onclick={(e) => onclick?.({ ...e, source: $source, feature })}
-      ondblclick={(e) => ondblclick?.({ ...e, source: $source, feature })}
-      oncontextmenu={(e) => oncontextmenu?.({ ...e, source: $source, feature })}
+      ondragstart={(e) => ondragstart?.({ ...e, source: source?.value, feature })}
+      ondrag={(e) => ondrag?.({ ...e, source: source?.value, feature })}
+      ondragend={(e) => ondragend?.({ ...e, source: source?.value, feature })}
+      onclick={(e) => onclick?.({ ...e, source: source?.value, feature })}
+      ondblclick={(e) => ondblclick?.({ ...e, source: source?.value, feature })}
+      oncontextmenu={(e) => oncontextmenu?.({ ...e, source: source?.value, feature })}
     >
       {@render children?.({ feature, position: c })}
     </Marker>

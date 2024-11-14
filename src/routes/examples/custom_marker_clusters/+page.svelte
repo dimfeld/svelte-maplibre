@@ -74,17 +74,17 @@
       onclick={(e) => (clickedFeature = e.feature?.properties)}
     >
       {#snippet children({ feature })}
-        <img src={feature.properties.tsunami ? tsunamiImageUrl : quakeImageUrl} alt="Earthquake" />
+        <img src={feature.properties?.tsunami ? tsunamiImageUrl : quakeImageUrl} alt="Earthquake" />
         <Popup {openOn} closeOnClickInside>
           {@const props = feature.properties}
           <p>
             Date: <span class="font-medium text-gray-800"
-              >{new Date(props.time).toLocaleDateString()}</span
+              >{new Date(props?.time).toLocaleDateString()}</span
             >
           </p>
-          <p>Magnitude: <span class="font-medium text-gray-800">{props.mag}</span></p>
+          <p>Magnitude: <span class="font-medium text-gray-800">{props?.mag}</span></p>
           <p>
-            Tsunami: <span class="font-medium text-gray-800">{props.tsunami ? 'Yes' : 'No'}</span>
+            Tsunami: <span class="font-medium text-gray-800">{props?.tsunami ? 'Yes' : 'No'}</span>
           </p>
         </Popup>
       {/snippet}

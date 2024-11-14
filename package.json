@@ -50,9 +50,9 @@
       "svelte": "./dist/*.svelte",
       "default": "./dist/*.svelte"
     },
-    "./context.js": {
+    "./context.svelte.js": {
       "types": "./dist/context.d.ts",
-      "default": "./dist/context.js"
+      "default": "./dist/context.svelte.js"
     },
     "./expressions.js": {
       "types": "./dist/expressions.d.ts",

@@ -76,17 +76,11 @@ export function addSource(
  * If so, it removes the source from the map. This avoids removing a source that was
  * already replaced by another source reusing the same ID.
  */
-export function removeSource(
-  mapStore: Readable<Map | undefined>,
-  sourceId: string,
-  sourceObj: unknown
-) {
+export function removeSource(map: Map, sourceId: string, sourceObj: unknown) {
   tick().then(() => {
     // Wait a tick so that the layers inside this source can all be removed.
     // But make sure that the source wasn't already replaced with another source with the same ID.
-    let map = get(mapStore);
-    if (!map) {
-      // Catch when map is unloaded
+    if (!map.loaded()) {
       return;
     }
 

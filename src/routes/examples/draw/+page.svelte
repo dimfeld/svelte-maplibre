@@ -21,7 +21,11 @@
 
     // MapboxDraw assumes that the `mapboxgl-ctrl-group` and `mapboxgl-ctrl` CSS classes exist,
     // but Maplibre uses different names, so add them to the control element here.
+    //
+    // @ts-expect-error draw's onadd expects a mapboxgl.Map but we have a maplibregl.Map, which has close enough to the
+    // same API.
     draw.onAdd = (map: maplibregl.Map) => {
+      // @ts-expect-error Same as above
       let el = origOnAdd(map);
       el.classList.add('maplibregl-ctrl-group');
       el.classList.add('maplibregl-ctrl');
@@ -32,7 +36,10 @@
   }
 
   let draw = createMapboxDraw();
-  $effect(() => map?.addControl(draw));
+  $effect(() => {
+    // @ts-expect-error
+    map.addControl(draw);
+  });
 </script>
 
 <MapLibre

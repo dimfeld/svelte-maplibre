@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { mapContext } from './context';
+  import { mapContext } from './context.svelte.js';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
@@ -21,15 +21,15 @@
 
   let control: maplibregl.NavigationControl | undefined = $state();
   $effect(() => {
-    if ($map && !control) {
+    if (map && !control) {
       control = new maplibregl.NavigationControl({ showCompass, showZoom, visualizePitch });
-      $map.addControl(control, position);
+      map.addControl(control, position);
     }
   });
 
   onDestroy(() => {
-    if ($map?.loaded() && control) {
-      $map.removeControl(control);
+    if (map.loaded() && control) {
+      map.removeControl(control);
     }
   });
 </script>

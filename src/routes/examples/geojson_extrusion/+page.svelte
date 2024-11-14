@@ -7,6 +7,7 @@
   import cbsa from '$site/cbsa.json';
   import FillExtrusionLayer from '$lib/FillExtrusionLayer.svelte';
   import Popup from '$lib/Popup.svelte';
+  import type { FeatureCollection } from 'geojson';
 </script>
 
 <p>
@@ -21,7 +22,7 @@
   center={[-98.137, 40.137]}
   zoom={4}
 >
-  <GeoJSON id="cbsa" data={cbsa} promoteId="CBSAFP">
+  <GeoJSON id="cbsa" data={cbsa as unknown as FeatureCollection} promoteId="CBSAFP">
     <FillExtrusionLayer
       paint={{
         'fill-extrusion-base': 0,

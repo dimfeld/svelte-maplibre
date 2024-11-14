@@ -1,6 +1,6 @@
 <script lang="ts">
   import type maplibregl from 'maplibre-gl';
-  import { getId, updatedLayerContext } from './context.js';
+  import { getId, getSource, mapContext, updatedLayerContext } from './context.svelte.js';
   import { diffApplier } from './compare.js';
   import { combineFilters, isClusterFilter } from './filters.js';
   import type { CommonLayerProps, LayerClickInfo } from './types.js';
@@ -43,31 +43,31 @@
     onmouseleave = undefined,
   }: Props = $props();
 
+  const sourceName = getSource();
+  const { layer } = updatedLayerContext();
   const {
     map,
-    source: sourceName,
-    self: layer,
-    minzoom: minZoomContext,
-    maxzoom: maxZoomContext,
     eventTopMost,
     layerInfo,
-  } = updatedLayerContext();
+    minzoom: minzoomContext,
+    maxzoom: maxzoomContext,
+  } = mapContext();
 
   onDestroy(() => {
-    if ($layer && $map) {
-      layerInfo.delete($layer);
-      $map?.removeLayer($layer);
+    if (layer.value) {
+      layerInfo.delete(layer.value);
+      map.removeLayer(layer.value);
     }
   });
 
   let hoverFeatureId: string | number | undefined = undefined;
 
   function handleClick(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
-    if (!interactive || !$layer || !$map) {
+    if (!interactive || !layer.value || !map) {
       return;
     }
 
-    if (eventsIfTopMost && eventTopMost(e) !== $layer) {
+    if (eventsIfTopMost && eventTopMost(e) !== layer.value) {
       return;
     }
 
@@ -75,9 +75,9 @@
     let clusterId = features[0]?.properties?.cluster_id;
     let eventData: LayerClickInfo = {
       event: e,
-      map: $map!,
+      map,
       clusterId,
-      layer: $layer,
+      layer: layer.value,
       source: actualSource!,
       features,
     };
@@ -96,16 +96,16 @@
   }
 
   function handleMouseEnter(e: MapMouseEvent) {
-    if (!interactive || !$layer || !$map) {
+    if (!interactive || !layer.value) {
       return;
     }
 
-    if (eventsIfTopMost && eventTopMost(e) !== $layer) {
+    if (eventsIfTopMost && eventTopMost(e) !== layer.value) {
       return;
     }
 
     if (hoverCursor) {
-      $map.getCanvas().style.cursor = hoverCursor;
+      map.getCanvas().style.cursor = hoverCursor;
     }
 
     let features = e.features ?? [];
@@ -114,9 +114,9 @@
 
     let data: LayerClickInfo = {
       event: e,
-      map: $map!,
+      map,
       clusterId,
-      layer: $layer!,
+      layer: layer.value!,
       source: actualSource!,
       features,
     };
@@ -125,14 +125,14 @@
   }
 
   function handleMouseMove(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
-    if (!interactive || !$map) {
+    if (!interactive) {
       return;
     }
 
-    if (eventsIfTopMost && eventTopMost(e) !== $layer) {
+    if (eventsIfTopMost && eventTopMost(e) !== layer.value) {
       hovered = undefined;
       if (manageHoverState && hoverFeatureId !== undefined) {
-        $map?.setFeatureState(
+        map.setFeatureState(
           { source: actualSource!, sourceLayer, id: hoverFeatureId },
           { hover: false }
         );
@@ -144,7 +144,7 @@
 
     // This may get out of sync, if this layer regains focus from a higher layer.
     if (hoverCursor) {
-      $map.getCanvas().style.cursor = hoverCursor;
+      map.getCanvas().style.cursor = hoverCursor;
     }
 
     let features = e.features ?? [];
@@ -156,15 +156,12 @@
     if (featureId !== hoverFeatureId) {
       if (manageHoverState) {
         if (hoverFeatureId !== undefined) {
-          $map?.setFeatureState(
+          map.setFeatureState(
             { source: actualSource!, id: hoverFeatureId, sourceLayer },
             { hover: false }
           );
         }
-        $map?.setFeatureState(
-          { source: actualSource!, id: featureId, sourceLayer },
-          { hover: true }
-        );
+        map.setFeatureState({ source: actualSource!, id: featureId, sourceLayer }, { hover: true });
       }
 
       hoverFeatureId = featureId;
@@ -173,33 +170,33 @@
 
     onmousemove?.({
       event: e,
-      map: $map!,
+      map,
       clusterId,
-      layer: $layer!,
+      layer: layer.value!,
       source: actualSource!,
       features,
     });
   }
 
   function handleMouseLeave(e: MapMouseEvent) {
-    if (!interactive || !$layer || !$map) {
+    if (!interactive || !layer.value || !map) {
       return;
     }
 
     if (hoverCursor) {
-      $map.getCanvas().style.cursor = '';
+      map.getCanvas().style.cursor = '';
     }
 
     hovered = undefined;
     if (manageHoverState && hoverFeatureId !== undefined) {
       const featureSelector = { source: actualSource!, id: hoverFeatureId, sourceLayer };
-      $map?.setFeatureState(featureSelector, { hover: false });
+      map.setFeatureState(featureSelector, { hover: false });
       hoverFeatureId = undefined;
     }
 
     onmouseleave?.({
-      map: $map!,
-      layer: $layer,
+      map,
+      layer: layer.value!,
       source: actualSource!,
     });
   }
@@ -207,39 +204,34 @@
   let first = $state(true);
 
   function unsubEvents(layerName: string) {
-    if (!$map) {
-      return;
-    }
-
-    $map.off('click', layerName, handleClick);
-    $map.off('dblclick', layerName, handleClick);
-    $map.off('contextmenu', layerName, handleClick);
-    $map.off('mouseenter', layerName, handleMouseEnter);
-    $map.off('mousemove', layerName, handleMouseMove);
-    $map.off('mouseleave', layerName, handleMouseLeave);
+    map.off('dblclick', layerName, handleClick);
+    map.off('contextmenu', layerName, handleClick);
+    map.off('mouseenter', layerName, handleMouseEnter);
+    map.off('mousemove', layerName, handleMouseMove);
+    map.off('mouseleave', layerName, handleMouseLeave);
   }
 
   onDestroy(() => {
-    if ($map && $layer) {
-      unsubEvents($layer);
+    if (layer.value) {
+      unsubEvents(layer.value);
     }
   });
 
   let clusterFilter = $derived(isClusterFilter(applyToClusters));
   let layerFilter = $derived(combineFilters('all', clusterFilter, filter));
-  let actualMinZoom = $derived(minzoom ?? $minZoomContext);
-  let actualMaxZoom = $derived(maxzoom ?? $maxZoomContext);
-  let actualSource = $derived(source || $sourceName);
+  let actualMinZoom = $derived(minzoom ?? minzoomContext);
+  let actualMaxZoom = $derived(maxzoom ?? maxzoomContext);
+  let actualSource = $derived(source || sourceName?.value);
   $effect(() => {
-    if ($map && $layer !== id && actualSource) {
-      if ($layer) {
-        unsubEvents($layer);
-        layerInfo.delete($layer);
+    if (layer.value !== id && actualSource) {
+      if (layer.value) {
+        unsubEvents(layer.value);
+        layerInfo.delete(layer.value);
       }
 
       let actualBeforeId = beforeId;
       if (!beforeId && beforeLayerType) {
-        let layers = $map.getStyle().layers;
+        let layers = map.getStyle().layers;
         let layerFunc =
           typeof beforeLayerType === 'function'
             ? beforeLayerType
@@ -250,10 +242,10 @@
         }
       }
 
-      $layer = id;
-      $map.addLayer(
+      layer.value = id;
+      map.addLayer(
         flush({
-          id: $layer,
+          id: layer.value,
           type,
           source: actualSource,
           'source-layer': sourceLayer,
@@ -267,39 +259,39 @@
       );
       first = true;
 
-      $map.on('click', $layer, handleClick);
-      $map.on('dblclick', $layer, handleClick);
-      $map.on('contextmenu', $layer, handleClick);
-      $map.on('mouseenter', $layer, handleMouseEnter);
-      $map.on('mousemove', $layer, handleMouseMove);
-      $map.on('mouseleave', $layer, handleMouseLeave);
+      map.on('click', layer.value!, handleClick);
+      map.on('dblclick', layer.value!, handleClick);
+      map.on('contextmenu', layer.value!, handleClick);
+      map.on('mouseenter', layer.value!, handleMouseEnter);
+      map.on('mousemove', layer.value!, handleMouseMove);
+      map.on('mouseleave', layer.value!, handleMouseLeave);
     }
   });
   $effect(() => {
-    if ($layer) {
-      layerInfo.set($layer, {
+    if (layer.value) {
+      layerInfo.set(layer.value, {
         interactive,
       });
     }
   });
   let applyPaint = $derived(
-    $layer
+    layer.value
       ? diffApplier((key, value) => {
-          if ($map?.style._loaded) {
-            $map.setPaintProperty($layer!, key, value);
+          if (map.style._loaded) {
+            map.setPaintProperty(layer.value!, key, value);
           } else {
-            $map?.once('styledata', () => $map?.setPaintProperty($layer!, key, value));
+            map.once('styledata', () => map.setPaintProperty(layer.value!, key, value));
           }
         })
       : void 0
   );
   let applyLayout = $derived(
-    $layer
+    layer.value
       ? diffApplier((key, value) => {
-          if ($map?.style._loaded) {
-            $map.setLayoutProperty($layer!, key, value);
+          if (map.style._loaded) {
+            map.setLayoutProperty(layer.value!, key, value);
           } else {
-            $map?.once('styledata', () => $map?.setLayoutProperty($layer!, key, value));
+            map.once('styledata', () => map.setLayoutProperty(layer.value!, key, value));
           }
         })
       : void 0
@@ -311,15 +303,15 @@
     applyLayout?.(layout);
   });
   $effect(() => {
-    if ($layer) $map?.setLayerZoomRange($layer, actualMinZoom, actualMaxZoom);
+    if (layer.value) map.setLayerZoomRange(layer.value, actualMinZoom, actualMaxZoom);
   });
   // Don't set the filter again after we've just created it.
   $effect(() => {
-    if ($layer) {
+    if (layer.value) {
       if (first) {
         first = false;
       } else {
-        $map?.setFilter($layer, layerFilter);
+        map.setFilter(layer.value, layerFilter);
       }
     }
   });
@@ -332,8 +324,8 @@ layer components, such as FillLayer, and usually you will want to use one of tho
 code instead of directly using this component.
 -->
 
-{#if $layer}
-  {#key $layer}
+{#if layer.value}
+  {#key layer.value}
     {@render children?.()}
   {/key}
 {/if}

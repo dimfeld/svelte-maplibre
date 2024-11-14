@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { getId, updatedSourceContext } from './context';
+  import { getId, mapContext, updatedSourceContext } from './context.svelte.js';
   import { addSource, removeSource } from './source.js';
   import { flush } from '$lib/flush.js';
   import type { DEMEncoding, RasterDEMTileSource } from 'maplibre-gl';
@@ -39,16 +39,17 @@
     children,
   }: Props = $props();
 
-  const { map, self: source } = updatedSourceContext();
+  const { map } = mapContext();
+  const { source } = updatedSourceContext();
   let sourceObj: RasterDEMTileSource | undefined = $state();
 
   let first = $state(true);
   $effect(() => {
-    if ($map && $source !== id) {
-      $source = id;
+    if (map && source.value !== id) {
+      source.value = id;
       addSource(
-        $map,
-        $source,
+        map,
+        source.value,
         flush({
           type: 'raster-dem',
           tiles,
@@ -64,13 +65,13 @@
           blueFactor,
           baseShift,
         }),
-        (sourceId: string) => $map && sourceId === $source,
+        (sourceId: string) => map && sourceId === source.value,
         () => {
-          if (!$source) {
+          if (!source.value) {
             return;
           }
 
-          sourceObj = $map?.getSource($source) as RasterDEMTileSource;
+          sourceObj = map.getSource(source.value) as RasterDEMTileSource;
           first = true;
         }
       );
@@ -91,24 +92,24 @@
   });
 
   $effect(() => {
-    $map?.on('style.load', () => {
+    map.on('style.load', () => {
       // When the style changes the current sources are nuked and recreated. Because of this the
       // source object no longer references the current source on the map so we update it here.
-      sourceObj = $map?.getSource(id) as RasterDEMTileSource | undefined;
+      sourceObj = map.getSource(id) as RasterDEMTileSource | undefined;
     });
   });
 
   onDestroy(() => {
-    if ($source && sourceObj && $map) {
-      removeSource(map, $source, sourceObj);
-      $source = undefined;
+    if (source.value && sourceObj && map) {
+      removeSource(map, source.value, sourceObj);
+      source.value = undefined;
       sourceObj = undefined;
     }
   });
 </script>
 
-{#if $source}
-  {#key $source}
+{#if source.value}
+  {#key source.value}
     {@render children?.()}
   {/key}
 {/if}

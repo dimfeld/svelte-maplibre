@@ -6,8 +6,9 @@
   import serverCode from './[id]/+server.ts?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import Popup from '$lib/Popup.svelte';
+  import type { LngLatLike } from 'maplibre-gl';
 
-  const markers = [
+  const markers: { lngLat: LngLatLike; label: string; name: string }[] = [
     {
       lngLat: [-122.2993, 47.4464],
       label: 'SEA',

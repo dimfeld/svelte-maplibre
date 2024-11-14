@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { getId, updatedSourceContext } from './context';
+  import { getCluster, getId, mapContext, updatedSourceContext } from './context.svelte.js';
   import type { GeoJSON } from 'geojson';
   import type { ClusterOptions } from './types.js';
   import { addSource, removeSource } from './source.js';
@@ -41,20 +41,17 @@
     children,
   }: Props = $props();
 
-  const { map, cluster: clusterStore, self: source } = updatedSourceContext();
+  const { map } = mapContext();
+  const { source } = updatedSourceContext();
   let sourceObj: GeoJSONSource | undefined = $state();
-
-  $effect(() => {
-    $clusterStore = cluster;
-  });
 
   let first = $state(true);
   $effect(() => {
-    if ($map && $source !== id) {
-      $source = id;
+    if (map && source.value !== id) {
+      source.value = id;
       addSource(
-        $map,
-        $source,
+        map,
+        source.value,
         flush({
           type: 'geojson',
           data,
@@ -72,13 +69,13 @@
           buffer,
           tolerance,
         }),
-        (sourceId: string) => $map && sourceId === $source,
+        (sourceId: string) => map && sourceId === source.value,
         () => {
-          if (!$source) {
+          if (!source.value) {
             return;
           }
 
-          sourceObj = $map?.getSource($source) as GeoJSONSource;
+          sourceObj = map.getSource(source.value) as GeoJSONSource;
           first = true;
         }
       );
@@ -99,10 +96,10 @@
   });
 
   $effect(() => {
-    $map?.on('style.load', () => {
+    map.on('style.load', () => {
       // When the style changes the current sources are nuked and recreated. Because of this the
       // source object no longer references the current source on the map so we update it here.
-      sourceObj = $map?.getSource(id) as GeoJSONSource | undefined;
+      sourceObj = map.getSource(id) as GeoJSONSource | undefined;
     });
   });
 
@@ -117,16 +114,16 @@
   });
 
   onDestroy(() => {
-    if ($source && sourceObj && $map) {
-      removeSource(map, $source, sourceObj);
-      $source = undefined;
+    if (source.value && sourceObj && map) {
+      removeSource(map, source.value, sourceObj);
+      source.value = undefined;
       sourceObj = undefined;
     }
   });
 </script>
 
-{#if $source}
-  {#key $source}
+{#if source.value}
+  {#key source.value}
     {@render children?.()}
   {/key}
 {/if}

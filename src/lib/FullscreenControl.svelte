@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { mapContext } from './context.js';
+  import { mapContext } from './context.svelte.js';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
@@ -15,10 +15,6 @@
   let control: maplibregl.FullscreenControl | undefined = $state();
 
   let containerEl = $derived.by(() => {
-    if (!$map) {
-      return;
-    }
-
     if (typeof container === 'string') {
       return (document.querySelector(container) as HTMLElement) ?? undefined;
     } else {
@@ -27,17 +23,17 @@
   });
 
   $effect(() => {
-    if ($map && containerEl && !control) {
+    if (containerEl && !control) {
       control = new maplibregl.FullscreenControl({
         container: containerEl,
       });
-      $map.addControl(control, position);
+      map.addControl(control, position);
     }
   });
 
   onDestroy(() => {
-    if ($map?.loaded() && control) {
-      $map.removeControl(control);
+    if (map.loaded() && control) {
+      map.removeControl(control);
     }
   });
 </script>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { getId, updatedSourceContext } from './context.js';
+  import { getId, mapContext, updatedSourceContext } from './context.svelte.js';
   import { addSource, removeSource } from './source.js';
   import type { ImageSource, Coordinates } from 'maplibre-gl';
   import { flush } from '$lib/flush.js';
@@ -14,27 +14,28 @@
 
   let { id = getId('image'), url, coordinates, children }: Props = $props();
 
-  const { map, self: source } = updatedSourceContext();
+  const { map } = mapContext();
+  const { source } = updatedSourceContext();
   let sourceObj: ImageSource | undefined = $state();
 
   let first = $state(true);
   $effect(() => {
-    if ($map && $source !== id) {
-      $source = id;
+    if (source.value !== id) {
+      source.value = id;
       addSource(
-        $map,
-        $source,
+        map,
+        source.value,
         flush({
           type: 'image',
           url,
           coordinates,
         }),
-        (sourceId) => $map && sourceId === $source,
+        (sourceId) => map && sourceId === source.value,
         () => {
-          if (!$source) {
+          if (!source.value) {
             return;
           }
-          sourceObj = $map?.getSource($source) as ImageSource;
+          sourceObj = map.getSource(source.value) as ImageSource;
           first = true;
         }
       );
@@ -53,24 +54,24 @@
   });
 
   $effect(() => {
-    $map?.on('style.load', () => {
+    map.on('style.load', () => {
       // When the style changes the current sources are nuked and recreated. Because of this the
       // source object no longer references the current source on the map so we update it here.
-      sourceObj = $map?.getSource(id) as ImageSource | undefined;
+      sourceObj = map.getSource(id) as ImageSource | undefined;
     });
   });
 
   onDestroy(() => {
-    if ($source && $map) {
-      removeSource(map, $source, sourceObj);
-      $source = undefined;
+    if (source.value) {
+      removeSource(map, source.value, sourceObj);
+      source.value = undefined;
       sourceObj = undefined;
     }
   });
 </script>
 
-{#if $source}
-  {#key $source}
+{#if source.value}
+  {#key source.value}
     {@render children?.()}
   {/key}
 {/if}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { mapContext } from '$lib/context.js';
+  import { mapContext } from '$lib/context.svelte.js';
   import type { Feature } from 'geojson';
 
   const { map, source } = mapContext();
@@ -11,12 +11,12 @@
   let { feature }: Props = $props();
 
   let innerFeaturesPromise = $derived.by(async () => {
-    if (!$map || !$source || !feature) {
+    if (!map || !source.value || !feature) {
       return [];
     }
 
-    const features = await $map
-      .getSource($source)
+    const features = await map
+      .getSource(source.value)
       .getClusterLeaves(feature.properties.cluster_id, 10000, 0);
 
     features.sort((a, b) => {

@@ -12,14 +12,33 @@
   import clamp from 'just-clamp';
   import counties from '$site/counties.json';
   import states from '$site/states.json';
-  import type { Feature, FeatureCollection } from 'geojson';
+  import type { Feature, FeatureCollection, Polygon } from 'geojson';
   import Popup from '$lib/Popup.svelte';
   import FillLayer from '$lib/FillLayer.svelte';
   import GeoJson from '$lib/GeoJSON.svelte';
   import { hoverStateFilter } from '$lib';
 
-  function calculateArcs(fc: FeatureCollection) {
-    let centers = new Map(fc.features.map((f) => [f.properties.GEOID, geoCentroid(f)]));
+  type GeoProperties = {
+    GEOID: string;
+    NAME: string;
+    STATEFP: string;
+  };
+
+  type ArcMode = 'showAll' | 'showOne';
+
+  type ArcData = {
+    fromName: string;
+    toName: string;
+    fromState: string;
+    toState: string;
+    source: [number, number]; // [longitude, latitude]
+    target: [number, number]; // [longitude, latitude]
+    sourceColor: [number, number, number]; // RGB values
+    targetColor: [number, number, number]; // RGB values
+  };
+
+  function calculateArcs(fc: FeatureCollection<Polygon, GeoProperties>): ArcData[] {
+    let centers = new Map(fc.features.map((f) => [f.properties?.GEOID, geoCentroid(f)]));
 
     let count = fc.features.length > 100 ? 5000 : 100;
 
@@ -45,12 +64,21 @@
   }
 
   let zoom = $state(3);
-  let hovered: Feature | undefined = $state();
+  let hovered: Feature<Polygon, GeoProperties> | undefined = $state();
 
-  let mode: 'showAll' | 'showOne' = $state('showOne');
-  let arcs = $derived(calculateArcs(mode === 'showAll' ? states : counties));
+  let mode = $state('showOne') as ArcMode;
+  let arcs = $derived(
+    calculateArcs(
+      (mode === 'showAll' ? states : counties) as unknown as FeatureCollection<
+        Polygon,
+        GeoProperties
+      >
+    )
+  );
   let activeState = $state('');
-  $effect.pre(() => (activeState = arcs[0].fromState));
+  $effect.pre(() => {
+    activeState = arcs[0].fromState;
+  });
 </script>
 
 <p>A deck.gl ArcLayer integrated into a MapLibre map, with hover and popup support.</p>
@@ -78,7 +106,7 @@
   class="relative aspect-[9/16] max-h-[70vh] w-full sm:aspect-video sm:max-h-full"
   standardControls
 >
-  <GeoJson id="states-base" data={states} promoteId="GEOID">
+  <GeoJson id="states-base" data={states as unknown as FeatureCollection} promoteId="GEOID">
     <!-- We use the base map to provide the visuals, but this gives something to click. -->
     <FillLayer
       id="counties-click"
@@ -107,10 +135,10 @@
       return a.fromState === activeState || a.toState === activeState;
     })}
     bind:hovered
-    getSourcePosition={(d) => d.source}
-    getTargetPosition={(d) => d.target}
-    getSourceColor={(d) => d.sourceColor}
-    getTargetColor={(d) => d.targetColor}
+    getSourcePosition={(d: ArcData) => d.source}
+    getTargetPosition={(d: ArcData) => d.target}
+    getSourceColor={(d: ArcData) => d.sourceColor}
+    getTargetColor={(d: ArcData) => d.targetColor}
     autoHighlight={mode === 'showAll'}
     highlightColor={[30, 255, 30]}
     getWidth={mode === 'showAll' ? 5 : 1}
