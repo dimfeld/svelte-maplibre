@@ -35,7 +35,7 @@ export class MapContext {
   layerInfo = new Map<string, LayerInfo>();
 
   private eventTracker = new WeakMap<Event, string | undefined>();
-  eventTopMost(event: MapMouseEvent): string | undefined {
+  private _eventTopMost(event: MapMouseEvent): string | undefined {
     let id = this.eventTracker.get(event.originalEvent);
     if (id !== undefined) {
       return id;
@@ -49,10 +49,17 @@ export class MapContext {
     return topId;
   }
 
+  eventTopMost: (this: MapContext, event: MapMouseEvent) => string | undefined;
+
   /** Subscribe to marker clicks globally. Marker clicks intentionally do not propagate their events
    * to the map, but some internal components such as Popups need to know when any click happens, on the
    * map or on a marker, and MarkerClickManager facilitates that functionality. */
   markerClickManager = new MarkerClickManager();
+
+  constructor() {
+    // Do it this way so that we can destructure the MapContext and still use eventTopMost
+    this.eventTopMost = this._eventTopMost.bind(this);
+  }
 }
 
 export class ZoomRange {
