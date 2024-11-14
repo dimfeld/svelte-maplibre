@@ -1,9 +1,10 @@
-<script lang="ts">
+<script lang="ts" generics="FEATURE extends Feature = Feature">
   import { getId } from './context.svelte.js';
   import Layer from './Layer.svelte';
+  import type { Feature } from 'geojson';
   import type { CommonLayerProps } from './types.js';
 
-  interface Props extends CommonLayerProps {
+  interface Props extends CommonLayerProps<FEATURE> {
     paint: maplibregl.FillLayerSpecification['paint'];
     layout?: maplibregl.FillLayerSpecification['layout'] | undefined;
   }

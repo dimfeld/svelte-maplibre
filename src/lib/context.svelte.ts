@@ -49,7 +49,7 @@ export class MapContext {
     return topId;
   }
 
-  eventTopMost: (this: MapContext, event: MapMouseEvent) => string | undefined;
+  eventTopMost: (event: MapMouseEvent) => string | undefined;
 
   /** Subscribe to marker clicks globally. Marker clicks intentionally do not propagate their events
    * to the map, but some internal components such as Popups need to know when any click happens, on the

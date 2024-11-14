@@ -1,5 +1,5 @@
-import type { Feature, Point } from 'geojson';
-import type { MapLibreEvent, MapMouseEvent, Marker } from 'maplibre-gl';
+import type { Feature, GeoJsonProperties, Point } from 'geojson';
+import type { MapGeoJSONFeature, MapLibreEvent, MapMouseEvent, Marker } from 'maplibre-gl';
 
 export type {
   ControlPosition,
@@ -52,25 +52,27 @@ export interface CustomImageDataSpec {
 
 export type CustomImageSpec = CustomImageUrlSpec | CustomImageDataSpec;
 
-export interface LayerClickInfo {
+export interface LayerClickInfo<FEATURE extends Feature = Feature> {
   map: maplibregl.Map;
   event: MapMouseEvent;
   clusterId: string | undefined;
   layer: string;
   source: string;
-  features: Feature[];
+  features: FEATURE[];
 }
 
-export interface MarkerClickInfo {
+export interface MarkerClickInfo<PROPS extends GeoJsonProperties = GeoJsonProperties>
+  extends Omit<MapMouseEvent, 'lngLat'> {
   map: maplibregl.Map;
   marker: Marker;
   lngLat: [number, number];
-  features: Feature<Point>[];
+  features: Feature<Point, PROPS>[];
 }
 
-export interface MarkerLayerEventInfo extends MarkerClickInfo {
+export interface MarkerLayerEventInfo<PROPS extends GeoJsonProperties = GeoJsonProperties>
+  extends MarkerClickInfo<PROPS> {
   source: string;
-  feature: Feature<Point>;
+  feature: Feature<Point, PROPS>;
 }
 
 export type DeckGlAccessor<DATA, RETVAL> = RETVAL | ((data: DATA) => RETVAL);
@@ -78,7 +80,7 @@ export type DeckGlColorAccessor<DATA> = DeckGlAccessor<DATA, number[]>;
 
 export type Scheme = 'xyz' | 'tms';
 
-export interface CommonLayerProps {
+export interface CommonLayerProps<FEATURE extends Feature = Feature> {
   id?: any;
   /** Set the source for this layer. This can be omitted when the Layer is created in the slot
    * of a source component. */
@@ -96,17 +98,17 @@ export interface CommonLayerProps {
   hoverCursor?: string | undefined;
   /** Enable to use hoverStateFilter or filter on `hover-state`. Features must have an `id` property for this to work. */
   manageHoverState?: boolean;
-  hovered?: Feature;
+  hovered?: FEATURE & MapGeoJSONFeature;
   eventsIfTopMost?: boolean;
   /** Handle mouse events on this layer. */
   interactive?: boolean;
 
   children?: import('svelte').Snippet;
 
-  onclick?: (e: LayerClickInfo) => void;
-  ondblclick?: (e: LayerClickInfo) => void;
-  oncontextmenu?: (e: LayerClickInfo) => void;
-  onmouseenter?: (e: LayerClickInfo) => void;
-  onmousemove?: (e: LayerClickInfo) => void;
-  onmouseleave?: (e: Pick<LayerClickInfo, 'map' | 'layer' | 'source'>) => void;
+  onclick?: (e: LayerClickInfo<FEATURE>) => void;
+  ondblclick?: (e: LayerClickInfo<FEATURE>) => void;
+  oncontextmenu?: (e: LayerClickInfo<FEATURE>) => void;
+  onmouseenter?: (e: LayerClickInfo<FEATURE>) => void;
+  onmousemove?: (e: LayerClickInfo<FEATURE>) => void;
+  onmouseleave?: (e: Pick<LayerClickInfo<FEATURE>, 'map' | 'layer' | 'source'>) => void;
 }

@@ -1,9 +1,10 @@
-<script lang="ts">
+<script lang="ts" generics="FEATURE extends Feature = Feature">
   import { getId } from './context.svelte.js';
   import Layer from './Layer.svelte';
   import type { CommonLayerProps } from './types.js';
+  import type { Feature } from 'geojson';
 
-  interface Props extends CommonLayerProps {
+  interface Props extends CommonLayerProps<FEATURE> {
     paint?: maplibregl.SymbolLayerSpecification['paint'] | undefined;
     layout?: maplibregl.SymbolLayerSpecification['layout'] | undefined;
     applyToClusters?: boolean | undefined;

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="FEATURE extends Feature = Feature">
   import type maplibregl from 'maplibre-gl';
   import type { Feature } from 'geojson';
   import { onDestroy } from 'svelte';
@@ -7,11 +7,11 @@
   import { geoCentroid } from 'd3-geo';
   import Marker from './Marker.svelte';
   import FillLayer from './FillLayer.svelte';
-  import type { MapLibreZoomEvent } from 'maplibre-gl';
+  import type { MapGeoJSONFeature, MapLibreZoomEvent } from 'maplibre-gl';
   import type { MarkerClickInfo } from './types';
   import { dequal } from 'dequal/lite';
 
-  type FeatureWithId = Feature & { id: string | number };
+  type FeatureWithId = MapGeoJSONFeature & FEATURE & { id: string | number };
 
   interface ExtendedMarkerClickInfo extends MarkerClickInfo {
     source: string | undefined;
@@ -28,7 +28,7 @@
     filter?: maplibregl.ExpressionSpecification | undefined;
     /** How to calculate the coordinates of the marker.
      * @default Calls d3.geoCentroid` on the feature. */
-    markerLngLat?: (feature: Feature) => [number, number];
+    markerLngLat?: (feature: FEATURE) => [number, number];
     /** Handle mouse events */
     interactive?: boolean;
     /** Make markers tabbable and add the button role. */
@@ -36,12 +36,12 @@
     draggable?: boolean;
     minzoom?: number;
     maxzoom?: number;
-    hovered?: Feature;
+    hovered?: FEATURE;
     /** The z-index of the markers. This can also be set via CSS classes using the `class` prop.
      * If a function is provided, it will be called with each feature as an argument. */
-    zIndex?: number | ((feature: Feature) => number) | undefined;
+    zIndex?: number | ((feature: FEATURE) => number) | undefined;
     class?: string | undefined;
-    children?: import('svelte').Snippet<[{ feature: Feature; position: [number, number] }]>;
+    children?: import('svelte').Snippet<[{ feature: FEATURE; position: [number, number] }]>;
 
     onclick?: (e: ExtendedMarkerClickInfo) => void;
     ondblclick?: (e: ExtendedMarkerClickInfo) => void;

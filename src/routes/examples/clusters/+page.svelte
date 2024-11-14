@@ -12,8 +12,11 @@
   import clusterPopupCode from '../ClusterPopup.svelte?raw';
 
   import earthquakes from '$site/earthquakes.geojson?url';
+  import type { ClusterFeatureProperties } from '../cluster_feature_properties';
+  import type { Feature, Geometry } from 'geojson';
+  import { LayerClickInfo } from '$lib';
 
-  let clickedFeature: Record<string, any> | undefined = $state();
+  let clickedFeature: ClusterFeatureProperties | null | undefined = $state();
 
   let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = $state('hover');
 </script>
@@ -69,10 +72,15 @@
         'circle-stroke-opacity': hoverStateFilter(0, 1),
       }}
       manageHoverState
-      onclick={(e) => (clickedFeature = e.features?.[0]?.properties)}
+      onclick={(e: LayerClickInfo<Feature<Geometry, ClusterFeatureProperties>>) =>
+        (clickedFeature = e.features?.[0]?.properties)}
     >
       <Popup {openOn} closeOnClickInside>
-        {#snippet children({ data })}
+        {#snippet children({
+          data,
+        }: {
+          data: Feature<Geometry, ClusterFeatureProperties> | undefined;
+        })}
           <ClusterPopup feature={data ?? undefined} />
         {/snippet}
       </Popup>

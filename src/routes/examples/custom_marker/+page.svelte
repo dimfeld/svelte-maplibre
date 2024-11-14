@@ -8,7 +8,11 @@
 
   let clickedName = $state('');
 
-  const markers = [
+  const markers: {
+    lngLat: [number, number];
+    label: string;
+    name: string;
+  }[] = [
     {
       lngLat: [-122.2993, 47.4464],
       label: 'SEA',

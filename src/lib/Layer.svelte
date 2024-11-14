@@ -1,19 +1,22 @@
-<script lang="ts">
+<script lang="ts" generics="FEATURE extends Feature = Feature">
+  import { flush } from '$lib/flush.js';
+  import type { Feature } from 'geojson';
   import type maplibregl from 'maplibre-gl';
-  import { getId, getSource, mapContext, updatedLayerContext } from './context.svelte.js';
+  import type { MapGeoJSONFeature, MapMouseEvent } from 'maplibre-gl';
+  import { onDestroy } from 'svelte';
   import { diffApplier } from './compare.js';
+  import { getId, getSource, mapContext, updatedLayerContext } from './context.svelte.js';
   import { combineFilters, isClusterFilter } from './filters.js';
   import type { CommonLayerProps, LayerClickInfo } from './types.js';
-  import { flush } from '$lib/flush.js';
-  import { onDestroy } from 'svelte';
-  import type { MapMouseEvent, MapGeoJSONFeature } from 'maplibre-gl';
 
-  interface Props extends CommonLayerProps {
+  interface Props extends CommonLayerProps<FEATURE> {
     type: maplibregl.LayerSpecification['type'];
     paint?: object | undefined;
     layout?: object | undefined;
     applyToClusters?: boolean;
   }
+
+  type FeatureFromMap = MapGeoJSONFeature & FEATURE;
 
   let {
     id = getId('layer'),
@@ -62,7 +65,7 @@
 
   let hoverFeatureId: string | number | undefined = undefined;
 
-  function handleClick(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
+  function handleClick(e: MapMouseEvent & { features?: FeatureFromMap[] }) {
     if (!interactive || !layer.value || !map) {
       return;
     }
@@ -73,7 +76,7 @@
 
     let features = e.features ?? [];
     let clusterId = features[0]?.properties?.cluster_id;
-    let eventData: LayerClickInfo = {
+    let eventData: LayerClickInfo<FEATURE> = {
       event: e,
       map,
       clusterId,
@@ -95,7 +98,7 @@
     }
   }
 
-  function handleMouseEnter(e: MapMouseEvent) {
+  function handleMouseEnter(e: MapMouseEvent & { features?: FeatureFromMap[] }) {
     if (!interactive || !layer.value) {
       return;
     }
@@ -112,7 +115,7 @@
     hovered = features[0] ?? undefined;
     let clusterId = features[0]?.properties?.cluster_id;
 
-    let data: LayerClickInfo = {
+    let data: LayerClickInfo<FEATURE> = {
       event: e,
       map,
       clusterId,
@@ -124,7 +127,7 @@
     onmouseenter?.(data);
   }
 
-  function handleMouseMove(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
+  function handleMouseMove(e: MapMouseEvent & { features?: FeatureFromMap[] }) {
     if (!interactive) {
       return;
     }

@@ -2,12 +2,13 @@
   import { getSource, mapContext } from '$lib/context.svelte.js';
   import type { Feature, Geometry } from 'geojson';
   import type { GeoJSONSource } from 'maplibre-gl';
+  import type { ClusterProperties, SingleProperties } from './cluster_feature_properties.js';
 
   const { map } = mapContext();
   const source = getSource();
 
   interface Props {
-    feature: Feature<Geometry, { cluster_id: number; mag: number; time: number }>;
+    feature: Feature<Geometry, ClusterProperties> | undefined;
   }
 
   let { feature }: Props = $props();
@@ -21,7 +22,7 @@
       feature.properties.cluster_id,
       10000,
       0
-    )) ?? []) as Feature<Geometry, { cluster_id: number; mag: number; time: number }>[];
+    )) ?? []) as Feature<Geometry, SingleProperties>[];
 
     features.sort((a, b) => {
       return b.properties.time - a.properties.time;
@@ -31,8 +32,7 @@
   });
 
   // Use this instead of an await template tag to avoid flickering
-  let innerFeatures: Feature<Geometry, { cluster_id: number; mag: number; time: number }>[] =
-    $state([]);
+  let innerFeatures: Feature<Geometry, SingleProperties>[] = $state([]);
   $effect(() => {
     innerFeaturesPromise.then((f) => (innerFeatures = f));
   });

@@ -11,9 +11,12 @@
   import quakeImageUrl from '$site/earthquake.png';
   import tsunamiImageUrl from '$site/tsunami.png';
   import earthquakes from '$site/earthquakes.geojson?url';
-  import type { GeoJsonProperties } from 'geojson';
+  import type {
+    ClusterFeatureProperties,
+    SingleProperties,
+  } from '../cluster_feature_properties.js';
 
-  let clickedFeature: GeoJsonProperties | undefined = $state();
+  let clickedFeature: ClusterFeatureProperties | undefined = $state();
 
   let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = $state('hover');
 </script>
@@ -53,7 +56,11 @@
     }}
   >
     <MarkerLayer applyToClusters asButton onclick={(e) => (clickedFeature = e.feature?.properties)}>
-      {#snippet children({ feature })}
+      {#snippet children({
+        feature,
+      }: {
+        feature: GeoJSON.Feature<GeoJSON.Point, ClusterFeatureProperties>;
+      })}
         <div class="rounded-full bg-orange-200 p-1">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
             ><path
@@ -73,7 +80,11 @@
       asButton
       onclick={(e) => (clickedFeature = e.feature?.properties)}
     >
-      {#snippet children({ feature })}
+      {#snippet children({
+        feature,
+      }: {
+        feature: GeoJSON.Feature<GeoJSON.Point, SingleProperties>;
+      })}
         <img src={feature.properties?.tsunami ? tsunamiImageUrl : quakeImageUrl} alt="Earthquake" />
         <Popup {openOn} closeOnClickInside>
           {@const props = feature.properties}

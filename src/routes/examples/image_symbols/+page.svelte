@@ -4,7 +4,6 @@
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
   import { mapClasses } from '../styles';
-  import type { PageData } from './$types';
   import CircleLayer from '$lib/CircleLayer.svelte';
   import SymbolLayer from '$lib/SymbolLayer.svelte';
   import { hoverStateFilter } from '$lib/filters';

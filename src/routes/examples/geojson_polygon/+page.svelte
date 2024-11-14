@@ -32,8 +32,8 @@
   let colors = $derived(contrastingColor(fillColor));
   $effect(() => {
     for (let layer of textLayers) {
-      map.setPaintProperty(layer.id, 'text-color', colors.textColor);
-      map.setPaintProperty(layer.id, 'text-halo-color', colors.textOutlineColor);
+      map?.setPaintProperty(layer.id, 'text-color', colors.textColor);
+      map?.setPaintProperty(layer.id, 'text-halo-color', colors.textOutlineColor);
     }
   });
 
