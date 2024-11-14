@@ -93,6 +93,7 @@
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class="relative aspect-[9/16] max-h-[70vh] w-full sm:aspect-video sm:max-h-full"
   standardControls
+  zoomOnDoubleClick={openOn !== 'dblclick'}
 >
   {#each layers as { data, color, hoverCursor }, i}
     <GeoJson id="layer{i + 1}" data={{ type: 'FeatureCollection', features: data }} generateId>
