@@ -75,7 +75,7 @@
         {#if name in cache}
           {@const result = cache[name]}
           <div class="text-lg font-bold">{name}</div>
-          <img alt="kitten" src={`http://placekitten.com/${result.width}/${result.height}`} />
+          <img alt="dog" src={`https://placedog.net/${result.width}/${result.height}`} />
         {:else}
           <div>Loading...</div>
         {/if}
