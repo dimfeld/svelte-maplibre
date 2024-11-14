@@ -52,8 +52,10 @@
   const context = mapContext();
   const { map, minzoom: minZoomContext, maxzoom: maxZoomContext } = context;
 
-  let deckgl: typeof import('@deck.gl/mapbox') = $state();
+  // @ts-expect-error No types
+  let deckgl: typeof import('@deck.gl/mapbox') | undefined = $state();
   onMount(async () => {
+    // @ts-expect-error No types
     deckgl = await import('@deck.gl/mapbox');
   });
 
@@ -96,7 +98,8 @@
     };
   }
 
-  let layer: typeof import('@deck.gl/mapbox').MapboxLayer = $state();
+  // @ts-expect-error No types
+  let layer: typeof import('@deck.gl/mapbox').MapboxLayer | undefined = $state();
 
   onDestroy(() => {
     if (map.loaded() && layer) {

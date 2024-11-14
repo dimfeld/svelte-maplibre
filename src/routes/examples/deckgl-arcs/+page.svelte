@@ -4,6 +4,8 @@
   import DeckGlLayer from '$lib/DeckGlLayer.svelte';
   // Importing from `@deck.gl/layers` so that we can do a direct import
   // that works even in SSR, as opposed to importing from `deck.gl` which does not.
+  // Note that this stopped working in deck.gl 8.9.
+  // @ts-expect-error no types
   import { ArcLayer } from '@deck.gl/layers';
   // imports end
   import CodeSample from '$site/CodeSample.svelte';
@@ -55,8 +57,8 @@
         toName: to.properties.NAME,
         fromState: from.properties.STATEFP,
         toState: to.properties.STATEFP,
-        source: centers.get(from.properties.GEOID),
-        target: centers.get(to.properties.GEOID),
+        source: centers.get(from.properties.GEOID)!,
+        target: centers.get(to.properties.GEOID)!,
         sourceColor: [255, 128, 0],
         targetColor: [0, 125, 255],
       };
@@ -64,7 +66,7 @@
   }
 
   let zoom = $state(3);
-  let hovered: Feature<Polygon, GeoProperties> | undefined = $state();
+  let hovered: ArcData | undefined = $state();
 
   let mode = $state('showOne') as ArcMode;
   let arcs = $derived(
@@ -145,8 +147,10 @@
     getHeight={clamp(3 / zoom, 0, 1)}
   >
     <Popup openOn="click"
-      >{#snippet children({ data })}
-        From {data.fromName} to {data.toName}
+      >{#snippet children({ data }: { data: ArcData | undefined })}
+        {#if data}
+          From {data.fromName} to {data.toName}
+        {/if}
       {/snippet}
     </Popup>
   </DeckGlLayer>

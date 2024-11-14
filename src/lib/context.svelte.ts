@@ -131,7 +131,7 @@ export type MarkerMouseEvent = MarkerClickInfo & { layerType: 'marker'; type: st
 
 export interface DeckGlMouseEvent<DATA = unknown> {
   layerType: 'deckgl';
-  type: 'click' | 'mouseenter' | 'mouseleave';
+  type: 'click' | 'mouseenter' | 'mouseleave' | 'mousemove';
   coordinate: [number, number];
   object?: DATA;
   index: number;
