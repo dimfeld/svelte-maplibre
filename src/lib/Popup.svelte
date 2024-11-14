@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="DATA = Feature">
   import type { Feature } from 'geojson';
   import maplibregl, {
     type MapMouseEvent,
@@ -46,8 +46,8 @@
     children?: import('svelte').Snippet<
       [
         {
-          features: Array<Feature> | undefined;
-          data: Feature | undefined;
+          features: Array<DATA> | undefined;
+          data: DATA | undefined;
           map: maplibregl.Map | undefined;
           close: () => void;
         },
@@ -187,16 +187,16 @@
     return !('marker' in e) && !isDeckGlMouseEvent(e) && eventTopMost(e) !== layer?.value;
   }
 
-  let features: Feature[] | undefined = $state();
+  let features: DATA[] | undefined = $state();
   let touchOpenState: 'normal' | 'opening' | 'justOpened' = $state('normal');
 
   function handleLayerEvent(e: MapLayerMouseEvent | LayerEvent) {
     if ('layerType' in e && e.layerType === 'deckgl') {
       lngLat = e.coordinate;
-      features = e.object ? [e.object as Feature] : undefined;
+      features = e.object ? [e.object as DATA] : undefined;
     } else {
       lngLat = e.lngLat;
-      features = e.features ?? [];
+      features = (e.features ?? []) as DATA[];
     }
   }
 
@@ -226,7 +226,7 @@
     touchStartCoords = undefined;
     if (distance < 3) {
       lngLat = e.lngLat;
-      features = e.features ?? [];
+      features = (e.features ?? []) as DATA[];
 
       if (popup?.isOpen()) {
         // Pretend we just opened again to avoid the click handler closing the popup.
@@ -259,7 +259,7 @@
     }
 
     open = true;
-    features = e.features ?? [];
+    features = (e.features ?? []) as DATA[];
     lngLat = e.lngLat;
   }
 
