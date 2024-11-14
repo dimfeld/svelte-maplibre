@@ -71,8 +71,10 @@ export class ZoomRange {
     this.minzoomSetting = minzoom;
     this.maxzoomSetting = maxzoom;
     this.parent = parent;
-    this.minzoom = $derived(this.minzoomSetting ?? this.parent?.minzoom ?? 0);
-    this.maxzoom = $derived(this.maxzoomSetting ?? this.parent?.maxzoom ?? 24);
+    const minzoomD = $derived(this.minzoomSetting ?? this.parent?.minzoom ?? 0);
+    const maxzoomD = $derived(this.maxzoomSetting ?? this.parent?.maxzoom ?? 24);
+    this.minzoom = minzoomD;
+    this.maxzoom = maxzoomD;
   }
 }
 
