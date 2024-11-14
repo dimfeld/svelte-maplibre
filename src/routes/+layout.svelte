@@ -1,6 +1,7 @@
 <script lang="ts">
   import '../app.postcss';
   import { AppShell, AppBar, Drawer, initializeStores } from '@skeletonlabs/skeleton';
+  import type { Snippet } from 'svelte';
 
   import hljs from 'highlight.js';
   import hljsSvelte from 'highlightjs-svelte';
@@ -10,7 +11,7 @@
   import NavBar from './NavBar.svelte';
   import LogoAndMenu from './LogoAndMenu.svelte';
   interface Props {
-    children?: import('svelte').Snippet;
+    children?: Snippet;
   }
 
   let { children }: Props = $props();

@@ -1,6 +1,7 @@
 <script lang="ts">
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import { onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
   import { mapContext, updatedMarkerContext } from './context.svelte.js';
   import type { MarkerClickInfo } from './types';
   import type * as GeoJSON from 'geojson';
@@ -22,7 +23,7 @@
     rotation?: number;
     /** The opacity of the marker */
     opacity?: number;
-    children?: import('svelte').Snippet<[{ marker: maplibre.Marker }]>;
+    children?: Snippet<[{ marker: maplibre.Marker }]>;
 
     ondrag?: (e: MarkerClickInfo) => void;
     ondragstart?: (e: MarkerClickInfo) => void;

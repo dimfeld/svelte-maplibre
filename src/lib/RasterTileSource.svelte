@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
   import { getId, mapContext, updatedSourceContext } from './context.svelte.js';
   import { addSource, removeSource } from './source.js';
   import type { Scheme } from './types.js';
@@ -21,7 +22,7 @@
     minzoom?: number;
     maxzoom?: number;
     volatile?: boolean;
-    children?: import('svelte').Snippet;
+    children?: Snippet;
   }
 
   let {

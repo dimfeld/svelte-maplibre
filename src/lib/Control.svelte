@@ -1,13 +1,14 @@
 <script lang="ts">
-  import type maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
+  import type maplibregl from 'maplibre-gl';
   import { mapContext } from './context.svelte.js';
 
   interface Props {
     defaultStyling?: boolean;
     position?: maplibregl.ControlPosition;
     class?: string | undefined;
-    children?: import('svelte').Snippet;
+    children?: Snippet;
   }
 
   let {

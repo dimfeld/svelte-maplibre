@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
   import { getId, mapContext, updatedSourceContext } from './context.svelte.js';
   import { addSource, removeSource } from './source.js';
   import type { ImageSource, Coordinates } from 'maplibre-gl';
@@ -9,7 +10,7 @@
     id?: string;
     url: string;
     coordinates: Coordinates;
-    children?: import('svelte').Snippet;
+    children?: Snippet;
   }
 
   let { id = getId('image'), url, coordinates, children }: Props = $props();

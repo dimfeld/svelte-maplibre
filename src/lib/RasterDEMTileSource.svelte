@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
   import { getId, mapContext, updatedSourceContext } from './context.svelte.js';
   import { addSource, removeSource } from './source.js';
   import { flush } from '$lib/flush.js';
@@ -19,7 +20,7 @@
     greenFactor?: number;
     blueFactor?: number;
     baseShift?: number;
-    children?: import('svelte').Snippet;
+    children?: Snippet;
   }
 
   let {

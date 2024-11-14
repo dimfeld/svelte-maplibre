@@ -1,5 +1,6 @@
 <script lang="ts" generics="DATA">
   import { onMount, onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
   import {
     Box,
     getId,
@@ -22,7 +23,7 @@
     /** The deck.gl layer class to create */
     type: any;
     data: DATA[];
-    children?: import('svelte').Snippet;
+    children?: Snippet;
 
     onclick?: (e: DeckGlMouseEvent<DATA>) => void;
     onmousemove?: (e: DeckGlMouseEvent<DATA>) => void;

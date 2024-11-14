@@ -1,5 +1,6 @@
 import type { Feature, GeoJsonProperties, Point } from 'geojson';
 import type { MapGeoJSONFeature, MapLibreEvent, MapMouseEvent, Marker } from 'maplibre-gl';
+import type { Snippet } from 'svelte';
 
 export type {
   ControlPosition,
@@ -103,7 +104,7 @@ export interface CommonLayerProps<FEATURE extends Feature = Feature> {
   /** Handle mouse events on this layer. */
   interactive?: boolean;
 
-  children?: import('svelte').Snippet;
+  children?: Snippet;
 
   onclick?: (e: LayerClickInfo<FEATURE>) => void;
   ondblclick?: (e: LayerClickInfo<FEATURE>) => void;

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import type { Snippet } from 'svelte';
   import { mapContext, setZoomLimits } from './context.svelte.js';
 
   interface Props {
@@ -8,7 +9,7 @@
     /** If true, only instantiate the slot contents when the map zoom is in range. If false,
      * the layers themselves will handle it. Usually you will want this to be false. */
     enforce?: boolean;
-    children?: import('svelte').Snippet;
+    children?: Snippet;
   }
 
   let { minzoom = undefined, maxzoom = undefined, enforce = false, children }: Props = $props();

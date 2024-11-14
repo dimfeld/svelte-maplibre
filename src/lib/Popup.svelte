@@ -5,7 +5,7 @@
     type MapLayerMouseEvent,
     type MapLayerTouchEvent,
   } from 'maplibre-gl';
-  import { onDestroy, onMount } from 'svelte';
+  import { onDestroy, onMount, type Snippet } from 'svelte';
   import {
     mapContext,
     type LayerEvent,
@@ -43,7 +43,7 @@
     html?: string;
     /** Whether the popup is open or not. Can be set to manualy open the popup at `lngLat`. */
     open?: boolean;
-    children?: import('svelte').Snippet<
+    children?: Snippet<
       [
         {
           features: Array<DATA> | undefined;

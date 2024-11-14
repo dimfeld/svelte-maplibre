@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
   import { getCluster, getId, mapContext, updatedSourceContext } from './context.svelte.js';
   import type { GeoJSON } from 'geojson';
   import type { ClusterOptions } from './types.js';
@@ -23,7 +24,7 @@
     attribution?: string | undefined;
     buffer?: number | undefined;
     tolerance?: number | undefined;
-    children?: import('svelte').Snippet;
+    children?: Snippet;
   }
 
   let {

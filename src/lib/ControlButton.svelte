@@ -1,13 +1,15 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
+
   interface Props {
     /** True if this is an icon button. This will both enable the built-in MapLibre
      * icon button styling and center the element inside the button.
      * @default true since most map buttons are icons. */
     icon?: boolean;
     center?: boolean;
-    title?: string | undefined;
-    class?: string | undefined;
-    children?: import('svelte').Snippet;
+    title?: string;
+    class?: string;
+    children?: Snippet;
 
     onclick?: (e: MouseEvent) => void;
   }

@@ -16,6 +16,7 @@
   import GeolocateControl from './GeolocateControl.svelte';
   import FullscreenControl from './FullscreenControl.svelte';
   import ScaleControl from './ScaleControl.svelte';
+  import type { Snippet } from 'svelte';
 
   interface Props {
     map?: maplibregl.Map;
@@ -71,7 +72,7 @@
     filterLayers?: ((layer: maplibregl.LayerSpecification) => boolean) | undefined;
     /** Function that modifies requests, such as by adding an API key. **/
     transformRequest?: maplibregl.RequestTransformFunction | undefined;
-    children?: import('svelte').Snippet<
+    children?: Snippet<
       [
         {
           map: maplibregl.Map;

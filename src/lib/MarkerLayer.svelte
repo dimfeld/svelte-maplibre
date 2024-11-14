@@ -2,6 +2,7 @@
   import type maplibregl from 'maplibre-gl';
   import type { Feature } from 'geojson';
   import { onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
   import { getId, getSource, getZoomLimits, mapContext } from './context.svelte.js';
   import { combineFilters, isClusterFilter } from './filters';
   import { geoCentroid } from 'd3-geo';
@@ -41,7 +42,7 @@
      * If a function is provided, it will be called with each feature as an argument. */
     zIndex?: number | ((feature: FEATURE) => number) | undefined;
     class?: string | undefined;
-    children?: import('svelte').Snippet<[{ feature: FEATURE; position: [number, number] }]>;
+    children?: Snippet<[{ feature: FEATURE; position: [number, number] }]>;
 
     onclick?: (e: ExtendedMarkerClickInfo) => void;
     ondblclick?: (e: ExtendedMarkerClickInfo) => void;
