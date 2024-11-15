@@ -27,7 +27,7 @@
 
   let { layer = undefined, ...eventCbs }: Props = $props();
 
-  const { map } = getMapContext();
+  const { map } = $derived(getMapContext());
 
   type EventName = keyof typeof eventCbs extends `on${infer T}` ? T : never;
 

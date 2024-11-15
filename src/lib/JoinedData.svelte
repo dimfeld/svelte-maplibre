@@ -10,7 +10,7 @@
 
   let lastSeenIds: Set<string | number> = $state(new Set());
 
-  const { map } = getMapContext();
+  const { map } = $derived(getMapContext());
   const source = getSource();
   $effect(() => {
     if (data && map && source?.value) {

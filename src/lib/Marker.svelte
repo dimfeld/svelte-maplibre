@@ -61,7 +61,7 @@
     ...eventCbs
   }: Props = $props();
 
-  const { map, markerClickManager } = getMapContext();
+  const { map, markerClickManager } = $derived(getMapContext());
   const { layerEvent, marker } = updatedMarkerContext();
 
   function addMarker(node: HTMLDivElement) {

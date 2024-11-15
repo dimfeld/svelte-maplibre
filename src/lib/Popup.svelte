@@ -81,7 +81,7 @@
     onhover = undefined,
   }: Props = $props();
 
-  const { map, eventTopMost, markerClickManager } = getMapContext();
+  const { map, eventTopMost, markerClickManager } = $derived(getMapContext());
   const layer = getLayer();
   const layerEvent = getLayerEvent();
   const popupTarget = getPopupTarget();

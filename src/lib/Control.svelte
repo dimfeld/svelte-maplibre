@@ -18,7 +18,7 @@
     children,
   }: Props = $props();
 
-  const { map } = getMapContext();
+  const { map } = $derived(getMapContext());
 
   let el: HTMLDivElement | undefined = $state();
   let control = {

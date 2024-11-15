@@ -15,7 +15,7 @@
 
   let { id = getId('image'), url, coordinates, children }: Props = $props();
 
-  const { map } = getMapContext();
+  const { map } = $derived(getMapContext());
   const { source } = updatedSourceContext();
   let sourceObj: ImageSource | undefined = $state();
 

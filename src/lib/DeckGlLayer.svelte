@@ -7,7 +7,6 @@
     getMapContext,
     setPopupTarget,
     updatedDeckGlContext,
-    type DeckGlMouseEvent,
   } from './context.svelte.js';
   import type { PickingInfo } from '@deck.gl/core';
 
@@ -55,7 +54,7 @@
   }: Props = $props();
 
   const context = getMapContext();
-  const { map, minzoom: minZoomContext, maxzoom: maxZoomContext } = context;
+  const { map, minzoom: minZoomContext, maxzoom: maxZoomContext } = $derived(context);
 
   let deckgl: typeof import('@deck.gl/mapbox') | undefined = $state();
   onMount(async () => {
@@ -66,7 +65,7 @@
   layerId.value = id;
   setPopupTarget(new Box(undefined));
 
-  let zoom = $state(map.getZoom() ?? 1);
+  let zoom = $state(context.map.getZoom() ?? 1);
 
   function handleZoom() {
     zoom = map.getZoom();

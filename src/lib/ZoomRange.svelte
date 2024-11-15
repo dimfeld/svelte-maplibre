@@ -14,8 +14,7 @@
 
   let { minzoom = undefined, maxzoom = undefined, enforce = false, children }: Props = $props();
 
-  const context = getMapContext();
-  const map = context.map;
+  const { map } = $derived(getMapContext());
 
   let zoomLimits = setZoomLimits(minzoom, maxzoom);
   $effect.pre(() => {
@@ -23,6 +22,7 @@
     zoomLimits.maxzoomSetting = maxzoom;
   });
 
+  // svelte-ignore state_referenced_locally
   let zoom = $state(map.getZoom() ?? 0);
   function handleZoom() {
     zoom = map.getZoom();

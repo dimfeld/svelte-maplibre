@@ -43,7 +43,7 @@
     }
   }
 
-  const { map } = getMapContext();
+  const { map } = $derived(getMapContext());
   const { source } = updatedSourceContext();
 
   let sourceObj: VectorTileSource | undefined = $state();

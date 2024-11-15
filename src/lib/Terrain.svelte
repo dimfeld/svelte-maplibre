@@ -3,7 +3,7 @@
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
-  const { map } = getMapContext();
+  const { map } = $derived(getMapContext());
 
   interface Props {
     source?: string | undefined;

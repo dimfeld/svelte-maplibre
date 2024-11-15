@@ -17,7 +17,7 @@
     feature: FeatureWithId<FEATURE>;
   }
 
-  const { map } = getMapContext();
+  const { map } = $derived(getMapContext());
   const source = getSource();
   const zoomLimits = getZoomLimits();
 
@@ -201,9 +201,10 @@
     features = sorted;
   }
 
-  let zoom = $state(map.getZoom() ?? 0);
+  // svelte-ignore state_referenced_locally
+  let zoom = $state(map.getZoom());
   function handleZoom(e: MapLibreZoomEvent) {
-    zoom = map!.getZoom();
+    zoom = map.getZoom();
     updateMarkers();
   }
 </script>

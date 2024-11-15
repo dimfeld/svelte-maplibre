@@ -48,7 +48,7 @@
     ondragend = undefined,
   }: Props = $props();
 
-  const { map } = getMapContext();
+  const { map } = $derived(getMapContext());
   const { layerEvent, marker } = updatedMarkerContext();
 
   const dragStartListener = () => sendEvent(ondragstart, 'dragstart');
@@ -61,6 +61,7 @@
     sendEvent(ondragend, 'dragend');
   };
 
+  // svelte-ignore state_referenced_locally
   marker.value = new maplibre.Marker(
     flush({
       draggable,
@@ -71,7 +72,7 @@
     })
   )
     .setLngLat(lngLat)
-    .addTo(map!);
+    .addTo(map);
   markerProp = marker.value;
   if (draggable) {
     marker.value.on('dragstart', dragStartListener);

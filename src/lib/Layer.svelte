@@ -54,7 +54,7 @@
     layerInfo,
     minzoom: minzoomContext,
     maxzoom: maxzoomContext,
-  } = getMapContext();
+  } = $derived(getMapContext());
 
   onDestroy(() => {
     if (layer.value) {

@@ -4,7 +4,7 @@
   import type { GeoJSONSource } from 'maplibre-gl';
   import type { ClusterProperties, SingleProperties } from './cluster_feature_properties.js';
 
-  const { map } = getMapContext();
+  const { map } = $derived(getMapContext());
   const source = getSource();
 
   interface Props {
