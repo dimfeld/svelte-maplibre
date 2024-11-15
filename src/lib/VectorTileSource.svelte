@@ -11,14 +11,14 @@
   interface Props {
     id?: string;
     url?: string;
-    tiles?: Array<string> | undefined;
-    promoteId?: string | undefined;
-    bounds?: [number, number, number, number] | undefined;
-    scheme?: Scheme | undefined;
-    attribution?: string | undefined;
-    minzoom?: number | undefined;
-    maxzoom?: number | undefined;
-    volatile?: boolean | undefined;
+    tiles?: string[];
+    promoteId?: string;
+    bounds?: [number, number, number, number];
+    scheme?: Scheme;
+    attribution?: string;
+    minzoom?: number;
+    maxzoom?: number;
+    volatile?: boolean;
     children?: Snippet;
   }
 

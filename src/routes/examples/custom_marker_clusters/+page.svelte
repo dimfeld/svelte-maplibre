@@ -13,6 +13,7 @@
   import earthquakes from '$site/earthquakes.geojson?url';
   import type {
     ClusterFeatureProperties,
+    ClusterProperties,
     SingleProperties,
   } from '../cluster_feature_properties.js';
 
@@ -59,7 +60,7 @@
       {#snippet children({
         feature,
       }: {
-        feature: GeoJSON.Feature<GeoJSON.Point, ClusterFeatureProperties>;
+        feature: GeoJSON.Feature<GeoJSON.Point, ClusterProperties>;
       })}
         <div class="rounded-full bg-orange-200 p-1">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"

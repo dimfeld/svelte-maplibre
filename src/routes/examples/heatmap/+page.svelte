@@ -103,9 +103,3 @@
 </MapLibre>
 
 <CodeSample {code} />
-
-<style>
-  .grid {
-    grid-template-columns: repeat(auto-fill, 150px);
-  }
-</style>

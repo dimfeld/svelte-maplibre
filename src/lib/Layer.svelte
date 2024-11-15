@@ -65,7 +65,7 @@
 
   let hoverFeatureId: string | number | undefined = undefined;
 
-  function handleClick(e: MapMouseEvent & { features?: FeatureFromMap[] }) {
+  function handleClick(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
     if (!interactive || !layer.value || !map) {
       return;
     }
@@ -76,13 +76,13 @@
 
     let features = e.features ?? [];
     let clusterId = features[0]?.properties?.cluster_id;
-    let eventData: LayerClickInfo<FEATURE> = {
+    let eventData: LayerClickInfo<FeatureFromMap> = {
       event: e,
       map,
       clusterId,
       layer: layer.value,
       source: actualSource!,
-      features,
+      features: features as FeatureFromMap[],
     };
 
     switch (e.type) {
@@ -98,7 +98,7 @@
     }
   }
 
-  function handleMouseEnter(e: MapMouseEvent & { features?: FeatureFromMap[] }) {
+  function handleMouseEnter(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
     if (!interactive || !layer.value) {
       return;
     }
@@ -111,7 +111,7 @@
       map.getCanvas().style.cursor = hoverCursor;
     }
 
-    let features = e.features ?? [];
+    let features = (e.features ?? []) as FeatureFromMap[];
     hovered = features[0] ?? undefined;
     let clusterId = features[0]?.properties?.cluster_id;
 
@@ -127,7 +127,7 @@
     onmouseenter?.(data);
   }
 
-  function handleMouseMove(e: MapMouseEvent & { features?: FeatureFromMap[] }) {
+  function handleMouseMove(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
     if (!interactive) {
       return;
     }
@@ -150,7 +150,7 @@
       map.getCanvas().style.cursor = hoverCursor;
     }
 
-    let features = e.features ?? [];
+    let features = (e.features ?? []) as FeatureFromMap[];
 
     let clusterId = features[0]?.properties?.cluster_id;
 
@@ -247,6 +247,8 @@
 
       layer.value = id;
       map.addLayer(
+        // @ts-expect-error Maplibre types try to match the `type` to the `paint` and `layout` but since
+        // we're generic here it complains. That's ok.
         flush({
           id: layer.value,
           type,

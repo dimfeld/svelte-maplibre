@@ -62,18 +62,17 @@ export interface LayerClickInfo<FEATURE extends Feature = Feature> {
   features: FEATURE[];
 }
 
-export interface MarkerClickInfo<PROPS extends GeoJsonProperties = GeoJsonProperties>
-  extends Omit<MapMouseEvent, 'lngLat'> {
+export interface MarkerClickInfo<FEATURE extends Feature = Feature> {
   map: maplibregl.Map;
   marker: Marker;
   lngLat: [number, number];
-  features: Feature<Point, PROPS>[];
+  features: FEATURE[];
 }
 
-export interface MarkerLayerEventInfo<PROPS extends GeoJsonProperties = GeoJsonProperties>
-  extends MarkerClickInfo<PROPS> {
+export interface MarkerLayerEventInfo<FEATURE extends Feature = Feature>
+  extends MarkerClickInfo<FEATURE> {
   source: string;
-  feature: Feature<Point, PROPS>;
+  feature: FEATURE;
 }
 
 export type DeckGlAccessor<DATA, RETVAL> = RETVAL | ((data: DATA) => RETVAL);

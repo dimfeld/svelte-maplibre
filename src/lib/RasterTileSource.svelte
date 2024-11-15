@@ -92,6 +92,7 @@
       } else if (tiles) {
         sourceObj.setTiles(tiles);
       } else {
+        // @ts-expect-error This doesn't seem to actually exist. Leaving it for now until I'm sure I'm not missing something.
         sourceObj.setUrl(url);
       }
     }

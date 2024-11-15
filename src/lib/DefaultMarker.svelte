@@ -1,10 +1,10 @@
-<script lang="ts">
+<script lang="ts" generics="DATA extends Feature = Feature">
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
   import { mapContext, updatedMarkerContext } from './context.svelte.js';
   import type { MarkerClickInfo } from './types';
-  import type * as GeoJSON from 'geojson';
+  import type { Feature, Point } from 'geojson';
   import { flush } from '$lib/flush.js';
 
   interface Props {
@@ -16,7 +16,7 @@
     draggable?: boolean;
     /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
      * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
-    feature?: GeoJSON.Feature;
+    feature?: DATA;
     /** An offset in pixels to apply to the marker. */
     offset?: PointLike | undefined;
     /** The rotation angle of the marker (clockwise, in degrees) */
@@ -25,10 +25,12 @@
     opacity?: number;
     children?: Snippet<[{ marker: maplibre.Marker }]>;
 
-    ondrag?: (e: MarkerClickInfo) => void;
-    ondragstart?: (e: MarkerClickInfo) => void;
-    ondragend?: (e: MarkerClickInfo) => void;
+    ondrag?: (e: MarkerClickInfo<ClickInfoFeature>) => void;
+    ondragstart?: (e: MarkerClickInfo<ClickInfoFeature>) => void;
+    ondragend?: (e: MarkerClickInfo<ClickInfoFeature>) => void;
   }
+
+  type ClickInfoFeature = Feature<Point, DATA['properties']>;
 
   let {
     marker: markerProp = $bindable(undefined),
@@ -111,14 +113,17 @@
     }
   }
 
-  function sendEvent(eventCb: ((e: MarkerClickInfo) => void) | undefined, eventName: string) {
+  function sendEvent(
+    eventCb: ((e: MarkerClickInfo<ClickInfoFeature>) => void) | undefined,
+    eventName: string
+  ) {
     let loc = marker.value?.getLngLat();
     if (!loc) {
       return;
     }
 
     const lngLat: [number, number] = [loc.lng, loc.lat];
-    let data: MarkerClickInfo = {
+    let data: MarkerClickInfo<ClickInfoFeature> = {
       map: map!,
       marker: marker.value!,
       lngLat,

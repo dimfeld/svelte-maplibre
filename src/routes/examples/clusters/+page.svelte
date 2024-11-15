@@ -14,7 +14,7 @@
   import earthquakes from '$site/earthquakes.geojson?url';
   import type { ClusterFeatureProperties } from '../cluster_feature_properties';
   import type { Feature, Geometry } from 'geojson';
-  import { LayerClickInfo } from '$lib';
+  import type { LayerClickInfo } from '$lib';
 
   let clickedFeature: ClusterFeatureProperties | null | undefined = $state();
 
