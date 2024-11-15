@@ -1,4 +1,4 @@
-import type { Feature, GeoJsonProperties, Point } from 'geojson';
+import type { Feature } from 'geojson';
 import type { MapGeoJSONFeature, MapLibreEvent, MapMouseEvent, Marker } from 'maplibre-gl';
 import type { Snippet } from 'svelte';
 
@@ -10,12 +10,16 @@ export type {
   LngLatBoundsLike,
   LngLatLike,
   Map,
+  MapGeoJSONFeature,
   Offset,
   PointLike,
   PositionAnchor,
   StyleSpecification,
   GeolocateControl as GeolocateControlInterface,
 } from 'maplibre-gl';
+
+export type FeatureWithId<FEATURE extends Feature> = MapGeoJSONFeature &
+  FEATURE & { id: string | number };
 
 export type MapMoveEvent = MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined>;
 

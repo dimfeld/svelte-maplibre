@@ -1,9 +1,9 @@
-<script lang="ts">
+<script lang="ts" generics="FEATURE extends Feature = Feature">
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import type { Snippet } from 'svelte';
   import { mapContext, updatedMarkerContext } from './context.svelte.js';
   import type { MarkerClickInfo } from './types';
-  import type * as GeoJSON from 'geojson';
+  import type { Feature } from 'geojson';
 
   interface Props {
     /** The Marker instance which was added to the map */
@@ -17,7 +17,7 @@
     draggable?: boolean;
     /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
      * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
-    feature?: GeoJSON.Feature;
+    feature?: FEATURE;
     /** An offset in pixels to apply to the marker. */
     offset?: PointLike;
     /** The z-index of the marker. This can also be set via CSS classes using the `class` prop */
@@ -28,15 +28,15 @@
     opacity?: number;
     children?: Snippet<[{ marker: maplibre.Marker }]>;
 
-    ondrag?: (e: MarkerClickInfo) => void;
-    ondragstart?: (e: MarkerClickInfo) => void;
-    ondragend?: (e: MarkerClickInfo) => void;
-    onclick?: (e: MarkerClickInfo) => void;
-    ondblclick?: (e: MarkerClickInfo) => void;
-    oncontextmenu?: (e: MarkerClickInfo) => void;
-    onmouseenter?: (e: MarkerClickInfo) => void;
-    onmouseleave?: (e: MarkerClickInfo) => void;
-    onmousemove?: (e: MarkerClickInfo) => void;
+    ondrag?: (e: MarkerClickInfo<FEATURE>) => void;
+    ondragstart?: (e: MarkerClickInfo<FEATURE>) => void;
+    ondragend?: (e: MarkerClickInfo<FEATURE>) => void;
+    onclick?: (e: MarkerClickInfo<FEATURE>) => void;
+    ondblclick?: (e: MarkerClickInfo<FEATURE>) => void;
+    oncontextmenu?: (e: MarkerClickInfo<FEATURE>) => void;
+    onmouseenter?: (e: MarkerClickInfo<FEATURE>) => void;
+    onmouseleave?: (e: MarkerClickInfo<FEATURE>) => void;
+    onmousemove?: (e: MarkerClickInfo<FEATURE>) => void;
   }
 
   let {

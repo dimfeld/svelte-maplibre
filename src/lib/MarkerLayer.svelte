@@ -8,15 +8,13 @@
   import { geoCentroid } from 'd3-geo';
   import Marker from './Marker.svelte';
   import FillLayer from './FillLayer.svelte';
-  import type { MapGeoJSONFeature, MapLibreZoomEvent } from 'maplibre-gl';
-  import type { MarkerClickInfo } from './types';
+  import type { MapLibreZoomEvent } from 'maplibre-gl';
+  import type { FeatureWithId, MarkerClickInfo } from './types';
   import { dequal } from 'dequal/lite';
 
-  type FeatureWithId = MapGeoJSONFeature & FEATURE & { id: string | number };
-
-  interface ExtendedMarkerClickInfo extends MarkerClickInfo {
+  interface ExtendedMarkerClickInfo extends MarkerClickInfo<FEATURE> {
     source: string | undefined;
-    feature: FeatureWithId;
+    feature: FeatureWithId<FEATURE>;
   }
 
   const { map } = mapContext();
@@ -61,7 +59,7 @@
     draggable = false,
     minzoom = undefined,
     maxzoom = undefined,
-    hovered = $bindable(),
+    hovered = $bindable(undefined),
     zIndex = undefined,
     class: className = undefined,
     children,
@@ -235,7 +233,8 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
           hovered = undefined;
         }
       }}
-      ondragstart={(e) => ondragstart?.({ ...e, source: source?.value, feature })}
+      ondragstart={(e: MarkerClickInfo<FEATURE>) =>
+        ondragstart?.({ ...e, source: source?.value, feature })}
       ondrag={(e) => ondrag?.({ ...e, source: source?.value, feature })}
       ondragend={(e) => ondragend?.({ ...e, source: source?.value, feature })}
       onclick={(e) => onclick?.({ ...e, source: source?.value, feature })}
