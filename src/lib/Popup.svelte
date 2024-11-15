@@ -192,7 +192,7 @@
 
   function handleLayerEvent(e: MapLayerMouseEvent | LayerEvent) {
     if ('layerType' in e && e.layerType === 'deckgl') {
-      lngLat = e.coordinate;
+      lngLat = e.coordinate as [number, number];
       features = e.object ? [e.object as DATA] : undefined;
     } else {
       lngLat = e.lngLat;

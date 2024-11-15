@@ -5,7 +5,6 @@
   // Importing from `@deck.gl/layers` so that we can do a direct import
   // that works even in SSR, as opposed to importing from `deck.gl` which does not.
   // Note that this stopped working in deck.gl 8.9.
-  // @ts-expect-error no types
   import { ArcLayer } from '@deck.gl/layers';
   // imports end
   import CodeSample from '$site/CodeSample.svelte';

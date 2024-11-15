@@ -2,6 +2,7 @@ import type { Map as MapLibre, MapMouseEvent, Marker } from 'maplibre-gl';
 import { getContext, setContext } from 'svelte';
 import { SvelteSet } from 'svelte/reactivity';
 import type { ClusterOptions, MarkerClickInfo } from './types';
+import type { PickingInfo } from '@deck.gl/core';
 
 // Choose current time instead of 0 to avoid possible reuse during HMR.
 export let nextId = Date.now();
@@ -136,17 +137,9 @@ export function setLayerEvent(value: Box<LayerEvent | undefined>) {
 
 export type MarkerMouseEvent = MarkerClickInfo & { layerType: 'marker'; type: string };
 
-export interface DeckGlMouseEvent<DATA = unknown> {
+export interface DeckGlMouseEvent<DATA = unknown> extends PickingInfo<DATA> {
   layerType: 'deckgl';
   type: 'click' | 'mouseenter' | 'mouseleave' | 'mousemove';
-  coordinate: [number, number];
-  object?: DATA;
-  index: number;
-  picked: boolean;
-  color: Uint8Array | null;
-  pixel: [number, number];
-  x: number;
-  y: number;
 }
 
 export type LayerEvent = DeckGlMouseEvent<unknown> | MarkerMouseEvent;
