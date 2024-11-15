@@ -1,4 +1,4 @@
-import type { Feature } from 'geojson';
+import type { Feature, Point } from 'geojson';
 import type { MapGeoJSONFeature, MapLibreEvent, MapMouseEvent, Marker } from 'maplibre-gl';
 import type { Snippet } from 'svelte';
 
@@ -20,6 +20,7 @@ export type {
 
 export type FeatureWithId<FEATURE extends Feature> = MapGeoJSONFeature &
   FEATURE & { id: string | number };
+export type MarkerClickInfoFeature<FEATURE extends Feature> = Feature<Point, FEATURE['properties']>;
 
 export type MapMoveEvent = MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined>;
 

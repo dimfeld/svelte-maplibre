@@ -9,10 +9,10 @@
   import Marker from './Marker.svelte';
   import FillLayer from './FillLayer.svelte';
   import type { MapLibreZoomEvent } from 'maplibre-gl';
-  import type { FeatureWithId, MarkerClickInfo } from './types';
+  import type { FeatureWithId, MarkerClickInfo, MarkerClickInfoFeature } from './types';
   import { dequal } from 'dequal/lite';
 
-  interface ExtendedMarkerClickInfo extends MarkerClickInfo<FEATURE> {
+  interface ExtendedMarkerClickInfo extends MarkerClickInfo<MarkerClickInfoFeature<FEATURE>> {
     source: string | undefined;
     feature: FeatureWithId<FEATURE>;
   }
@@ -130,8 +130,8 @@
     }
   });
 
-  let features: Array<FeatureWithId> = $state([]);
-  function stripAutoFeatId(f: FeatureWithId) {
+  let features: Array<FeatureWithId<FEATURE>> = $state([]);
+  function stripAutoFeatId(f: FeatureWithId<FEATURE>) {
     if (f.id.toString().startsWith('autocluster_')) {
       return 'autocluster';
     }
@@ -141,7 +141,10 @@
     return f.id;
   }
 
-  function someFeaturesChanged(current: Array<FeatureWithId>, next: Array<FeatureWithId>) {
+  function someFeaturesChanged(
+    current: Array<FeatureWithId<FEATURE>>,
+    next: Array<FeatureWithId<FEATURE>>
+  ) {
     return (
       current.length !== next.length ||
       next.some((nextValue, idx) => {
@@ -170,7 +173,7 @@
     });
 
     // Need to dedupe the results of featureList
-    let featureMap = new Map<string | number, FeatureWithId>();
+    let featureMap = new Map<string | number, FeatureWithId<FEATURE>>();
     for (let feature of featureList) {
       if (!feature.id) {
         if (feature.properties?.cluster_id) {
@@ -179,7 +182,7 @@
           feature.id = getId('autofeat');
         }
       }
-      featureMap.set(feature.id, feature as FeatureWithId);
+      featureMap.set(feature.id, feature as FeatureWithId<FEATURE>);
     }
 
     // Sort the features by ID so that the #each loop doesn't think the order ever changes. If the order
@@ -233,7 +236,7 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
           hovered = undefined;
         }
       }}
-      ondragstart={(e: MarkerClickInfo<FEATURE>) =>
+      ondragstart={(e: MarkerClickInfo<MarkerClickInfoFeature<FEATURE>>) =>
         ondragstart?.({ ...e, source: source?.value, feature })}
       ondrag={(e) => ondrag?.({ ...e, source: source?.value, feature })}
       ondragend={(e) => ondragend?.({ ...e, source: source?.value, feature })}

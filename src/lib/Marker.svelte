@@ -2,8 +2,13 @@
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import type { Snippet } from 'svelte';
   import { mapContext, updatedMarkerContext } from './context.svelte.js';
-  import type { MarkerClickInfo } from './types';
-  import type { Feature } from 'geojson';
+  import type {
+    MarkerClickInfo,
+    MarkerClickInfoFeature as GenMarkerClickInfoFeature,
+  } from './types';
+  import type { Feature, Point } from 'geojson';
+
+  type MarkerClickInfoFeature = GenMarkerClickInfoFeature<FEATURE>;
 
   interface Props {
     /** The Marker instance which was added to the map */
@@ -28,15 +33,15 @@
     opacity?: number;
     children?: Snippet<[{ marker: maplibre.Marker }]>;
 
-    ondrag?: (e: MarkerClickInfo<FEATURE>) => void;
-    ondragstart?: (e: MarkerClickInfo<FEATURE>) => void;
-    ondragend?: (e: MarkerClickInfo<FEATURE>) => void;
-    onclick?: (e: MarkerClickInfo<FEATURE>) => void;
-    ondblclick?: (e: MarkerClickInfo<FEATURE>) => void;
-    oncontextmenu?: (e: MarkerClickInfo<FEATURE>) => void;
-    onmouseenter?: (e: MarkerClickInfo<FEATURE>) => void;
-    onmouseleave?: (e: MarkerClickInfo<FEATURE>) => void;
-    onmousemove?: (e: MarkerClickInfo<FEATURE>) => void;
+    ondrag?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    ondragstart?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    ondragend?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    onclick?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    ondblclick?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    oncontextmenu?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    onmouseenter?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    onmouseleave?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    onmousemove?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
   }
 
   let {
@@ -178,7 +183,7 @@
     }
 
     const lngLat: [number, number] = [loc.lng, loc.lat];
-    let data: MarkerClickInfo = {
+    let data: MarkerClickInfo<Feature<Point, FEATURE['properties']>> = {
       map: map!,
       marker: marker.value!,
       lngLat,
