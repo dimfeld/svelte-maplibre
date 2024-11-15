@@ -7,8 +7,7 @@
     "url": "https://imfeld.dev"
   },
   "repository": {
-    "type": "git",
-    "url": "git://github.com/dimfeld/svelte-maplibre.git"
+    "url": "https://github.com/dimfeld/svelte-maplibre"
   },
   "homepage": "https://svelte-maplibre.imfeld.dev",
   "license": "MIT",
