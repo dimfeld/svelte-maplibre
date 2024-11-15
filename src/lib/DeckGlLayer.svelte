@@ -4,7 +4,7 @@
   import {
     Box,
     getId,
-    mapContext,
+    getMapContext,
     setPopupTarget,
     updatedDeckGlContext,
     type DeckGlMouseEvent,
@@ -54,7 +54,7 @@
     ...rest
   }: Props = $props();
 
-  const context = mapContext();
+  const context = getMapContext();
   const { map, minzoom: minZoomContext, maxzoom: maxZoomContext } = context;
 
   let deckgl: typeof import('@deck.gl/mapbox') | undefined = $state();

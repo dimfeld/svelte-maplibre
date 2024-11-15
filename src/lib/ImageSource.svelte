@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
-  import { getId, mapContext, updatedSourceContext } from './context.svelte.js';
+  import { getId, getMapContext, updatedSourceContext } from './context.svelte.js';
   import { addSource, removeSource } from './source.js';
   import type { ImageSource, Coordinates } from 'maplibre-gl';
   import { flush } from '$lib/flush.js';
@@ -15,7 +15,7 @@
 
   let { id = getId('image'), url, coordinates, children }: Props = $props();
 
-  const { map } = mapContext();
+  const { map } = getMapContext();
   const { source } = updatedSourceContext();
   let sourceObj: ImageSource | undefined = $state();
 

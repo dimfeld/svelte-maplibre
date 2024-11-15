@@ -1,7 +1,7 @@
 <script lang="ts" generics="FEATURE extends Feature = Feature">
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import type { Snippet } from 'svelte';
-  import { mapContext, updatedMarkerContext } from './context.svelte.js';
+  import { getMapContext, updatedMarkerContext } from './context.svelte.js';
   import type {
     MarkerClickInfo,
     MarkerClickInfoFeature as GenMarkerClickInfoFeature,
@@ -61,7 +61,7 @@
     ...eventCbs
   }: Props = $props();
 
-  const { map, markerClickManager } = mapContext();
+  const { map, markerClickManager } = getMapContext();
   const { layerEvent, marker } = updatedMarkerContext();
 
   function addMarker(node: HTMLDivElement) {

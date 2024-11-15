@@ -3,7 +3,7 @@
   import type { Feature } from 'geojson';
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
-  import { getId, getSource, getZoomLimits, mapContext } from './context.svelte.js';
+  import { getId, getSource, getZoomLimits, getMapContext } from './context.svelte.js';
   import { combineFilters, isClusterFilter } from './filters';
   import { geoCentroid } from 'd3-geo';
   import Marker from './Marker.svelte';
@@ -17,7 +17,7 @@
     feature: FeatureWithId<FEATURE>;
   }
 
-  const { map } = mapContext();
+  const { map } = getMapContext();
   const source = getSource();
   const zoomLimits = getZoomLimits();
 

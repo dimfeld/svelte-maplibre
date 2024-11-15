@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
-  import { mapContext, setZoomLimits } from './context.svelte.js';
+  import { getMapContext, setZoomLimits } from './context.svelte.js';
 
   interface Props {
     minzoom?: number | undefined;
@@ -14,7 +14,7 @@
 
   let { minzoom = undefined, maxzoom = undefined, enforce = false, children }: Props = $props();
 
-  const context = mapContext();
+  const context = getMapContext();
   const map = context.map;
 
   let zoomLimits = setZoomLimits(minzoom, maxzoom);

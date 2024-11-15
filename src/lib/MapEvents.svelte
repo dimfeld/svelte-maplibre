@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { mapContext } from './context.svelte.js';
+  import { getMapContext } from './context.svelte.js';
   import maplibregl from 'maplibre-gl';
   import type { MapEventType, MapLayerEventType } from 'maplibre-gl';
   import type { MapMoveEvent } from './types.js';
@@ -27,7 +27,7 @@
 
   let { layer = undefined, ...eventCbs }: Props = $props();
 
-  const { map } = mapContext();
+  const { map } = getMapContext();
 
   type EventName = keyof typeof eventCbs extends `on${infer T}` ? T : never;
 

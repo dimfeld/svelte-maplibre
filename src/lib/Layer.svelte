@@ -5,7 +5,7 @@
   import type { MapGeoJSONFeature, MapMouseEvent } from 'maplibre-gl';
   import { onDestroy } from 'svelte';
   import { diffApplier } from './compare.js';
-  import { getId, getSource, mapContext, updatedLayerContext } from './context.svelte.js';
+  import { getId, getSource, getMapContext, updatedLayerContext } from './context.svelte.js';
   import { combineFilters, isClusterFilter } from './filters.js';
   import type { CommonLayerProps, LayerClickInfo } from './types.js';
 
@@ -54,7 +54,7 @@
     layerInfo,
     minzoom: minzoomContext,
     maxzoom: maxzoomContext,
-  } = mapContext();
+  } = getMapContext();
 
   onDestroy(() => {
     if (layer.value) {

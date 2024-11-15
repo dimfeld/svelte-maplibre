@@ -124,7 +124,7 @@ export function setZoomLimits(min: number | undefined, max: number | undefined) 
 }
 
 export function getZoomLimits(): { minzoom: number; maxzoom: number } {
-  return getContext<ZoomRange>(ZOOM_KEY) || mapContext();
+  return getContext<ZoomRange>(ZOOM_KEY) || getMapContext();
 }
 
 export function getLayerEvent(): Box<LayerEvent | undefined> {
@@ -152,7 +152,7 @@ const CLUSTER_KEY = Symbol.for('svelte-maplibre.cluster');
 const ZOOM_KEY = Symbol.for('svelte-maplibre.zoom');
 const LAYER_EVENT_KEY = Symbol.for('svelte-maplibre.layer-event');
 
-export function mapContext(): MapContext {
+export function getMapContext(): MapContext {
   return getContext(MAP_CONTEXT_KEY);
 }
 

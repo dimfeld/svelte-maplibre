@@ -2,7 +2,7 @@
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
-  import { mapContext, updatedMarkerContext } from './context.svelte.js';
+  import { getMapContext, updatedMarkerContext } from './context.svelte.js';
   import type { MarkerClickInfo } from './types';
   import type { Feature, Point } from 'geojson';
   import { flush } from '$lib/flush.js';
@@ -48,7 +48,7 @@
     ondragend = undefined,
   }: Props = $props();
 
-  const { map } = mapContext();
+  const { map } = getMapContext();
   const { layerEvent, marker } = updatedMarkerContext();
 
   const dragStartListener = () => sendEvent(ondragstart, 'dragstart');

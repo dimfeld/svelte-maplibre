@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
-  import { getId, mapContext, updatedSourceContext } from './context.svelte.js';
+  import { getId, getMapContext, updatedSourceContext } from './context.svelte.js';
   import { addSource, removeSource } from './source.js';
   import type { Scheme } from './types.js';
   import { flush } from '$lib/flush.js';
@@ -46,7 +46,7 @@
     }
   }
 
-  const { map } = mapContext();
+  const { map } = getMapContext();
   const { source } = updatedSourceContext();
   let sourceObj: RasterTileSource | undefined = $state();
 

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { getSource, mapContext } from '$lib/context.svelte.js';
+  import { getSource, getMapContext } from '$lib/context.svelte.js';
   import type { Feature, Geometry } from 'geojson';
   import type { GeoJSONSource } from 'maplibre-gl';
   import type { ClusterProperties, SingleProperties } from './cluster_feature_properties.js';
 
-  const { map } = mapContext();
+  const { map } = getMapContext();
   const source = getSource();
 
   interface Props {

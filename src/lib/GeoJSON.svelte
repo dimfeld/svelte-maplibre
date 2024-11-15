@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
-  import { getCluster, getId, mapContext, updatedSourceContext } from './context.svelte.js';
+  import { getCluster, getId, getMapContext, updatedSourceContext } from './context.svelte.js';
   import type { GeoJSON } from 'geojson';
   import type { ClusterOptions } from './types.js';
   import { addSource, removeSource } from './source.js';
@@ -42,7 +42,7 @@
     children,
   }: Props = $props();
 
-  const { map } = mapContext();
+  const { map } = getMapContext();
   const { source } = updatedSourceContext();
   let sourceObj: GeoJSONSource | undefined = $state();
 

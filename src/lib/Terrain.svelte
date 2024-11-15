@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { mapContext } from './context.svelte.js';
+  import { getMapContext } from './context.svelte.js';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
-  const { map } = mapContext();
+  const { map } = getMapContext();
 
   interface Props {
     source?: string | undefined;

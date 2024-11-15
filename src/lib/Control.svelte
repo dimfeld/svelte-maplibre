@@ -2,7 +2,7 @@
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
   import type maplibregl from 'maplibre-gl';
-  import { mapContext } from './context.svelte.js';
+  import { getMapContext } from './context.svelte.js';
 
   interface Props {
     defaultStyling?: boolean;
@@ -18,7 +18,7 @@
     children,
   }: Props = $props();
 
-  const { map } = mapContext();
+  const { map } = getMapContext();
 
   let el: HTMLDivElement | undefined = $state();
   let control = {

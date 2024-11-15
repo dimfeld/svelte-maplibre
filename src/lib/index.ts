@@ -33,7 +33,7 @@ export { default as VectorTileSource } from './VectorTileSource.svelte';
 export { default as ZoomRange } from './ZoomRange.svelte';
 export {
   getId,
-  mapContext,
+  getMapContext as mapContext,
   updatedSourceContext,
   updatedLayerContext,
   updatedMarkerContext,

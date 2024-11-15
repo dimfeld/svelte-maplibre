@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getSource, mapContext, updatedLayerContext } from './context.svelte.js';
+  import { getSource, getMapContext, updatedLayerContext } from './context.svelte.js';
   interface Props {
     data: Array<Record<string, string | number | undefined>>;
     idCol: string;
@@ -10,7 +10,7 @@
 
   let lastSeenIds: Set<string | number> = $state(new Set());
 
-  const { map } = mapContext();
+  const { map } = getMapContext();
   const source = getSource();
   $effect(() => {
     if (data && map && source?.value) {

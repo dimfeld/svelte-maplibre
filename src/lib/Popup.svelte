@@ -7,7 +7,7 @@
   } from 'maplibre-gl';
   import { onDestroy, onMount, type Snippet } from 'svelte';
   import {
-    mapContext,
+    getMapContext,
     type LayerEvent,
     isDeckGlMouseEvent,
     getLayer,
@@ -81,7 +81,7 @@
     onhover = undefined,
   }: Props = $props();
 
-  const { map, eventTopMost, markerClickManager } = mapContext();
+  const { map, eventTopMost, markerClickManager } = getMapContext();
   const layer = getLayer();
   const layerEvent = getLayerEvent();
   const popupTarget = getPopupTarget();
