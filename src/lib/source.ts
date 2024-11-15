@@ -1,6 +1,5 @@
 import type { Map, SourceSpecification } from 'maplibre-gl';
 import { tick } from 'svelte';
-import { get, type Readable } from 'svelte/store';
 
 /**
  * Add a source to the map.
