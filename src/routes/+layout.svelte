@@ -4,6 +4,7 @@
   import type { Snippet } from 'svelte';
 
   import hljs from 'highlight.js';
+  // @ts-expect-error No types
   import hljsSvelte from 'highlightjs-svelte';
   import 'highlight.js/styles/github-dark.css';
   import { storeHighlightJs } from '@skeletonlabs/skeleton';

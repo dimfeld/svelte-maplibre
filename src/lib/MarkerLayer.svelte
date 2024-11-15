@@ -25,8 +25,8 @@
 
   /** CSS classes to apply to each marker */
   interface Props {
-    applyToClusters?: boolean | undefined;
-    filter?: maplibregl.ExpressionSpecification | undefined;
+    applyToClusters?: boolean;
+    filter?: maplibregl.ExpressionSpecification;
     /** How to calculate the coordinates of the marker.
      * @default Calls d3.geoCentroid` on the feature. */
     markerLngLat?: (feature: FEATURE) => [number, number];
@@ -40,8 +40,8 @@
     hovered?: FEATURE;
     /** The z-index of the markers. This can also be set via CSS classes using the `class` prop.
      * If a function is provided, it will be called with each feature as an argument. */
-    zIndex?: number | ((feature: FEATURE) => number) | undefined;
-    class?: string | undefined;
+    zIndex?: number | ((feature: FEATURE) => number);
+    class?: string;
     children?: Snippet<[{ feature: FEATURE; position: [number, number] }]>;
 
     onclick?: (e: ExtendedMarkerClickInfo) => void;

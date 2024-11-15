@@ -2,16 +2,9 @@
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
-  import type { PageData } from './$types';
   import states from '$site/states.json?url';
   import MarkerLayer from '$lib/MarkerLayer.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
-
-  interface Props {
-    data: PageData;
-  }
-
-  let { data }: Props = $props();
 
   let colors = $state([
     'bg-gray-200 text-gray-800',

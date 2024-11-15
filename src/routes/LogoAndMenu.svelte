@@ -15,7 +15,7 @@
 
 <div class="flex items-center gap-8">
   {#if menuButton}
-    <button type="button" onclick={toggle}>
+    <button type="button" aria-label="Toggle menu" onclick={toggle}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

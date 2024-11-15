@@ -12,7 +12,11 @@
   import clusterPopupCode from '../ClusterPopup.svelte?raw';
 
   import earthquakes from '$site/earthquakes.geojson?url';
-  import type { ClusterFeatureProperties } from '../cluster_feature_properties';
+  import type {
+    ClusterFeatureProperties,
+    ClusterProperties,
+    SingleProperties,
+  } from '../cluster_feature_properties';
   import type { Feature, Geometry } from 'geojson';
   import type { LayerClickInfo } from '$lib';
 
@@ -72,15 +76,11 @@
         'circle-stroke-opacity': hoverStateFilter(0, 1),
       }}
       manageHoverState
-      onclick={(e: LayerClickInfo<Feature<Geometry, ClusterFeatureProperties>>) =>
+      onclick={(e: LayerClickInfo<Feature<Geometry, ClusterProperties>>) =>
         (clickedFeature = e.features?.[0]?.properties)}
     >
       <Popup {openOn} closeOnClickInside>
-        {#snippet children({
-          data,
-        }: {
-          data: Feature<Geometry, ClusterFeatureProperties> | undefined;
-        })}
+        {#snippet children({ data }: { data: Feature<Geometry, ClusterProperties> | undefined })}
           <ClusterPopup feature={data ?? undefined} />
         {/snippet}
       </Popup>
@@ -121,10 +121,11 @@
         'circle-stroke-width': 1,
         'circle-stroke-color': '#fff',
       }}
-      onclick={(e) => (clickedFeature = e.features?.[0]?.properties)}
+      onclick={(e: LayerClickInfo<Feature<Geometry, SingleProperties>>) =>
+        (clickedFeature = e.features?.[0]?.properties)}
     >
       <Popup {openOn} closeOnClickInside>
-        {#snippet children({ data })}
+        {#snippet children({ data }: { data: Feature<Geometry, SingleProperties> | undefined })}
           {@const props = data?.properties}
           {#if props}
             <p>
