@@ -46,13 +46,13 @@
     loaded?: boolean;
     minZoom?: number;
     maxZoom?: number;
-    minPitch?: number | undefined;
-    maxPitch?: number | undefined;
-    renderWorldCopies?: boolean | undefined;
-    dragPan?: boolean | undefined;
-    dragRotate?: boolean | undefined;
-    pitchWithRotate?: boolean | undefined;
-    antialias?: boolean | undefined;
+    minPitch?: number;
+    maxPitch?: number;
+    renderWorldCopies?: boolean;
+    dragPan?: boolean;
+    dragRotate?: boolean;
+    pitchWithRotate?: boolean;
+    antialias?: boolean;
     zoomOnDoubleClick?: boolean;
     /** Override MapLibre's default locale table */
     locale?: any;
