@@ -26,6 +26,7 @@ export class Box<T> {
 
 export class MapContext {
   map = $state() as MapLibre;
+  loaded = $state(false);
   // cluster: Box<ClusterOptions | undefined>;
   /** A list of images that have been successfully loaded. */
   loadedImages = new SvelteSet<string>();

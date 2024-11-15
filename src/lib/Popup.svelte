@@ -81,7 +81,7 @@
     onhover = undefined,
   }: Props = $props();
 
-  const { map, eventTopMost, markerClickManager } = $derived(getMapContext());
+  const { map, eventTopMost, markerClickManager, loaded } = $derived(getMapContext());
   const layer = getLayer();
   const layerEvent = getLayerEvent();
   const popupTarget = getPopupTarget();
@@ -156,7 +156,7 @@
     }
 
     return () => {
-      if (map.loaded()) {
+      if (loaded) {
         popup?.remove();
         map.off('click', globalClickHandler);
         map.off('contextmenu', globalClickHandler);
@@ -297,7 +297,7 @@
   }
 
   onDestroy(() => {
-    if (map && popup?.isOpen()) {
+    if (loaded && popup?.isOpen()) {
       popup.remove();
     }
   });

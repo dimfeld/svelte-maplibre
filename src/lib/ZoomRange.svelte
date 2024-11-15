@@ -14,7 +14,7 @@
 
   let { minzoom = undefined, maxzoom = undefined, enforce = false, children }: Props = $props();
 
-  const { map } = $derived(getMapContext());
+  const { map, loaded } = $derived(getMapContext());
 
   let zoomLimits = setZoomLimits(minzoom, maxzoom);
   $effect.pre(() => {
@@ -31,7 +31,7 @@
   onMount(() => {
     map.on('zoom', handleZoom);
     return () => {
-      if (map.loaded()) {
+      if (loaded) {
         map.off('zoom', handleZoom);
       }
     };

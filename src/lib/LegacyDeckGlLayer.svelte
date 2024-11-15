@@ -54,7 +54,7 @@
   }: Props = $props();
 
   const context = getMapContext();
-  const { map, minzoom: minZoomContext, maxzoom: maxZoomContext } = $derived(context);
+  const { map, loaded, minzoom: minZoomContext, maxzoom: maxZoomContext } = $derived(context);
 
   let deckgl: typeof import('@deck.gl/mapbox') | undefined = $state();
   onMount(async () => {
@@ -103,7 +103,7 @@
   let layer: import('@deck.gl/mapbox').MapboxOverlay | undefined = $state();
 
   onDestroy(() => {
-    if (map.loaded() && layer) {
+    if (loaded && layer) {
       map.removeLayer(id);
       map.off('zoom', handleZoom);
       map.off('zoomend', handleZoom);
@@ -125,7 +125,7 @@
     onHover: handleHover,
   });
   $effect(() => {
-    if (map && deckgl && !layer) {
+    if (loaded && map && deckgl && !layer) {
       map.on('zoom', handleZoom);
       map.on('zoomend', handleZoom);
       handleZoom();

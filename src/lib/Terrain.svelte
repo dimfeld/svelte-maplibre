@@ -3,7 +3,7 @@
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
-  const { map } = $derived(getMapContext());
+  const { map, loaded } = $derived(getMapContext());
 
   interface Props {
     source?: string | undefined;
@@ -21,7 +21,7 @@
   });
 
   onDestroy(() => {
-    if (map.loaded() && specification) {
+    if (loaded && specification) {
       map.setTerrain(null);
     }
   });

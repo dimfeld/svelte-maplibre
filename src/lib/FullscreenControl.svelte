@@ -3,7 +3,7 @@
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
-  const { map } = $derived(getMapContext());
+  const { map, loaded } = $derived(getMapContext());
 
   interface Props {
     position?: maplibregl.ControlPosition;
@@ -32,7 +32,7 @@
   });
 
   onDestroy(() => {
-    if (map.loaded() && control) {
+    if (loaded && control) {
       map.removeControl(control);
     }
   });

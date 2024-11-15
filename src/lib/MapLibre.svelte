@@ -257,8 +257,12 @@
     map.on('load', (e) => {
       e.target.getContainer().setAttribute('data-testid', 'map');
       e.target.getCanvas().setAttribute('data-testid', 'map-canvas');
+      if (onload) {
+        onload(map!);
+      }
+
+      mapContext.loaded = true;
       loaded = true;
-      onload?.(map!);
     });
 
     if (onerror) {
@@ -367,6 +371,7 @@
     return {
       destroy() {
         loaded = false;
+        mapContext.loaded = false;
         map?.remove();
       },
     };
@@ -474,7 +479,7 @@
       <ScaleControl position={standardControlsPosition} />
     {/if}
     {@render children?.({
-      map: map,
+      map,
       loadedImages: mapContext.loadedImages,
       allImagesLoaded,
     })}

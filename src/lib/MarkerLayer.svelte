@@ -17,7 +17,7 @@
     feature: FeatureWithId<FEATURE>;
   }
 
-  const { map } = $derived(getMapContext());
+  const { map, loaded } = $derived(getMapContext());
   const source = getSource();
   const zoomLimits = getZoomLimits();
 
@@ -78,18 +78,15 @@
 
   let installedHandlers = false;
   function setupHandlers() {
-    if (!map) {
-      return;
-    }
-
     installedHandlers = true;
 
     map.on('zoom', handleZoom);
     map.on('move', updateMarkers);
     map.on('moveend', updateMarkers);
-    if (!map.loaded()) {
+    if (map.loaded()) {
       updateMarkers();
     } else {
+      // updateMarkers queries the map, so if it's not in a steady state then we need to wait
       map.once('load', updateMarkers);
     }
   }
@@ -218,7 +215,7 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
 <!-- Set up an invisible layer so that querySourceFeatures has something to search through. -->
 <FillLayer {minzoom} {maxzoom} paint={{ 'fill-opacity': 0 }} beforeLayerType="symbol" />
 
-{#if zoom >= actualMinZoom && zoom <= actualMaxZoom}
+{#if loaded && zoom >= actualMinZoom && zoom <= actualMaxZoom}
   {#each features as feature (feature.id)}
     {@const c = markerLngLat(feature)}
     {@const z = typeof zIndex === 'function' ? zIndex(feature) : zIndex}
