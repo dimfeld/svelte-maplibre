@@ -1,7 +1,7 @@
 <script lang="ts">
   // imports start
   import MapLibre from '$lib/MapLibre.svelte';
-  import LegacyDeckGlLayer from '$lib/LegacyDeckGlLayer.svelte';
+  import DeckGlLayer from '$lib/DeckGlLayer.svelte';
   // Importing from `@deck.gl/layers` so that we can do a direct import
   // that works even in SSR, as opposed to importing from `deck.gl` which does not.
   // Note that this stopped working in deck.gl 8.9.
@@ -129,7 +129,7 @@
     />
   </GeoJson>
 
-  <LegacyDeckGlLayer
+  <DeckGlLayer
     type={ArcLayer}
     data={arcs.filter((a, i) => {
       if (mode === 'showAll') return i < 50000;
@@ -152,7 +152,7 @@
         {/if}
       {/snippet}
     </Popup>
-  </LegacyDeckGlLayer>
+  </DeckGlLayer>
 </MapLibre>
 
 <h4>

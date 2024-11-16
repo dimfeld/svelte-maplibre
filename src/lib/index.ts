@@ -3,7 +3,7 @@ export { default as CircleLayer } from './CircleLayer.svelte';
 export { default as Control } from './Control.svelte';
 export { default as ControlButton } from './ControlButton.svelte';
 export { default as ControlGroup } from './ControlGroup.svelte';
-export { default as DeckGlLayer } from './LegacyDeckGlLayer.svelte';
+export { default as DeckGlLayer } from './DeckGlLayer.svelte';
 export { default as DefaultMarker } from './DefaultMarker.svelte';
 export { default as FillExtrusionLayer } from './FillExtrusionLayer.svelte';
 export { default as FillLayer } from './FillLayer.svelte';
