@@ -19,12 +19,14 @@
       },
     ],
   };
-
-  // The smaller green dot should be above the red dot. If you only see the red dot it's not working.
-  // Since the GeoJSON source loads asynchronously, without special z-index override the markers inside the GeoJSON
-  // source will always load after, and be on top of, the other markers, regardless of the order in which they are
-  // defined.
 </script>
+
+<p>
+  The smaller green dot should be above the red dot. If you only see the red dot it's not working.
+  Since the GeoJSON source loads asynchronously, without special z-index override the markers inside
+  the GeoJSON source will always load after, and be on top of, the other markers, regardless of the
+  order in which they are defined.
+</p>
 
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
