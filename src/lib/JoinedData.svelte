@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getSource, getMapContext, updatedLayerContext } from './context.svelte.js';
+  import { getSource, getMapContext } from './context.svelte.js';
   interface Props {
     data: Array<Record<string, string | number | undefined>>;
     idCol: string;
@@ -8,7 +8,7 @@
 
   let { data, idCol, sourceLayer = undefined }: Props = $props();
 
-  let lastSeenIds: Set<string | number> = $state(new Set());
+  let lastSeenIds: Set<string | number> = new Set();
 
   const { map } = $derived(getMapContext());
   const source = getSource();
