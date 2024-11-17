@@ -10,15 +10,16 @@
     omitStartBoundary?: boolean;
     omitEndBoundary?: boolean;
     language?: string;
+    showAll?: boolean;
   }
 
   let {
     code,
     filename = '',
-    startBoundary = '<MapLibre',
-    endBoundary = '</MapLibre>',
+    startBoundary = '',
+    endBoundary = '<CodeSample',
     omitStartBoundary = false,
-    omitEndBoundary = false,
+    omitEndBoundary = true,
     language = 'svelte',
   }: Props = $props();
 
@@ -59,6 +60,8 @@
     if (filename) {
       outputCode = `<!-- File: ${filename} -->\n${outputCode}`;
     }
+
+    outputCode = outputCode.replaceAll('$lib', 'svelte-maplibre');
 
     return outputCode;
   }

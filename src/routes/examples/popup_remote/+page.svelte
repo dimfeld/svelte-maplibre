@@ -67,8 +67,6 @@
             const resp = await fetch(`/examples/popup_remote/${name}`);
             const result = await resp.json();
             cache[name] = result;
-            // trigger reactivity
-            cache = cache;
           }
         }}
       >

@@ -8,11 +8,9 @@
 
   let markers: { lngLat: LngLat }[] = $state([]);
 
-  // START SAMPLE 1
   function addMarker(e: MapMouseEvent) {
     markers = [...markers, { lngLat: e.lngLat }];
   }
-  // END SAMPLE 1
 </script>
 
 <MapLibre
@@ -30,12 +28,4 @@
   {/each}
 </MapLibre>
 
-<CodeSample
-  {code}
-  language="typescript"
-  startBoundary="// START SAMPLE 1"
-  endBoundary="// END SAMPLE 1"
-  omitStartBoundary
-  omitEndBoundary
-/>
 <CodeSample {code} />

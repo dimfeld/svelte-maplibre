@@ -2,17 +2,10 @@
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
-  import type { PageData } from './$types';
   import GeoJson from '$lib/GeoJSON.svelte';
   import CircleLayer from '$lib/CircleLayer.svelte';
   import { hoverStateFilter } from '$lib/filters';
   import Popup from '$lib/Popup.svelte';
-
-  interface Props {
-    data: PageData;
-  }
-
-  let { data }: Props = $props();
 
   type PointFeature = GeoJSON.Feature<GeoJSON.Point, { radius: number }>;
 
@@ -37,13 +30,11 @@
   const layer2 = Array.from({ length: 20 }, randomCircle);
   const layer3 = Array.from({ length: 20 }, randomCircle);
 
-  // CODE1 START
   const layers = [
     { data: layer1, color: 'red', hoverCursor: 'help' },
     { data: layer2, color: 'green', hoverCursor: '' },
     { data: layer3, color: 'blue', hoverCursor: 'not-allowed' },
   ];
-  // CODE1 END
 
   const lastEvent: (GeoJSON.Feature<GeoJSON.Point> | undefined)[] = $state([]);
 
@@ -135,12 +126,4 @@
   {/each}
 </MapLibre>
 
-<CodeSample
-  {code}
-  language="javascript"
-  startBoundary="// CODE1 START"
-  omitStartBoundary
-  endBoundary="// CODE1 END"
-  omitEndBoundary
-/>
 <CodeSample {code} />

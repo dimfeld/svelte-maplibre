@@ -2,7 +2,6 @@
   import type maplibregl from 'maplibre-gl';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
-  import type { Feature } from 'geojson';
   import FillLayer from '$lib/FillLayer.svelte';
   import LineLayer from '$lib/LineLayer.svelte';
   import { mapClasses } from '../styles.js';
@@ -18,7 +17,6 @@
   let fillColor = $state('#006600');
   let borderColor = $state('#003300');
 
-  // START EXTRACT
   let map: maplibregl.Map | undefined = $state();
   let loaded = $state(false);
   let textLayers: maplibregl.LayerSpecification[] = $derived(
@@ -41,7 +39,6 @@
   let filter: ExpressionSpecification | undefined = $derived(
     filterStates ? ['==', 'T', ['slice', ['get', 'NAME'], 0, 1]] : undefined
   );
-  // END EXTRACT
 </script>
 
 <div class="grid w-full max-w-md items-center gap-y-2 self-start">
@@ -84,15 +81,6 @@
     {/if}
   </GeoJSON>
 </MapLibre>
-
-<CodeSample
-  {code}
-  startBoundary="// START EXTRACT"
-  endBoundary="// END EXTRACT"
-  omitStartBoundary
-  omitEndBoundary
-  language="javascript"
-/>
 <CodeSample {code} />
 
 <style>
