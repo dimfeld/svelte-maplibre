@@ -79,8 +79,6 @@
           first = true;
         }
       );
-
-      sourceObj;
     }
   });
 
