@@ -104,14 +104,17 @@
 
   onDestroy(() => {
     if (loaded && layer) {
-      map.removeLayer(id);
+      // @ts-expect-error Mapbox/Maplibre types don't quite match
+      map.removeControl(layer);
       map.off('zoom', handleZoom);
       map.off('zoomend', handleZoom);
     }
   });
+
   $effect(() => {
     layerId.value = id;
   });
+
   let actualMinZoom = $derived(minzoom ?? minZoomContext);
   let actualMaxZoom = $derived(maxzoom ?? maxZoomContext);
   let visibility = $derived(visible && zoom >= actualMinZoom && zoom <= actualMaxZoom);
@@ -124,6 +127,7 @@
     onClick: handleClick,
     onHover: handleHover,
   });
+
   $effect(() => {
     if (loaded && map && deckgl && !layer) {
       map.on('zoom', handleZoom);
