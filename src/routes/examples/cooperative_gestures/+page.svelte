@@ -2,13 +2,6 @@
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
-  import type { PageData } from './$types';
-
-  interface Props {
-    data: PageData;
-  }
-
-  let { data }: Props = $props();
 </script>
 
 <p>

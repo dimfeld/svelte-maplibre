@@ -10,14 +10,7 @@
   import TerrainControl from '$lib/TerrainControl.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
-  import type { PageData } from './$types';
   import type { PropertyValueSpecification } from 'maplibre-gl';
-
-  interface Props {
-    data: PageData;
-  }
-
-  let { data }: Props = $props();
 
   let terrainExaggeration: number = $state(1.0);
   let hillshadeExaggeration: number = $state(0.5);
@@ -117,4 +110,4 @@
   />
 </MapLibre>
 
-<CodeSample {code} startBoundary="<MapLibre" />
+<CodeSample {code} />
