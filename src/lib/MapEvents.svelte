@@ -1,31 +1,43 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy } from 'svelte';
-  import { mapContext } from './context';
+  import { onDestroy } from 'svelte';
+  import { getMapContext } from './context.svelte.js';
   import maplibregl from 'maplibre-gl';
   import type { MapEventType, MapLayerEventType } from 'maplibre-gl';
+  import type { MapMoveEvent } from './types.js';
 
-  const dispatch = createEventDispatcher<{
-    click: maplibregl.MapMouseEvent & { map: maplibregl.Map };
-    dblclick: maplibregl.MapMouseEvent & { map: maplibregl.Map };
-    contextmenu: maplibregl.MapMouseEvent & { map: maplibregl.Map };
-    movestart: maplibregl.MapMouseEvent & { map: maplibregl.Map };
-    moveend: maplibregl.MapMouseEvent & { map: maplibregl.Map };
-    zoomstart: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
-    zoom: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
-    zoomend: maplibregl.MapLibreZoomEvent & { map: maplibregl.Map };
-  }>();
+  interface Props {
+    /** Limit the event handlers to a certain layer. */
+    layer?: string | undefined;
 
-  /** Limit the event handlers to a certain layer. */
-  export let layer: string | undefined = undefined;
+    onclick?: (e: maplibregl.MapMouseEvent) => void;
+    ondblclick?: (e: maplibregl.MapMouseEvent) => void;
+    oncontextmenu?: (e: maplibregl.MapMouseEvent) => void;
+    onmovestart?: (e: MapMoveEvent) => void;
+    onmoveend?: (e: MapMoveEvent) => void;
+    onzoomstart?: (e: maplibregl.MapLibreZoomEvent) => void;
+    onzoom?: (e: maplibregl.MapLibreZoomEvent) => void;
+    onzoomend?: (e: maplibregl.MapLibreZoomEvent) => void;
+    onpitch?: (e: maplibregl.MapLibreEvent<MouseEvent | TouchEvent | undefined>) => void;
+    onrotate?: (e: maplibregl.MapLibreEvent<MouseEvent | TouchEvent | undefined>) => void;
+    onwheel?: (e: maplibregl.MapWheelEvent) => void;
+    ondata?: (e: maplibregl.MapDataEvent) => void;
+    onstyledata?: (e: maplibregl.MapStyleDataEvent) => void;
+    onidle?: (e: maplibregl.MapLibreEvent) => void;
+  }
 
-  const { map } = mapContext();
+  let { layer = undefined, ...eventCbs }: Props = $props();
+
+  const { map } = $derived(getMapContext());
+
+  type EventName = keyof typeof eventCbs extends `on${infer T}` ? T : never;
+
+  function getHandler(event: EventName) {
+    // @ts-expect-error Typing
+    return eventCbs['on' + event];
+  }
 
   function sendEvent(e: maplibregl.MapLibreEvent<unknown>) {
-    dispatch(
-      // @ts-expect-error
-      e.type,
-      { ...e, map }
-    );
+    getHandler(e.type as EventName)?.(e);
   }
 
   const layerEvents: Array<keyof MapLayerEventType> = [
@@ -51,29 +63,45 @@
     'zoomstart',
     'zoom',
     'zoomend',
+    'pitch',
+    'rotate',
+    'wheel',
+    'data',
+    'styledata',
+    'idle',
   ];
 
-  $: if ($map) {
-    if (layer) {
-      for (const eventName of layerEvents) {
-        $map.on(eventName, layer, sendEvent);
-      }
-    } else {
-      for (const eventName of mapEvents) {
-        $map.on(eventName, sendEvent);
-      }
-    }
-  }
-
-  onDestroy(() => {
-    if ($map) {
+  $effect(() => {
+    if (map) {
       if (layer) {
         for (const eventName of layerEvents) {
-          $map.off(eventName, layer, sendEvent);
+          if (getHandler(eventName as EventName)) {
+            map.on(eventName, layer, sendEvent);
+          }
         }
       } else {
         for (const eventName of mapEvents) {
-          $map.off(eventName, sendEvent);
+          if (getHandler(eventName as EventName)) {
+            map.on(eventName, sendEvent);
+          }
+        }
+      }
+    }
+  });
+
+  onDestroy(() => {
+    if (map) {
+      if (layer) {
+        for (const eventName of layerEvents) {
+          if (getHandler(eventName as EventName)) {
+            map.off(eventName, layer, sendEvent);
+          }
+        }
+      } else {
+        for (const eventName of mapEvents) {
+          if (getHandler(eventName as EventName)) {
+            map.off(eventName, sendEvent);
+          }
         }
       }
     }

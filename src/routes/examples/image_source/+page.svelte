@@ -8,9 +8,9 @@
   import Marker from '$lib/Marker.svelte';
   import quakeImageUrl from '$site/earthquake.png';
 
-  let topLeft = { lng: -49.0, lat: 1.9 };
-  let bottomRight = { lng: -73.6, lat: -17.9 };
-  let opacity = 80;
+  let topLeft = $state({ lng: -49.0, lat: 1.9 });
+  let bottomRight = $state({ lng: -73.6, lat: -17.9 });
+  let opacity = $state(80);
 </script>
 
 <div class="mx-auto mb-2 flex flex-col items-start gap-1">
@@ -42,10 +42,10 @@
     />
   </ImageSource>
   <Marker bind:lngLat={topLeft} draggable>
-    <span class="dot" />
+    <span class="dot"></span>
   </Marker>
   <Marker bind:lngLat={bottomRight} draggable>
-    <span class="dot" />
+    <span class="dot"></span>
   </Marker>
 </MapLibre>
 

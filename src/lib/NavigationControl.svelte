@@ -1,24 +1,35 @@
 <script lang="ts">
-  import { mapContext } from './context';
+  import { getMapContext } from './context.svelte.js';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
-  const { map } = mapContext();
+  const { map, loaded } = $derived(getMapContext());
 
-  export let position: maplibregl.ControlPosition = 'top-left';
-  export let showCompass = true;
-  export let showZoom = true;
-  export let visualizePitch = false;
-
-  let control: maplibregl.NavigationControl | null = null;
-  $: if ($map && !control) {
-    (control = new maplibregl.NavigationControl({ showCompass, showZoom, visualizePitch })),
-      $map.addControl(control, position);
+  interface Props {
+    position?: maplibregl.ControlPosition;
+    showCompass?: boolean;
+    showZoom?: boolean;
+    visualizePitch?: boolean;
   }
 
+  let {
+    position = 'top-left',
+    showCompass = true,
+    showZoom = true,
+    visualizePitch = false,
+  }: Props = $props();
+
+  let control: maplibregl.NavigationControl | undefined = $state();
+  $effect(() => {
+    if (map && !control) {
+      control = new maplibregl.NavigationControl({ showCompass, showZoom, visualizePitch });
+      map.addControl(control, position);
+    }
+  });
+
   onDestroy(() => {
-    if ($map?.loaded() && control) {
-      $map.removeControl(control);
+    if (loaded && control) {
+      map.removeControl(control);
     }
   });
 </script>

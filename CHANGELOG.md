@@ -1,5 +1,25 @@
 # svelte-maplibre
 
+## 1.0.0
+
+### Major Changes
+
+- [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`eadb5a4`](https://github.com/dimfeld/svelte-maplibre/commit/eadb5a4fa3ef301d503f6b7533b0483ec70c368d) Thanks [@dimfeld](https://github.com/dimfeld)! - Update to deck.gl v9
+
+- [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`0485a6a`](https://github.com/dimfeld/svelte-maplibre/commit/0485a6a56a7eb78dc8f2d838902236a022793755) Thanks [@dimfeld](https://github.com/dimfeld)! - Remove `map` attribute from events. It was already present as `target`
+
+- [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`0485a6a`](https://github.com/dimfeld/svelte-maplibre/commit/0485a6a56a7eb78dc8f2d838902236a022793755) Thanks [@dimfeld](https://github.com/dimfeld)! - Upgrade internal code to Svelte 5 runes
+
+- [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`0485a6a`](https://github.com/dimfeld/svelte-maplibre/commit/0485a6a56a7eb78dc8f2d838902236a022793755) Thanks [@dimfeld](https://github.com/dimfeld)! - Internal: Change context structure used to pass info down the component hierarchy
+
+- [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`0485a6a`](https://github.com/dimfeld/svelte-maplibre/commit/0485a6a56a7eb78dc8f2d838902236a022793755) Thanks [@dimfeld](https://github.com/dimfeld)! - Use `undefined` instead of `null` in many places. This improves ergonomics with Svelte component props.
+
+### Minor Changes
+
+- [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`0485a6a`](https://github.com/dimfeld/svelte-maplibre/commit/0485a6a56a7eb78dc8f2d838902236a022793755) Thanks [@dimfeld](https://github.com/dimfeld)! - Add generics for Features on many components to permit better type safety
+
+- [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`0485a6a`](https://github.com/dimfeld/svelte-maplibre/commit/0485a6a56a7eb78dc8f2d838902236a022793755) Thanks [@dimfeld](https://github.com/dimfeld)! - Only add event handlers to the map when something is actually listening
+
 ## 0.9.14
 
 ### Patch Changes

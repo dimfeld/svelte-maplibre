@@ -1,48 +1,71 @@
-<script lang="ts">
+<script lang="ts" generics="FEATURE extends Feature = Feature">
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
-  import { createEventDispatcher } from 'svelte';
-  import { updatedMarkerContext } from './context';
-  import type { MarkerClickInfo } from './types';
-  import type * as GeoJSON from 'geojson';
+  import type { Snippet } from 'svelte';
+  import { getMapContext, updatedMarkerContext } from './context.svelte.js';
+  import type {
+    MarkerClickInfo,
+    MarkerClickInfoFeature as GenMarkerClickInfoFeature,
+  } from './types';
+  import type { Feature, Point } from 'geojson';
 
-  /** The Marker instance which was added to the map */
-  let markerProp: maplibre.Marker | undefined = undefined;
-  export { markerProp as marker };
-  export let lngLat: LngLatLike;
-  let classNames: string | undefined = undefined;
-  export { classNames as class };
-  /** Handle mouse events */
-  export let interactive = true;
-  /** Make markers tabbable and add the button role. */
-  export let asButton = false;
-  export let draggable = false;
-  /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
-   * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
-  export let feature: GeoJSON.Feature | null = null;
-  /** An offset in pixels to apply to the marker. */
-  export let offset: PointLike | undefined = undefined;
-  /** The z-index of the marker. This can also be set via CSS classes using the `class` prop */
-  export let zIndex: number | undefined = undefined;
-  /** The rotation angle of the marker (clockwise, in degrees) */
-  export let rotation: number = 0;
-  /** The opacity of the marker */
-  export let opacity: number = 1;
+  type MarkerClickInfoFeature = GenMarkerClickInfoFeature<FEATURE>;
 
-  const dispatch = createEventDispatcher<{
-    drag: MarkerClickInfo;
-    dragstart: MarkerClickInfo;
-    dragend: MarkerClickInfo;
-    click: MarkerClickInfo;
-    dblclick: MarkerClickInfo;
-    contextmenu: MarkerClickInfo;
-    mouseenter: MarkerClickInfo;
-    mouseleave: MarkerClickInfo;
-    mousemove: MarkerClickInfo;
-  }>();
-  const { map, layerEvent, self: marker, markerClickManager } = updatedMarkerContext();
+  interface Props {
+    /** The Marker instance which was added to the map */
+    marker?: maplibre.Marker | undefined;
+    lngLat: LngLatLike;
+    class?: string | undefined;
+    /** Handle mouse events */
+    interactive?: boolean;
+    /** Make markers tabbable and add the button role. */
+    asButton?: boolean;
+    draggable?: boolean;
+    /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
+     * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
+    feature?: FEATURE;
+    /** An offset in pixels to apply to the marker. */
+    offset?: PointLike;
+    /** The z-index of the marker. This can also be set via CSS classes using the `class` prop */
+    zIndex?: number;
+    /** The rotation angle of the marker (clockwise, in degrees) */
+    rotation?: number;
+    /** The opacity of the marker */
+    opacity?: number;
+    children?: Snippet<[{ marker: maplibre.Marker }]>;
+
+    ondrag?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    ondragstart?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    ondragend?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    onclick?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    ondblclick?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    oncontextmenu?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    onmouseenter?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    onmouseleave?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+    onmousemove?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
+  }
+
+  let {
+    marker: markerProp = $bindable(undefined),
+    lngLat = $bindable(),
+    class: classNames = undefined,
+    interactive = true,
+    asButton = false,
+    draggable = false,
+    feature = undefined,
+    offset = undefined,
+    zIndex = undefined,
+    rotation = 0,
+    opacity = 1,
+    children,
+
+    ...eventCbs
+  }: Props = $props();
+
+  const { map, markerClickManager } = $derived(getMapContext());
+  const { layerEvent, marker } = updatedMarkerContext();
 
   function addMarker(node: HTMLDivElement) {
-    $marker = new maplibre.Marker({
+    marker.value = new maplibre.Marker({
       element: node,
       rotation,
       draggable,
@@ -50,8 +73,8 @@
       opacity: opacity.toString(),
     })
       .setLngLat(lngLat)
-      .addTo($map!);
-    markerProp = $marker;
+      .addTo(map!);
+    markerProp = marker.value;
 
     const dragStartListener = () => sendEvent('dragstart');
     const dragListener = () => {
@@ -64,20 +87,20 @@
     };
 
     if (draggable) {
-      $marker.on('dragstart', dragStartListener);
-      $marker.on('drag', dragListener);
-      $marker.on('dragend', dragEndListener);
+      marker.value.on('dragstart', dragStartListener);
+      marker.value.on('drag', dragListener);
+      marker.value.on('dragend', dragEndListener);
     }
 
     return {
       destroy() {
         if (draggable) {
-          $marker?.off('dragstart', dragStartListener);
-          $marker?.off('drag', dragListener);
-          $marker?.off('dragend', dragEndListener);
+          marker.value?.off('dragstart', dragStartListener);
+          marker.value?.off('drag', dragListener);
+          marker.value?.off('dragend', dragEndListener);
         }
         markerProp = undefined;
-        $marker?.remove();
+        marker.value?.remove();
       },
     };
   }
@@ -101,13 +124,21 @@
     };
   }
 
-  $: $marker?.setLngLat(lngLat);
-  $: $marker?.setOffset(offset ?? [0, 0]);
-  $: $marker?.setRotation(rotation);
-  $: $marker?.setOpacity(opacity.toString());
+  $effect(() => {
+    marker.value?.setLngLat(lngLat);
+  });
+  $effect(() => {
+    marker.value?.setOffset(offset ?? [0, 0]);
+  });
+  $effect(() => {
+    marker.value?.setRotation(rotation);
+  });
+  $effect(() => {
+    marker.value?.setOpacity(opacity.toString());
+  });
 
   function propagateLngLatChange() {
-    let newPos = $marker?.getLngLat();
+    let newPos = marker.value?.getLngLat();
     if (!newPos) {
       return;
     }
@@ -130,20 +161,31 @@
     }
   }
 
-  function sendEvent(eventName: Parameters<typeof dispatch>[0]) {
+  function sendEvent(
+    eventName:
+      | 'click'
+      | 'drag'
+      | 'dragstart'
+      | 'dragend'
+      | 'dblclick'
+      | 'contextmenu'
+      | 'mouseenter'
+      | 'mouseleave'
+      | 'mousemove'
+  ) {
     if (!interactive) {
       return;
     }
 
-    let loc = $marker?.getLngLat();
+    let loc = marker.value?.getLngLat();
     if (!loc) {
       return;
     }
 
     const lngLat: [number, number] = [loc.lng, loc.lat];
-    let data: MarkerClickInfo = {
-      map: $map!,
-      marker: $marker!,
+    let data: MarkerClickInfo<Feature<Point, FEATURE['properties']>> = {
+      map: map!,
+      marker: marker.value!,
       lngLat,
       features: [
         {
@@ -162,36 +204,45 @@
       markerClickManager.handleClick(data);
     }
 
-    $layerEvent = {
+    layerEvent.value = {
       ...data,
       layerType: 'marker',
       type: eventName,
     };
 
-    dispatch(eventName, data);
+    const cb = eventCbs[('on' + eventName) as keyof typeof eventCbs];
+    cb?.(data);
   }
 </script>
 
-<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <div
   use:addMarker
   use:manageClasses={classNames}
   style:z-index={zIndex}
   tabindex={asButton ? 0 : undefined}
   role={asButton ? 'button' : undefined}
-  on:click|stopPropagation={() => sendEvent('click')}
-  on:dblclick|stopPropagation={() => sendEvent('dblclick')}
-  on:contextmenu|stopPropagation|preventDefault={() => {
+  onclick={(e) => {
+    e.stopPropagation();
+    sendEvent('click');
+  }}
+  ondblclick={(e) => {
+    e.stopPropagation();
+    sendEvent('dblclick');
+  }}
+  oncontextmenu={(e) => {
+    e.stopPropagation();
+    e.preventDefault();
     sendEvent('contextmenu');
   }}
-  on:mouseenter={() => {
+  onmouseenter={() => {
     sendEvent('mouseenter');
   }}
-  on:mouseleave={() => {
+  onmouseleave={() => {
     sendEvent('mouseleave');
   }}
-  on:mousemove={() => sendEvent('mousemove')}
-  on:keydown={handleKeyDown}
+  onmousemove={() => sendEvent('mousemove')}
+  onkeydown={handleKeyDown}
 >
-  <slot marker={$marker} />
+  {@render children?.({ marker: marker.value! })}
 </div>

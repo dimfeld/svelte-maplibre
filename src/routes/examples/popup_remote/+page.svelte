@@ -6,8 +6,9 @@
   import serverCode from './[id]/+server.ts?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import Popup from '$lib/Popup.svelte';
+  import type { LngLatLike } from 'maplibre-gl';
 
-  const markers = [
+  const markers: { lngLat: LngLatLike; label: string; name: string }[] = [
     {
       lngLat: [-122.2993, 47.4464],
       label: 'SEA',
@@ -45,7 +46,7 @@
     height: number;
   }
 
-  let cache: Record<string, APIResponse> = {};
+  let cache: Record<string, APIResponse> = $state({});
 </script>
 
 <MapLibre
@@ -61,20 +62,18 @@
     <DefaultMarker {lngLat} draggable>
       <Popup
         offset={[0, -10]}
-        on:open={async () => {
+        onopen={async () => {
           if (!(name in cache)) {
             const resp = await fetch(`/examples/popup_remote/${name}`);
             const result = await resp.json();
             cache[name] = result;
-            // trigger reactivity
-            cache = cache;
           }
         }}
       >
         {#if name in cache}
           {@const result = cache[name]}
           <div class="text-lg font-bold">{name}</div>
-          <img alt="kitten" src={`http://placekitten.com/${result.width}/${result.height}`} />
+          <img alt="dog" src={`https://placedog.net/${result.width}/${result.height}`} />
         {:else}
           <div>Loading...</div>
         {/if}

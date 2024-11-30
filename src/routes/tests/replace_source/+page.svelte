@@ -4,7 +4,7 @@
 
   const lngLat = [174.863783, -36.871099];
 
-  let size = 20;
+  let size = $state(20);
 
   onMount(() => {
     let timeout = setInterval(() => {
@@ -24,9 +24,9 @@
     return () => clearInterval(timeout);
   });
 
-  $: data =
+  let data = $derived(
     size === 0
-      ? null
+      ? undefined
       : ({
           type: 'FeatureCollection',
           features: [
@@ -47,7 +47,8 @@
               },
             },
           ],
-        } satisfies GeoJSON.FeatureCollection);
+        } satisfies GeoJSON.FeatureCollection)
+  );
 </script>
 
 <p>Should see the box cycle between large, small, and absent.</p>

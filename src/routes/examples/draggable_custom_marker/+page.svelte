@@ -6,10 +6,10 @@
   import CodeSample from '$site/CodeSample.svelte';
   import type { MarkerClickInfo } from '$lib';
 
-  let markerPos = [-122.2993, 47.4464];
-  const handleDrag = (event: CustomEvent<MarkerClickInfo>) => (markerPos = event.detail.lngLat);
+  let markerPos = $state([-122.2993, 47.4464]);
+  const handleDrag = (event: MarkerClickInfo) => (markerPos = event.lngLat);
 
-  let boundPos = { lng: -10, lat: -20 };
+  let boundPos = $state({ lng: -10, lat: -20 });
 </script>
 
 <ul>
@@ -27,7 +27,7 @@
   <Marker
     lngLat={[-122.2993, 47.4464]}
     draggable
-    on:drag={handleDrag}
+    ondrag={handleDrag}
     class="grid h-8 w-20 place-items-center rounded-full border border-gray-200 bg-red-300 text-black shadow-2xl focus:outline-2 focus:outline-black"
   >
     <span> Drag me ! </span>

@@ -1,76 +1,98 @@
-<script lang="ts">
+<script lang="ts" generics="FEATURE extends Feature = Feature">
+  import type maplibregl from 'maplibre-gl';
   import type { Feature } from 'geojson';
-  import { createEventDispatcher, onDestroy } from 'svelte';
-  import { getId, mapContext } from './context';
+  import { onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
+  import { getId, getSource, getZoomLimits, getMapContext } from './context.svelte.js';
   import { combineFilters, isClusterFilter } from './filters';
   import { geoCentroid } from 'd3-geo';
   import Marker from './Marker.svelte';
   import FillLayer from './FillLayer.svelte';
   import type { MapLibreZoomEvent } from 'maplibre-gl';
-  import type { MarkerClickInfo } from './types';
+  import type { FeatureWithId, MarkerClickInfo, MarkerClickInfoFeature } from './types';
   import { dequal } from 'dequal/lite';
 
-  type FeatureWithId = Feature & { id: string | number };
-
-  interface ExtendedMarkerClickInfo extends MarkerClickInfo {
-    source: string | null;
-    feature: FeatureWithId;
+  interface ExtendedMarkerClickInfo extends MarkerClickInfo<MarkerClickInfoFeature<FEATURE>> {
+    source: string | undefined;
+    feature: FeatureWithId<FEATURE>;
   }
 
-  const { map, source, minzoom: minZoomContext, maxzoom: maxZoomContext } = mapContext();
-  const dispatch = createEventDispatcher<{
-    click: ExtendedMarkerClickInfo;
-    dblclick: ExtendedMarkerClickInfo;
-    contextmenu: ExtendedMarkerClickInfo;
-    drag: ExtendedMarkerClickInfo;
-    dragstart: ExtendedMarkerClickInfo;
-    dragend: ExtendedMarkerClickInfo;
-  }>();
+  const { map, loaded } = $derived(getMapContext());
+  const source = getSource();
+  const zoomLimits = getZoomLimits();
 
-  export let applyToClusters: boolean | undefined = undefined;
-  export let filter: maplibregl.ExpressionSpecification | undefined = undefined;
-  /** How to calculate the coordinates of the marker.
-   * @default Calls d3.geoCentroid` on the feature. */
-  export let markerLngLat: (feature: Feature) => [number, number] = geoCentroid;
-  /** Handle mouse events */
-  export let interactive = true;
-  /** Make markers tabbable and add the button role. */
-  export let asButton = false;
-  export let draggable = false;
-  export let minzoom: number | undefined = undefined;
-  export let maxzoom: number | undefined = undefined;
-  export let hovered: Feature | null = null;
-  /** The z-index of the markers. This can also be set via CSS classes using the `class` prop.
-   * If a function is provided, it will be called with each feature as an argument. */
-  export let zIndex: number | ((feature: GeoJSON.Feature) => number) | undefined = undefined;
   /** CSS classes to apply to each marker */
-  let className: string | undefined = undefined;
-  export { className as class };
+  interface Props {
+    applyToClusters?: boolean;
+    filter?: maplibregl.ExpressionSpecification;
+    /** How to calculate the coordinates of the marker.
+     * @default Calls d3.geoCentroid` on the feature. */
+    markerLngLat?: (feature: FEATURE) => [number, number];
+    /** Handle mouse events */
+    interactive?: boolean;
+    /** Make markers tabbable and add the button role. */
+    asButton?: boolean;
+    draggable?: boolean;
+    minzoom?: number;
+    maxzoom?: number;
+    hovered?: FEATURE;
+    /** The z-index of the markers. This can also be set via CSS classes using the `class` prop.
+     * If a function is provided, it will be called with each feature as an argument. */
+    zIndex?: number | ((feature: FEATURE) => number);
+    class?: string;
+    children?: Snippet<[{ feature: FEATURE; position: [number, number] }]>;
 
-  $: actualMinZoom = minzoom ?? $minZoomContext;
-  $: actualMaxZoom = maxzoom ?? $maxZoomContext;
-  $: actualFilter = combineFilters('all', isClusterFilter(applyToClusters), filter);
+    onclick?: (e: ExtendedMarkerClickInfo) => void;
+    ondblclick?: (e: ExtendedMarkerClickInfo) => void;
+    oncontextmenu?: (e: ExtendedMarkerClickInfo) => void;
+    ondrag?: (e: ExtendedMarkerClickInfo) => void;
+    ondragstart?: (e: ExtendedMarkerClickInfo) => void;
+    ondragend?: (e: ExtendedMarkerClickInfo) => void;
+  }
+
+  let {
+    applyToClusters = undefined,
+    filter = undefined,
+    markerLngLat = geoCentroid,
+    interactive = true,
+    asButton = false,
+    draggable = false,
+    minzoom = undefined,
+    maxzoom = undefined,
+    hovered = $bindable(undefined),
+    zIndex = undefined,
+    class: className = undefined,
+    children,
+
+    onclick = undefined,
+    ondblclick = undefined,
+    oncontextmenu = undefined,
+    ondrag = undefined,
+    ondragstart = undefined,
+    ondragend = undefined,
+  }: Props = $props();
+
+  let actualMinZoom = $derived(minzoom ?? zoomLimits.minzoom);
+  let actualMaxZoom = $derived(maxzoom ?? zoomLimits.maxzoom);
+  let actualFilter = $derived(combineFilters('all', isClusterFilter(applyToClusters), filter));
 
   let installedHandlers = false;
   function setupHandlers() {
-    if (!$map) {
-      return;
-    }
-
     installedHandlers = true;
 
-    $map.on('zoom', handleZoom);
-    $map.on('move', updateMarkers);
-    $map.on('moveend', updateMarkers);
-    if (!$map.loaded()) {
+    map.on('zoom', handleZoom);
+    map.on('move', updateMarkers);
+    map.on('moveend', updateMarkers);
+    if (map.loaded()) {
       updateMarkers();
     } else {
-      $map.once('load', updateMarkers);
+      // updateMarkers queries the map, so if it's not in a steady state then we need to wait
+      map.once('load', updateMarkers);
     }
   }
 
   function handleData(e: maplibregl.MapSourceDataEvent) {
-    if (e.sourceId === $source && e.isSourceLoaded) {
+    if (e.sourceId === source?.value && e.isSourceLoaded) {
       if (installedHandlers) {
         updateMarkers();
       } else {
@@ -80,27 +102,33 @@
   }
 
   onDestroy(() => {
-    if (!$map) {
+    if (!map) {
       return;
     }
 
-    $map.off('zoom', handleZoom);
-    $map.off('move', updateMarkers);
-    $map.off('moveend', updateMarkers);
-    $map.off('sourcedata', handleData);
+    map.off('zoom', handleZoom);
+    map.off('move', updateMarkers);
+    map.off('moveend', updateMarkers);
+    map.off('sourcedata', handleData);
   });
 
-  $: if ($map && $source) {
-    let sourceObj = $map.getSource($source);
+  let sourceObj = $derived(map && source?.value ? map.getSource(source.value) : undefined);
+
+  $effect(() => {
+    if (!map) {
+      return;
+    }
+
     if (sourceObj?.loaded()) {
       setupHandlers();
     } else {
       // Need to wait for the data to load
-      $map.on('sourcedata', handleData);
+      map.on('sourcedata', handleData);
     }
-  }
-  let features: Array<FeatureWithId> = [];
-  function stripAutoFeatId(f: FeatureWithId) {
+  });
+
+  let features: Array<FeatureWithId<FEATURE>> = $state([]);
+  function stripAutoFeatId(f: FeatureWithId<FEATURE>) {
     if (f.id.toString().startsWith('autocluster_')) {
       return 'autocluster';
     }
@@ -109,7 +137,11 @@
     }
     return f.id;
   }
-  function someFeaturesChanged(current: Array<FeatureWithId>, next: Array<FeatureWithId>) {
+
+  function someFeaturesChanged(
+    current: Array<FeatureWithId<FEATURE>>,
+    next: Array<FeatureWithId<FEATURE>>
+  ) {
     return (
       current.length !== next.length ||
       next.some((nextValue, idx) => {
@@ -127,17 +159,18 @@
       })
     );
   }
+
   function updateMarkers() {
-    if (!$map || !$source) {
+    if (!source?.value) {
       return;
     }
 
-    let featureList = $map.querySourceFeatures($source, {
+    let featureList = map.querySourceFeatures(source.value, {
       filter: actualFilter,
     });
 
     // Need to dedupe the results of featureList
-    let featureMap = new Map<string | number, FeatureWithId>();
+    let featureMap = new Map<string | number, FeatureWithId<FEATURE>>();
     for (let feature of featureList) {
       if (!feature.id) {
         if (feature.properties?.cluster_id) {
@@ -146,7 +179,7 @@
           feature.id = getId('autofeat');
         }
       }
-      featureMap.set(feature.id, feature as FeatureWithId);
+      featureMap.set(feature.id, feature as FeatureWithId<FEATURE>);
     }
 
     // Sort the features by ID so that the #each loop doesn't think the order ever changes. If the order
@@ -165,9 +198,10 @@
     features = sorted;
   }
 
-  let zoom = $map?.getZoom() ?? 0;
+  // svelte-ignore state_referenced_locally
+  let zoom = $state(map.getZoom());
   function handleZoom(e: MapLibreZoomEvent) {
-    zoom = $map!.getZoom();
+    zoom = map.getZoom();
     updateMarkers();
   }
 </script>
@@ -181,7 +215,7 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
 <!-- Set up an invisible layer so that querySourceFeatures has something to search through. -->
 <FillLayer {minzoom} {maxzoom} paint={{ 'fill-opacity': 0 }} beforeLayerType="symbol" />
 
-{#if zoom >= actualMinZoom && zoom <= actualMaxZoom}
+{#if loaded && zoom >= actualMinZoom && zoom <= actualMaxZoom}
   {#each features as feature (feature.id)}
     {@const c = markerLngLat(feature)}
     {@const z = typeof zIndex === 'function' ? zIndex(feature) : zIndex}
@@ -192,22 +226,23 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
       class={className}
       zIndex={z}
       lngLat={c}
-      on:mouseenter={() => {
+      onmouseenter={() => {
         hovered = feature;
       }}
-      on:mouseleave={() => {
+      onmouseleave={() => {
         if (hovered?.id === feature.id) {
-          hovered = null;
+          hovered = undefined;
         }
       }}
-      on:dragstart={(e) => dispatch('dragstart', { ...e.detail, source: $source, feature })}
-      on:drag={(e) => dispatch('drag', { ...e.detail, source: $source, feature })}
-      on:dragend={(e) => dispatch('dragend', { ...e.detail, source: $source, feature })}
-      on:click={(e) => dispatch('click', { ...e.detail, source: $source, feature })}
-      on:dblclick={(e) => dispatch('dblclick', { ...e.detail, source: $source, feature })}
-      on:contextmenu={(e) => dispatch('contextmenu', { ...e.detail, source: $source, feature })}
+      ondragstart={(e: MarkerClickInfo<MarkerClickInfoFeature<FEATURE>>) =>
+        ondragstart?.({ ...e, source: source?.value, feature })}
+      ondrag={(e) => ondrag?.({ ...e, source: source?.value, feature })}
+      ondragend={(e) => ondragend?.({ ...e, source: source?.value, feature })}
+      onclick={(e) => onclick?.({ ...e, source: source?.value, feature })}
+      ondblclick={(e) => ondblclick?.({ ...e, source: source?.value, feature })}
+      oncontextmenu={(e) => oncontextmenu?.({ ...e, source: source?.value, feature })}
     >
-      <slot {feature} position={c} />
+      {@render children?.({ feature, position: c })}
     </Marker>
   {/each}
 {/if}

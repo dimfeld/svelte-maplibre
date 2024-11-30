@@ -1,22 +1,32 @@
-<script lang="ts">
-  import { getId } from './context';
+<script lang="ts" generics="FEATURE extends Feature = Feature">
+  import { getId } from './context.svelte.js';
   import Layer from './Layer.svelte';
+  import type { Feature } from 'geojson';
+  import type { CommonLayerProps } from './types.js';
 
-  export let id = getId('raster-layer');
-  /** Set the source for this layer. This can be omitted when the Layer is created in the slot
-   * of a source component. */
-  export let source: string | undefined = undefined;
-  /** Draw this layer under another layer. This is only evaluated when the component is created. */
-  export let beforeId: string | undefined = undefined;
-  /** Draw this layer all layers of this type. This is only evaluated when the component is created. */
-  export let beforeLayerType:
-    | string
-    | ((layer: maplibregl.LayerSpecification) => boolean)
-    | undefined = undefined;
-  export let paint: maplibregl.RasterLayerSpecification['paint'];
-  export let layout: maplibregl.RasterLayerSpecification['layout'] | undefined = undefined;
-  export let minzoom: number | undefined = undefined;
-  export let maxzoom: number | undefined = undefined;
+  interface Props extends CommonLayerProps<FEATURE> {
+    paint: maplibregl.RasterLayerSpecification['paint'];
+    layout?: maplibregl.RasterLayerSpecification['layout'] | undefined;
+  }
+
+  let {
+    id = getId('raster-layer'),
+    source = undefined,
+    beforeId = undefined,
+    beforeLayerType = undefined,
+    paint,
+    layout = undefined,
+    minzoom = undefined,
+    maxzoom = undefined,
+    children = undefined,
+
+    onclick = undefined,
+    ondblclick = undefined,
+    oncontextmenu = undefined,
+    onmouseenter = undefined,
+    onmousemove = undefined,
+    onmouseleave = undefined,
+  }: Props = $props();
 </script>
 
 <Layer
@@ -29,12 +39,12 @@
   {layout}
   {minzoom}
   {maxzoom}
-  on:click
-  on:dblclick
-  on:contextmenu
-  on:mouseenter
-  on:mousemove
-  on:mouseleave
+  {onclick}
+  {ondblclick}
+  {oncontextmenu}
+  {onmouseenter}
+  {onmousemove}
+  {onmouseleave}
 >
-  <slot />
+  {@render children?.()}
 </Layer>

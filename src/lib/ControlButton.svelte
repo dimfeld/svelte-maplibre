@@ -1,17 +1,32 @@
 <script lang="ts">
-  /** True if this is an icon button. This will both enable the built-in MapLibre
-   * icon button styling and center the element inside the button.
-   * @default true since most map buttons are icons. */
-  export let icon = true;
-  export let center = true;
-  export let title: string | undefined = undefined;
-  let classNames: string | undefined = undefined;
-  export { classNames as class };
+  import type { Snippet } from 'svelte';
+
+  interface Props {
+    /** True if this is an icon button. This will both enable the built-in MapLibre
+     * icon button styling and center the element inside the button.
+     * @default true since most map buttons are icons. */
+    icon?: boolean;
+    center?: boolean;
+    title?: string;
+    class?: string;
+    children?: Snippet;
+
+    onclick?: (e: MouseEvent) => void;
+  }
+
+  let {
+    icon = true,
+    center = true,
+    title = undefined,
+    class: classNames = undefined,
+    children,
+    onclick,
+  }: Props = $props();
 </script>
 
-<button type="button" {title} on:click>
+<button type="button" {title} {onclick}>
   <div class:maplibregl-ctrl-icon={icon} class:ctrl-btn-center={center} class={classNames}>
-    <slot />
+    {@render children?.()}
   </div>
 </button>
 

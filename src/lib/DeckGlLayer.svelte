@@ -1,132 +1,155 @@
-<script lang="ts">
-  import { createEventDispatcher, onMount, onDestroy } from 'svelte';
+<script lang="ts" generics="DATA">
+  import { onMount, onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
   import {
+    Box,
     getId,
-    mapContext,
-    setMapContext,
-    updatedLayerContext,
-    type DeckGlMouseEvent,
-  } from './context';
-  import { readable, writable } from 'svelte/store';
+    getMapContext,
+    setPopupTarget,
+    updatedDeckGlContext,
+  } from './context.svelte.js';
+  import type { PickingInfo } from '@deck.gl/core';
 
-  export let id = getId('deckgl-layer');
-  export let minzoom: number | undefined = undefined;
-  export let maxzoom: number | undefined = undefined;
-  export let visible = true;
-  /** Whether to handle mouse events on this layer.
-   * @deprecated Use `interactive` instead. */
-  export let pickable: boolean | undefined = undefined;
-  /** Handle mouse events on this layer. */
-  export let interactive = true;
+  interface Props {
+    id?: any;
+    interleaved?: boolean;
+    minzoom?: number | undefined;
+    maxzoom?: number | undefined;
+    visible?: boolean;
+    /** Handle mouse events on this layer. */
+    interactive?: boolean;
+    /** This indicates the currently hovered feature. Setting this attribute has no effect. */
+    hovered?: DATA;
+    /** The deck.gl layer class to create */
+    type: any;
+    data: DATA[];
+    beforeId?: string;
+    children?: Snippet;
 
-  /** This indicates the currently hovered feature. Setting this attribute has no effect. */
-  export let hovered: DATA | null = null;
+    onclick?: (e: PickingInfo<DATA>) => void;
+    onmousemove?: (e: PickingInfo<DATA>) => void;
+    onmouseleave?: (e: PickingInfo<DATA>) => void;
 
-  export type DATA = $$Generic;
+    [key: string]: any;
+  }
 
-  /** The deck.gl layer class to create */
-  export let type: any;
-  export let data: DATA[];
+  let {
+    id = getId('deckgl-layer'),
+    interleaved = false,
+    minzoom = undefined,
+    maxzoom = undefined,
+    visible = true,
+    interactive = true,
+    hovered = $bindable(),
+    type,
+    data,
+    beforeId = undefined,
+    children,
 
-  const dispatch = createEventDispatcher<{
-    click: DeckGlMouseEvent<DATA>;
-    mousemove: DeckGlMouseEvent<DATA>;
-    mouseleave: DeckGlMouseEvent<DATA>;
-  }>();
+    onclick = undefined,
+    onmousemove = undefined,
+    onmouseleave = undefined,
 
-  const context = mapContext();
-  const { map, minzoom: minZoomContext, maxzoom: maxZoomContext } = context;
+    ...rest
+  }: Props = $props();
 
-  let deckgl: typeof import('@deck.gl/mapbox');
+  const context = getMapContext();
+  const { map, loaded, minzoom: minZoomContext, maxzoom: maxZoomContext } = $derived(context);
+
+  let deckgl: typeof import('@deck.gl/mapbox') | undefined = $state();
   onMount(async () => {
     deckgl = await import('@deck.gl/mapbox');
   });
 
-  let layerEvent = writable<DeckGlMouseEvent | null>(null);
-  let layerId = writable(id);
-  setMapContext({
-    ...context,
-    popupTarget: readable(null),
-    layer: layerId,
-    layerEvent,
-  });
+  const { layer: layerId, layerEvent } = updatedDeckGlContext();
+  layerId.value = id;
+  setPopupTarget(new Box(undefined));
 
-  $: $layerId = id;
-
-  $: actualMinZoom = minzoom ?? $minZoomContext;
-  $: actualMaxZoom = maxzoom ?? $maxZoomContext;
-
-  let zoom = $map?.getZoom() ?? 1;
-  $: visibility = visible && zoom >= actualMinZoom && zoom <= actualMaxZoom;
-
-  $: options = {
-    ...$$restProps,
-    visible: visibility,
-    data,
-    pickable: pickable ?? interactive,
-    onClick: handleClick,
-    onHover: handleHover,
-  };
+  let zoom = $state(context.map.getZoom() ?? 1);
 
   function handleZoom() {
-    if ($map) {
-      zoom = $map.getZoom();
-    }
+    zoom = map.getZoom();
   }
 
-  function handleClick(e: DeckGlMouseEvent<DATA>) {
+  function handleClick(e: PickingInfo<DATA>) {
     if (!interactive) {
       return;
     }
 
-    dispatch('click', e);
-    $layerEvent = {
+    onclick?.(e);
+    layerEvent.value = {
       ...e,
       layerType: 'deckgl',
       type: 'click',
     };
   }
 
-  function handleHover(e: DeckGlMouseEvent<DATA>) {
+  function handleHover(e: PickingInfo<DATA>) {
     if (!interactive) {
       return;
     }
 
     const type = e.index !== -1 ? 'mousemove' : 'mouseleave';
-    hovered = e.object ?? null;
-    dispatch(type, e);
-    $layerEvent = {
+    hovered = e.object ?? undefined;
+    const handler = type === 'mousemove' ? onmousemove : onmouseleave;
+    handler?.(e);
+    layerEvent.value = {
       ...e,
       layerType: 'deckgl',
       type,
     };
   }
 
-  let layer: typeof import('@deck.gl/mapbox').MapboxLayer;
-  $: if ($map && deckgl && !layer) {
-    $map.on('zoom', handleZoom);
-    $map.on('zoomend', handleZoom);
-    handleZoom();
-
-    layer = new deckgl.MapboxLayer({
-      id,
-      type,
-      ...options,
-    });
-    $map.addLayer(layer);
-  }
-
-  $: layer?.setProps(options);
+  let layer: import('@deck.gl/mapbox').MapboxOverlay | undefined = $state();
 
   onDestroy(() => {
-    if ($map?.loaded() && layer) {
-      $map.removeLayer(id);
-      $map.off('zoom', handleZoom);
-      $map.off('zoomend', handleZoom);
+    if (loaded && layer) {
+      // @ts-expect-error Mapbox/Maplibre types don't quite match
+      map.removeControl(layer);
+      map.off('zoom', handleZoom);
+      map.off('zoomend', handleZoom);
     }
+  });
+
+  $effect(() => {
+    layerId.value = id;
+  });
+
+  let actualMinZoom = $derived(minzoom ?? minZoomContext);
+  let actualMaxZoom = $derived(maxzoom ?? maxZoomContext);
+  let visibility = $derived(visible && zoom >= actualMinZoom && zoom <= actualMaxZoom);
+  let options = $derived({
+    ...rest,
+    beforeId,
+    visible: visibility,
+    data,
+    pickable: interactive,
+    onClick: handleClick,
+    onHover: handleHover,
+  });
+
+  $effect(() => {
+    if (loaded && map && deckgl && !layer) {
+      map.on('zoom', handleZoom);
+      map.on('zoomend', handleZoom);
+      handleZoom();
+
+      layer = new deckgl.MapboxOverlay({
+        id,
+        interleaved,
+        layers: [new type(options)],
+      });
+      // @ts-expect-error Mapbox/Maplibre types don't quite match
+      map.addControl(layer);
+    }
+  });
+  $effect(() => {
+    layer?.setProps({
+      layers: [new type(options)],
+    });
   });
 </script>
 
 {#if layer}
-  <slot />
+  {@render children?.()}
 {/if}

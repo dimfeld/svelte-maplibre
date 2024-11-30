@@ -8,16 +8,12 @@
   // import 'svelte-maplibre/draw-plugin.css';
   import '$lib/draw-plugin.css';
 
-  import maplibregl from 'maplibre-gl';
+  import type maplibregl from 'maplibre-gl';
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
-  import type { PageData } from './$types';
 
-  export let data: PageData;
-
-  let map: maplibregl.Map;
-  let draw: MapboxDraw;
+  let map: maplibregl.Map | undefined = $state();
 
   function createMapboxDraw() {
     let draw = new MapboxDraw();
@@ -25,7 +21,11 @@
 
     // MapboxDraw assumes that the `mapboxgl-ctrl-group` and `mapboxgl-ctrl` CSS classes exist,
     // but Maplibre uses different names, so add them to the control element here.
+    //
+    // @ts-expect-error draw's onadd expects a mapboxgl.Map but we have a maplibregl.Map, which has close enough to the
+    // same API.
     draw.onAdd = (map: maplibregl.Map) => {
+      // @ts-expect-error Same as above
       let el = origOnAdd(map);
       el.classList.add('maplibregl-ctrl-group');
       el.classList.add('maplibregl-ctrl');
@@ -35,10 +35,11 @@
     return draw;
   }
 
-  $: if (map && !draw) {
-    draw = createMapboxDraw();
+  let draw = createMapboxDraw();
+  $effect(() => {
+    // @ts-expect-error
     map.addControl(draw);
-  }
+  });
 </script>
 
 <MapLibre

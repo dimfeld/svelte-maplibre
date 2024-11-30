@@ -6,9 +6,13 @@
   import CodeSample from '$site/CodeSample.svelte';
   import Popup from '$lib/Popup.svelte';
 
-  let clickedName = '';
+  let clickedName = $state('');
 
-  const markers = [
+  const markers: {
+    lngLat: [number, number];
+    label: string;
+    name: string;
+  }[] = [
     {
       lngLat: [-122.2993, 47.4464],
       label: 'SEA',
@@ -60,7 +64,7 @@
   {#each markers as { lngLat, label, name } (label)}
     <Marker
       {lngLat}
-      on:click={() => (clickedName = name)}
+      onclick={() => (clickedName = name)}
       class="grid h-8 w-8 place-items-center rounded-full border border-gray-200 bg-red-300 text-black shadow-2xl focus:outline-2 focus:outline-black"
     >
       <span>

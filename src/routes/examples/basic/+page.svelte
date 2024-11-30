@@ -2,9 +2,6 @@
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
-  import type { PageData } from './$types';
-
-  export let data: PageData;
 </script>
 
 <MapLibre
@@ -13,4 +10,10 @@
   standardControls
 />
 
-<CodeSample {code} startBoundary="<MapLibre" endBoundary="/>" />
+<CodeSample
+  {code}
+  startBoundary="<MapLibre"
+  endBoundary="/>"
+  omitStartBoundary={false}
+  omitEndBoundary={false}
+/>

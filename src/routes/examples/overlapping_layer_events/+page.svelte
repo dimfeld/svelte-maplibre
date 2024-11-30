@@ -2,15 +2,14 @@
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
-  import type { PageData } from './$types';
   import GeoJson from '$lib/GeoJSON.svelte';
   import CircleLayer from '$lib/CircleLayer.svelte';
   import { hoverStateFilter } from '$lib/filters';
   import Popup from '$lib/Popup.svelte';
 
-  export let data: PageData;
+  type PointFeature = GeoJSON.Feature<GeoJSON.Point, { radius: number }>;
 
-  function randomCircle(): GeoJSON.Feature {
+  function randomCircle(): PointFeature {
     const lng = Math.random() * 360 - 180;
     const lat = Math.random() * 180 - 90;
     const radius = Math.random() * 50;
@@ -31,17 +30,15 @@
   const layer2 = Array.from({ length: 20 }, randomCircle);
   const layer3 = Array.from({ length: 20 }, randomCircle);
 
-  // CODE1 START
   const layers = [
     { data: layer1, color: 'red', hoverCursor: 'help' },
     { data: layer2, color: 'green', hoverCursor: '' },
     { data: layer3, color: 'blue', hoverCursor: 'not-allowed' },
   ];
-  // CODE1 END
 
-  const lastEvent = [];
+  const lastEvent: (GeoJSON.Feature<GeoJSON.Point> | undefined)[] = $state([]);
 
-  function labelFeature(f: GeoJSON.Feature | undefined) {
+  function labelFeature(f: GeoJSON.Feature<GeoJSON.Point> | undefined) {
     if (!f) {
       return 'None';
     }
@@ -49,9 +46,9 @@
     return f.geometry.coordinates.map((c) => c.toFixed(4)).join(' ,');
   }
 
-  let eventsIfTopMost = true;
-  let openIfTopMost = true;
-  let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = 'hover';
+  let eventsIfTopMost = $state(true);
+  let openIfTopMost = $state(true);
+  let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = $state('hover');
 </script>
 
 <div class="mx-auto mb-2 flex flex-col items-start gap-1">
@@ -87,6 +84,7 @@
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class="relative aspect-[9/16] max-h-[70vh] w-full sm:aspect-video sm:max-h-full"
   standardControls
+  zoomOnDoubleClick={openOn !== 'dblclick'}
 >
   {#each layers as { data, color, hoverCursor }, i}
     <GeoJson id="layer{i + 1}" data={{ type: 'FeatureCollection', features: data }} generateId>
@@ -99,39 +97,33 @@
           'circle-radius': ['get', 'radius'],
           'circle-opacity': hoverStateFilter(1.0, 0.5),
         }}
-        on:click={(e) => {
-          lastEvent[i] = e.detail.features?.[0];
+        onclick={(e) => {
+          lastEvent[i] = e.features?.[0] as PointFeature;
         }}
-        on:mouseleave={(e) => {
+        onmouseleave={(e) => {
           lastEvent[i] = undefined;
         }}
-        on:mousemove={(e) => {
-          lastEvent[i] = e.detail.features?.[0];
+        onmousemove={(e) => {
+          lastEvent[i] = e.features?.[0] as PointFeature;
         }}
       >
-        <Popup {openOn} {openIfTopMost} let:features>
-          <div style:background={color} style:color="white">
-            <p>{features?.length} features from {color} layer</p>
-            {#if color == 'red'}
-              <p>extra padding for lowest red layer</p>
-              <p>extra padding for lowest red layer</p>
-            {/if}
-            {#if color == 'green'}
-              <p>extra padding for middle green layer</p>
-            {/if}
-          </div>
+        <Popup {openOn} {openIfTopMost}>
+          {#snippet children({ features })}
+            <div style:background={color} style:color="white">
+              <p>{features?.length} features from {color} layer</p>
+              {#if color == 'red'}
+                <p>extra padding for lowest red layer</p>
+                <p>extra padding for lowest red layer</p>
+              {/if}
+              {#if color == 'green'}
+                <p>extra padding for middle green layer</p>
+              {/if}
+            </div>
+          {/snippet}
         </Popup>
       </CircleLayer>
     </GeoJson>
   {/each}
 </MapLibre>
 
-<CodeSample
-  {code}
-  language="javascript"
-  startBoundary="// CODE1 START"
-  omitStartBoundary
-  endBoundary="// CODE1 END"
-  omitEndBoundary
-/>
 <CodeSample {code} />

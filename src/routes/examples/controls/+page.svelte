@@ -21,53 +21,54 @@
   center={[-120, 50]}
   zoom={2}
   attributionControl={false}
-  let:map
 >
-  <!-- You can also set the Map's `standardControls` attribute to create these. -->
-  <NavigationControl position="top-left" />
-  <GeolocateControl position="top-left" fitBoundsOptions={{ maxZoom: 12 }} />
-  <FullscreenControl position="top-left" />
-  <ScaleControl />
-  <AttributionControl
-    customAttribution={`A <strong class="text-red-500">custom</strong> attribution`}
-  />
+  {#snippet children({ map })}
+    <!-- You can also set the Map's `standardControls` attribute to create these. -->
+    <NavigationControl position="top-left" />
+    <GeolocateControl position="top-left" fitBoundsOptions={{ maxZoom: 12 }} />
+    <FullscreenControl position="top-left" />
+    <ScaleControl />
+    <AttributionControl
+      customAttribution={`A <strong class="text-red-500">custom</strong> attribution`}
+    />
 
-  <Control class="flex flex-col gap-y-2">
-    <ControlGroup>
-      <ControlButton
-        on:click={() => {
-          map.flyTo({
-            center: [-5, 54],
-            zoom: 4,
-          });
-        }}
-      >
-        UK
-      </ControlButton>
-      <ControlButton
-        on:click={() =>
-          map.fitBounds([
-            [-120, 50],
-            [-70, 20],
-          ])}
-      >
-        US
-      </ControlButton>
-      <ControlButton
-        on:click={() =>
-          map.fitBounds([
-            [110, 20],
-            [140, 0],
-          ])}
-      >
-        PH
-      </ControlButton>
-    </ControlGroup>
+    <Control class="flex flex-col gap-y-2">
+      <ControlGroup>
+        <ControlButton
+          onclick={() => {
+            map.flyTo({
+              center: [-5, 54],
+              zoom: 4,
+            });
+          }}
+        >
+          UK
+        </ControlButton>
+        <ControlButton
+          onclick={() =>
+            map.fitBounds([
+              [-120, 50],
+              [-70, 20],
+            ])}
+        >
+          US
+        </ControlButton>
+        <ControlButton
+          onclick={() =>
+            map.fitBounds([
+              [110, 20],
+              [140, 0],
+            ])}
+        >
+          PH
+        </ControlButton>
+      </ControlGroup>
 
-    <ControlGroup>
-      <ControlButton on:click={() => alert('!')}>!</ControlButton>
-    </ControlGroup>
-  </Control>
+      <ControlGroup>
+        <ControlButton onclick={() => alert('!')}>!</ControlButton>
+      </ControlGroup>
+    </Control>
+  {/snippet}
 </MapLibre>
 
 <CodeSample {code} />

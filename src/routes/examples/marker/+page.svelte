@@ -6,7 +6,11 @@
   import CodeSample from '$site/CodeSample.svelte';
   import Popup from '$lib/Popup.svelte';
 
-  const markers = [
+  const markers: Array<{
+    lngLat: [number, number];
+    label: string;
+    name: string;
+  }> = [
     {
       lngLat: [-122.2993, 47.4464],
       label: 'SEA',

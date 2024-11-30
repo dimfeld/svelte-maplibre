@@ -12,7 +12,7 @@ export function combineFilters(
     } else if (Array.isArray(fil)) {
       if (fil[0] === join) {
         // Simplify the filter if this filter is already a join of the same type.
-        outputFilters.push(...fil.slice(1));
+        outputFilters.push(...(fil.slice(1) as ExpressionSpecification[]));
       } else {
         outputFilters.push(fil);
       }

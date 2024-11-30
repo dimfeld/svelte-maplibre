@@ -4,7 +4,6 @@
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
   import { mapClasses } from '../styles';
-  import type { PageData } from './$types';
   import CircleLayer from '$lib/CircleLayer.svelte';
   import SymbolLayer from '$lib/SymbolLayer.svelte';
   import { hoverStateFilter } from '$lib/filters';
@@ -12,8 +11,9 @@
   import quakeImageUrl from '$site/earthquake.png';
   import tsunamiImageUrl from '$site/tsunami.png';
   import earthquakes from '$site/earthquakes.geojson?url';
+  import type { GeoJsonProperties } from 'geojson';
 
-  let clickedFeature: Record<string, any> | null = null;
+  let clickedFeature: GeoJsonProperties | undefined = $state();
 </script>
 
 <p>
@@ -30,75 +30,84 @@
     { id: 'quake', url: quakeImageUrl },
     { id: 'tsunami', url: tsunamiImageUrl },
   ]}
-  let:allImagesLoaded
 >
-  <GeoJSON
-    id="earthquakes"
-    data={earthquakes}
-    cluster={{
-      radius: 500,
-      maxZoom: 14,
-      properties: {
-        // Sum the `mag` property from all the points in each cluster.
-        total_mag: ['+', ['get', 'mag']],
-      },
-    }}
-  >
-    <CircleLayer
-      applyToClusters
-      hoverCursor="pointer"
-      paint={{
-        // Use step expressions (https://maplibre.org/maplibre-gl-js-docs/style-spec/#expressions-step)
-        // with three steps to implement three types of circles:
-        //   * Blue, 20px circles when point count is less than 100
-        //   * Yellow, 30px circles when point count is between 100 and 750
-        //   * Pink, 40px circles when point count is greater than or equal to 750
-        'circle-color': ['step', ['get', 'point_count'], '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
-        'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
-        'circle-stroke-color': '#f00',
-        'circle-stroke-width': 1,
-        'circle-stroke-opacity': hoverStateFilter(0, 1),
+  {#snippet children({ allImagesLoaded })}
+    <GeoJSON
+      id="earthquakes"
+      data={earthquakes}
+      cluster={{
+        radius: 500,
+        maxZoom: 14,
+        properties: {
+          // Sum the `mag` property from all the points in each cluster.
+          total_mag: ['+', ['get', 'mag']],
+        },
       }}
-      manageHoverState
-      on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
-    />
-
-    <SymbolLayer
-      applyToClusters
-      layout={{
-        'text-field': [
-          'format',
-          ['get', 'point_count_abbreviated'],
-          {},
-          '\n',
-          {},
-          [
-            'number-format',
-            ['/', ['get', 'total_mag'], ['get', 'point_count']],
-            {
-              'max-fraction-digits': 2,
-            },
+    >
+      <CircleLayer
+        applyToClusters
+        hoverCursor="pointer"
+        paint={{
+          // Use step expressions (https://maplibre.org/maplibre-gl-js-docs/style-spec/#expressions-step)
+          // with three steps to implement three types of circles:
+          //   * Blue, 20px circles when point count is less than 100
+          //   * Yellow, 30px circles when point count is between 100 and 750
+          //   * Pink, 40px circles when point count is greater than or equal to 750
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#51bbd6',
+            100,
+            '#f1f075',
+            750,
+            '#f28cb1',
           ],
-          { 'font-scale': 0.8 },
-        ],
-        'text-size': 12,
-        'text-offset': [0, -0.1],
-      }}
-    />
+          'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
+          'circle-stroke-color': '#f00',
+          'circle-stroke-width': 1,
+          'circle-stroke-opacity': hoverStateFilter(0, 1),
+        }}
+        manageHoverState
+        onclick={(e) => (clickedFeature = e.features?.[0]?.properties)}
+      />
 
-    <SymbolLayer
-      applyToClusters={false}
-      hoverCursor="pointer"
-      layout={{
-        'icon-image': ['case', ['==', ['get', 'tsunami'], 0], 'quake', 'tsunami'],
-        'icon-allow-overlap': true,
-        'text-field': '{mag}',
-        'text-offset': [0, -2],
-        'text-size': 12,
-      }}
-      on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
-    />
-  </GeoJSON>
+      <SymbolLayer
+        applyToClusters
+        layout={{
+          'text-field': [
+            'format',
+            ['get', 'point_count_abbreviated'],
+            {},
+            '\n',
+            {},
+            [
+              'number-format',
+              ['/', ['get', 'total_mag'], ['get', 'point_count']],
+              {
+                'max-fraction-digits': 2,
+              },
+            ],
+            { 'font-scale': 0.8 },
+          ],
+          'text-size': 12,
+          'text-offset': [0, -0.1],
+        }}
+      />
+
+      <SymbolLayer
+        applyToClusters={false}
+        hoverCursor="pointer"
+        layout={{
+          'icon-image': ['case', ['==', ['get', 'tsunami'], 0], 'quake', 'tsunami'],
+          'icon-allow-overlap': true,
+          'text-field': '{mag}',
+          'text-offset': [0, -2],
+          'text-size': 12,
+        }}
+        onclick={(e) => (clickedFeature = e.features?.[0]?.properties)}
+      />
+    </GeoJSON>
+  {/snippet}
 </MapLibre>
 
 {#if clickedFeature}

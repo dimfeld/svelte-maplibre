@@ -3,6 +3,7 @@
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
+  import type { MapMoveEvent } from '$lib';
 
   let coords = [
     {
@@ -19,10 +20,10 @@
     },
   ] as { center: [number, number]; zoom: number; pitch: number; bearing: number }[];
 
-  let center: LngLatLike = coords[0].center;
-  let zoom = coords[0].zoom;
-  let bearing = coords[0].bearing;
-  let pitch = coords[0].pitch;
+  let center: LngLatLike = $state(coords[0].center);
+  let zoom = $state(coords[0].zoom);
+  let bearing = $state(coords[0].bearing);
+  let pitch = $state(coords[0].pitch);
 
   let currentIndex = 0;
   function toggle() {
@@ -44,13 +45,13 @@
     setTimeout(() => toggle(), 200);
   }
 
-  let currentCoords = center;
-  let currentZoom = zoom;
-  let currentBearing = bearing;
-  let currentPitch = pitch;
+  let currentCoords = $state(coords[0].center);
+  let currentZoom = $state(coords[0].zoom);
+  let currentBearing = $state(coords[0].bearing);
+  let currentPitch = $state(coords[0].pitch);
 
-  function handleMoveEnd(ev: CustomEvent<MapMouseEvent>) {
-    const map = ev.detail.target;
+  function handleMoveEnd(ev: MapMoveEvent) {
+    const map = ev.target;
     let center = map.getCenter();
     currentCoords = [center.lng, center.lat];
     currentZoom = map.getZoom();
@@ -64,9 +65,9 @@
 
 <div class="flex gap-4">
   <div class="flex gap-4">
-    <button class="btn variant-filled mb-4" type="button" on:click={toggle}> Toggle </button>
+    <button class="variant-filled btn mb-4" type="button" onclick={toggle}> Toggle </button>
 
-    <button class="btn variant-filled mb-4" type="button" on:click={quickToggle}>
+    <button class="variant-filled btn mb-4" type="button" onclick={quickToggle}>
       Toggle and Back
     </button>
   </div>
@@ -78,7 +79,7 @@
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class="relative aspect-[9/16] max-h-[70vh] w-full sm:aspect-video sm:max-h-full"
-  on:moveend={handleMoveEnd}
+  onmoveend={handleMoveEnd}
   {bearing}
   {pitch}
   {center}

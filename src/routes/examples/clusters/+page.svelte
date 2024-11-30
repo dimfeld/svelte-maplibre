@@ -12,10 +12,17 @@
   import clusterPopupCode from '../ClusterPopup.svelte?raw';
 
   import earthquakes from '$site/earthquakes.geojson?url';
+  import type {
+    ClusterFeatureProperties,
+    ClusterProperties,
+    SingleProperties,
+  } from '../cluster_feature_properties';
+  import type { Feature, Geometry } from 'geojson';
+  import type { LayerClickInfo } from '$lib';
 
-  let clickedFeature: Record<string, any> | null = null;
+  let clickedFeature: ClusterFeatureProperties | null | undefined = $state();
 
-  let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = 'hover';
+  let openOn: 'click' | 'dblclick' | 'contextmenu' | 'hover' = $state('hover');
 </script>
 
 <p>
@@ -69,10 +76,13 @@
         'circle-stroke-opacity': hoverStateFilter(0, 1),
       }}
       manageHoverState
-      on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
+      onclick={(e: LayerClickInfo<Feature<Geometry, ClusterProperties>>) =>
+        (clickedFeature = e.features?.[0]?.properties)}
     >
-      <Popup {openOn} closeOnClickInside let:data>
-        <ClusterPopup feature={data ?? undefined} />
+      <Popup {openOn} closeOnClickInside>
+        {#snippet children({ data }: { data: Feature<Geometry, ClusterProperties> | undefined })}
+          <ClusterPopup feature={data ?? undefined} />
+        {/snippet}
       </Popup>
     </CircleLayer>
 
@@ -111,21 +121,24 @@
         'circle-stroke-width': 1,
         'circle-stroke-color': '#fff',
       }}
-      on:click={(e) => (clickedFeature = e.detail.features?.[0]?.properties)}
+      onclick={(e: LayerClickInfo<Feature<Geometry, SingleProperties>>) =>
+        (clickedFeature = e.features?.[0]?.properties)}
     >
-      <Popup {openOn} closeOnClickInside let:data>
-        {@const props = data?.properties}
-        {#if props}
-          <p>
-            Date: <span class="font-medium text-gray-800"
-              >{new Date(props.time).toLocaleDateString()}</span
-            >
-          </p>
-          <p>Magnitude: <span class="font-medium text-gray-800">{props.mag}</span></p>
-          <p>
-            Tsunami: <span class="font-medium text-gray-800">{props.tsunami ? 'Yes' : 'No'}</span>
-          </p>
-        {/if}
+      <Popup {openOn} closeOnClickInside>
+        {#snippet children({ data }: { data: Feature<Geometry, SingleProperties> | undefined })}
+          {@const props = data?.properties}
+          {#if props}
+            <p>
+              Date: <span class="font-medium text-gray-800"
+                >{new Date(props.time).toLocaleDateString()}</span
+              >
+            </p>
+            <p>Magnitude: <span class="font-medium text-gray-800">{props.mag}</span></p>
+            <p>
+              Tsunami: <span class="font-medium text-gray-800">{props.tsunami ? 'Yes' : 'No'}</span>
+            </p>
+          {/if}
+        {/snippet}
       </Popup>
     </CircleLayer>
   </GeoJSON>

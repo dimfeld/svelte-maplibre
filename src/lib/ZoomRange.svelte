@@ -1,41 +1,38 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
-  import { mapContext, setMapContext } from './context';
+  import type { Snippet } from 'svelte';
+  import { getMapContext, setZoomLimits } from './context.svelte.js';
 
-  export let minzoom: number | undefined = undefined;
-  export let maxzoom: number | undefined = undefined;
-  /** If true, only instantiate the slot contents when the map zoom is in range. If false,
-   * the layers themselves will handle it. Usually you will want this to be false. */
-  export let enforce = false;
+  interface Props {
+    minzoom?: number | undefined;
+    maxzoom?: number | undefined;
+    /** If true, only instantiate the slot contents when the map zoom is in range. If false,
+     * the layers themselves will handle it. Usually you will want this to be false. */
+    enforce?: boolean;
+    children?: Snippet;
+  }
 
-  const context = mapContext();
-  const map = context.map;
-  const originalMinZoom = context.minzoom;
-  const originalMaxZoom = context.maxzoom;
+  let { minzoom = undefined, maxzoom = undefined, enforce = false, children }: Props = $props();
 
-  const minZoom = writable(minzoom ?? $originalMinZoom);
-  const maxZoom = writable(maxzoom ?? $originalMaxZoom);
+  const { map, loaded } = $derived(getMapContext());
 
-  $: minZoom.set(minzoom ?? $originalMinZoom);
-  $: maxZoom.set(maxzoom ?? $originalMaxZoom);
-
-  setMapContext({
-    ...context,
-    minzoom: minZoom,
-    maxzoom: maxZoom,
+  let zoomLimits = setZoomLimits(minzoom, maxzoom);
+  $effect.pre(() => {
+    zoomLimits.minzoomSetting = minzoom;
+    zoomLimits.maxzoomSetting = maxzoom;
   });
 
-  let zoom = $map?.getZoom() ?? 0;
+  // svelte-ignore state_referenced_locally
+  let zoom = $state(map.getZoom() ?? 0);
   function handleZoom() {
-    zoom = $map.getZoom();
+    zoom = map.getZoom();
   }
 
   onMount(() => {
-    $map.on('zoom', handleZoom);
+    map.on('zoom', handleZoom);
     return () => {
-      if ($map?.loaded()) {
-        $map.off('zoom', handleZoom);
+      if (loaded) {
+        map.off('zoom', handleZoom);
       }
     };
   });
@@ -50,6 +47,6 @@ is outside the range. This is usually bad for performance, so it is not recommen
 but can have other uses such as creating and removing map controls or other behaviors depending on zoom level.
 -->
 
-{#if !enforce || ($minZoom <= zoom && zoom <= $maxZoom)}
-  <slot />
+{#if !enforce || (zoomLimits.minzoom <= zoom && zoom <= zoomLimits.maxzoom)}
+  {@render children?.()}
 {/if}

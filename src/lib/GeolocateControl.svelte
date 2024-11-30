@@ -1,32 +1,45 @@
 <script lang="ts">
-  import { mapContext } from './context';
+  import { getMapContext } from './context.svelte.js';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
-  const { map } = mapContext();
+  const { map, loaded } = $derived(getMapContext());
 
-  export let position: maplibregl.ControlPosition = 'top-left';
-  export let positionOptions: PositionOptions | undefined = undefined;
-  export let fitBoundsOptions: maplibregl.FitBoundsOptions | undefined = undefined;
-  export let trackUserLocation = false;
-  export let showAccuracyCircle = true;
-  export let showUserLocation = true;
-
-  export let control: maplibregl.GeolocateControl | null = null;
-  $: if ($map && !control) {
-    control = new maplibregl.GeolocateControl({
-      positionOptions,
-      fitBoundsOptions,
-      trackUserLocation,
-      showAccuracyCircle,
-      showUserLocation,
-    });
-    $map.addControl(control, position);
+  interface Props {
+    position?: maplibregl.ControlPosition;
+    positionOptions?: PositionOptions | undefined;
+    fitBoundsOptions?: maplibregl.FitBoundsOptions | undefined;
+    trackUserLocation?: boolean;
+    showAccuracyCircle?: boolean;
+    showUserLocation?: boolean;
+    control?: maplibregl.GeolocateControl;
   }
 
+  let {
+    position = 'top-left',
+    positionOptions = undefined,
+    fitBoundsOptions = undefined,
+    trackUserLocation = false,
+    showAccuracyCircle = true,
+    showUserLocation = true,
+    control = $bindable(),
+  }: Props = $props();
+  $effect(() => {
+    if (map && !control) {
+      control = new maplibregl.GeolocateControl({
+        positionOptions,
+        fitBoundsOptions,
+        trackUserLocation,
+        showAccuracyCircle,
+        showUserLocation,
+      });
+      map.addControl(control, position);
+    }
+  });
+
   onDestroy(() => {
-    if ($map?.loaded() && control) {
-      $map.removeControl(control);
+    if (loaded && control) {
+      map.removeControl(control);
     }
   });
 </script>

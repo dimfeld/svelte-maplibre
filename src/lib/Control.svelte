@@ -1,33 +1,46 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { mapContext } from './context';
+  import type { Snippet } from 'svelte';
+  import type maplibregl from 'maplibre-gl';
+  import { getMapContext } from './context.svelte.js';
 
-  export let defaultStyling = true;
-  export let position: maplibregl.ControlPosition = 'top-right';
-  let classNames: string | undefined = undefined;
-  export { classNames as class };
+  interface Props {
+    defaultStyling?: boolean;
+    position?: maplibregl.ControlPosition;
+    class?: string | undefined;
+    children?: Snippet;
+  }
 
-  const { map } = mapContext();
+  let {
+    defaultStyling = true,
+    position = 'top-right',
+    class: classNames = undefined,
+    children,
+  }: Props = $props();
 
-  let el: HTMLDivElement;
+  const { map } = $derived(getMapContext());
+
+  let el: HTMLDivElement | undefined = $state();
   let control = {
     onAdd() {
-      return el;
+      return el!;
     },
     onRemove() {
       el?.parentNode?.removeChild(el);
     },
   };
 
-  $: if ($map && el) {
-    $map.addControl(control, position);
-  }
+  $effect(() => {
+    if (el) {
+      map.addControl(control, position);
+    }
+  });
 
   onDestroy(() => {
-    $map?.removeControl(control);
+    map.removeControl(control);
   });
 </script>
 
 <div bind:this={el} class={classNames} class:maplibregl-ctrl={defaultStyling}>
-  <slot />
+  {@render children?.()}
 </div>

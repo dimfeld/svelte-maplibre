@@ -1,47 +1,68 @@
-<script lang="ts">
+<script lang="ts" generics="DATA extends Feature = Feature">
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
-  import { createEventDispatcher, onDestroy } from 'svelte';
-  import { updatedMarkerContext } from './context';
+  import { onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
+  import { getMapContext, updatedMarkerContext } from './context.svelte.js';
   import type { MarkerClickInfo } from './types';
-  import type * as GeoJSON from 'geojson';
-  import flush from 'just-flush';
+  import type { Feature, Point } from 'geojson';
+  import { flush } from '$lib/flush.js';
 
-  /** The Marker instance which was added to the map */
-  let markerProp: maplibre.Marker | undefined = undefined;
-  export { markerProp as marker };
-  export let lngLat: LngLatLike;
-  let classNames: string | undefined = undefined;
-  export { classNames as class };
-  /** Handle mouse events */
-  export let draggable = false;
-  /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
-   * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
-  export let feature: GeoJSON.Feature | null = null;
-  /** An offset in pixels to apply to the marker. */
-  export let offset: PointLike | undefined = undefined;
-  /** The rotation angle of the marker (clockwise, in degrees) */
-  export let rotation: number = 0;
-  /** The opacity of the marker */
-  export let opacity: number = 1;
+  interface Props {
+    /** The Marker instance which was added to the map */
+    marker?: maplibre.Marker | undefined;
+    lngLat: LngLatLike;
+    class?: string | undefined;
+    /** Handle mouse events */
+    draggable?: boolean;
+    /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
+     * the event, and can be safely omitted. The `lngLat` prop controls the marker's location even if this is provided. */
+    feature?: DATA;
+    /** An offset in pixels to apply to the marker. */
+    offset?: PointLike | undefined;
+    /** The rotation angle of the marker (clockwise, in degrees) */
+    rotation?: number;
+    /** The opacity of the marker */
+    opacity?: number;
+    children?: Snippet<[{ marker: maplibre.Marker }]>;
 
-  const dispatch = createEventDispatcher<{
-    drag: MarkerClickInfo;
-    dragstart: MarkerClickInfo;
-    dragend: MarkerClickInfo;
-  }>();
-  const { map, layerEvent, self: marker } = updatedMarkerContext();
+    ondrag?: (e: MarkerClickInfo<ClickInfoFeature>) => void;
+    ondragstart?: (e: MarkerClickInfo<ClickInfoFeature>) => void;
+    ondragend?: (e: MarkerClickInfo<ClickInfoFeature>) => void;
+  }
 
-  const dragStartListener = () => sendEvent('dragstart');
+  type ClickInfoFeature = Feature<Point, DATA['properties']>;
+
+  let {
+    marker: markerProp = $bindable(undefined),
+    lngLat = $bindable(),
+    class: classNames = undefined,
+    draggable = false,
+    feature = undefined,
+    offset = undefined,
+    rotation = 0,
+    opacity = 1,
+    children,
+
+    ondrag = undefined,
+    ondragstart = undefined,
+    ondragend = undefined,
+  }: Props = $props();
+
+  const { map } = $derived(getMapContext());
+  const { layerEvent, marker } = updatedMarkerContext();
+
+  const dragStartListener = () => sendEvent(ondragstart, 'dragstart');
   const dragListener = () => {
     propagateLngLatChange();
-    sendEvent('drag');
+    sendEvent(ondrag, 'drag');
   };
   const dragEndListener = () => {
     propagateLngLatChange();
-    sendEvent('dragend');
+    sendEvent(ondragend, 'dragend');
   };
 
-  $marker = new maplibre.Marker(
+  // svelte-ignore state_referenced_locally
+  marker.value = new maplibre.Marker(
     flush({
       draggable,
       rotation,
@@ -51,26 +72,34 @@
     })
   )
     .setLngLat(lngLat)
-    .addTo($map!);
-  markerProp = $marker;
+    .addTo(map);
+  markerProp = marker.value;
   if (draggable) {
-    $marker.on('dragstart', dragStartListener);
-    $marker.on('drag', dragListener);
-    $marker.on('dragend', dragEndListener);
+    marker.value.on('dragstart', dragStartListener);
+    marker.value.on('drag', dragListener);
+    marker.value.on('dragend', dragEndListener);
   }
 
   onDestroy(() => {
     markerProp = undefined;
-    $marker?.remove();
+    marker.value?.remove();
   });
 
-  $: $marker?.setLngLat(lngLat);
-  $: $marker?.setOffset(offset ?? [0, 0]);
-  $: $marker?.setRotation(rotation);
-  $: $marker?.setOpacity(opacity.toString());
+  $effect(() => {
+    marker.value?.setLngLat(lngLat);
+  });
+  $effect(() => {
+    marker.value?.setOffset(offset ?? [0, 0]);
+  });
+  $effect(() => {
+    marker.value?.setRotation(rotation);
+  });
+  $effect(() => {
+    marker.value?.setOpacity(opacity.toString());
+  });
 
   function propagateLngLatChange() {
-    let newPos = $marker?.getLngLat();
+    let newPos = marker.value?.getLngLat();
     if (!newPos) {
       return;
     }
@@ -85,16 +114,19 @@
     }
   }
 
-  function sendEvent(eventName: Parameters<typeof dispatch>[0]) {
-    let loc = $marker?.getLngLat();
+  function sendEvent(
+    eventCb: ((e: MarkerClickInfo<ClickInfoFeature>) => void) | undefined,
+    eventName: string
+  ) {
+    let loc = marker.value?.getLngLat();
     if (!loc) {
       return;
     }
 
     const lngLat: [number, number] = [loc.lng, loc.lat];
-    let data: MarkerClickInfo = {
-      map: $map!,
-      marker: $marker!,
+    let data: MarkerClickInfo<ClickInfoFeature> = {
+      map: map!,
+      marker: marker.value!,
       lngLat,
       features: [
         {
@@ -109,14 +141,16 @@
       ],
     };
 
-    $layerEvent = {
+    layerEvent.value = {
       ...data,
       layerType: 'marker',
       type: eventName,
     };
 
-    dispatch(eventName, data);
+    eventCb?.(data);
   }
 </script>
 
-<slot marker={$marker} />
+{#if marker.value}
+  {@render children?.({ marker: marker.value })}
+{/if}

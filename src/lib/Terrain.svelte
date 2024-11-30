@@ -1,22 +1,26 @@
 <script lang="ts">
-  import { mapContext } from './context';
-  import maplibregl from 'maplibre-gl';
+  import { getMapContext } from './context.svelte.js';
   import { onDestroy } from 'svelte';
 
-  const { map } = mapContext();
+  const { map, loaded } = $derived(getMapContext());
 
-  export let source: string | undefined = undefined;
-  export let exaggeration: number | undefined = undefined;
-
-  let specification: maplibregl.TerrainSpecification | null = null;
-  $: if ($map && source) {
-    (specification = { source: source, exaggeration: exaggeration }),
-      $map.setTerrain(specification);
+  interface Props {
+    source?: string;
+    exaggeration?: number;
   }
 
+  let { source = undefined, exaggeration = undefined }: Props = $props();
+
+  $effect(() => {
+    if (source) {
+      let specification = { source: source, exaggeration: exaggeration };
+      map.setTerrain(specification);
+    }
+  });
+
   onDestroy(() => {
-    if ($map?.loaded() && specification) {
-      $map.setTerrain(null);
+    if (loaded && source) {
+      map.setTerrain(null);
     }
   });
 </script>

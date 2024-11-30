@@ -1,23 +1,40 @@
 <script lang="ts">
-  import { mapContext } from '$lib/context.js';
-  import type { Feature } from 'geojson';
+  import { getSource, getMapContext } from '$lib/context.svelte.js';
+  import type { Feature, Geometry } from 'geojson';
+  import type { GeoJSONSource } from 'maplibre-gl';
+  import type { ClusterProperties, SingleProperties } from './cluster_feature_properties.js';
 
-  const { map, source } = mapContext();
+  const { map } = $derived(getMapContext());
+  const source = getSource();
 
-  export let feature: Feature | undefined;
-
-  let innerFeatures: Feature[] = [];
-  $: if ($map && $source && feature) {
-    $map
-      ?.getSource($source)
-      ?.getClusterLeaves(feature.properties.cluster_id, 10000, 0)
-      .then((features) => {
-        innerFeatures = features;
-      });
+  interface Props {
+    feature: Feature<Geometry, ClusterProperties> | undefined;
   }
 
-  $: innerFeatures.sort((a, b) => {
-    return b.properties.time - a.properties.time;
+  let { feature }: Props = $props();
+
+  let innerFeaturesPromise = $derived.by(async () => {
+    if (!map || !source?.value || !feature) {
+      return [];
+    }
+
+    const features = ((await (map.getSource(source.value) as GeoJSONSource)?.getClusterLeaves(
+      feature.properties.cluster_id,
+      10000,
+      0
+    )) ?? []) as Feature<Geometry, SingleProperties>[];
+
+    features.sort((a, b) => {
+      return b.properties.time - a.properties.time;
+    });
+
+    return features;
+  });
+
+  // Use this instead of an await template tag to avoid flickering
+  let innerFeatures: Feature<Geometry, SingleProperties>[] = $state([]);
+  $effect(() => {
+    innerFeaturesPromise.then((f) => (innerFeatures = f));
   });
 </script>
 

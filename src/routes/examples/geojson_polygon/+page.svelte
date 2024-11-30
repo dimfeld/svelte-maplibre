@@ -1,7 +1,7 @@
 <script lang="ts">
+  import type maplibregl from 'maplibre-gl';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
-  import type { Feature } from 'geojson';
   import FillLayer from '$lib/FillLayer.svelte';
   import LineLayer from '$lib/LineLayer.svelte';
   import { mapClasses } from '../styles.js';
@@ -10,31 +10,35 @@
   import states from '$site/states.json?url';
   import { contrastingColor } from '$site/colors.js';
   import { hoverStateFilter } from '$lib/filters.js';
+  import type { ExpressionSpecification } from 'maplibre-gl';
 
-  let showBorder = true;
-  let showFill = true;
-  let fillColor = '#006600';
-  let borderColor = '#003300';
+  let showBorder = $state(true);
+  let showFill = $state(true);
+  let fillColor = $state('#006600');
+  let borderColor = $state('#003300');
 
-  // START EXTRACT
-  let map: maplibregl.Map | undefined;
-  let loaded: boolean;
-  let textLayers: maplibregl.LayerSpecification[] = [];
-  $: if (map && loaded) {
-    textLayers = map.getStyle().layers.filter((layer) => layer['source-layer'] === 'place');
-  }
+  let map: maplibregl.Map | undefined = $state();
+  let loaded = $state(false);
+  let textLayers: maplibregl.LayerSpecification[] = $derived(
+    map && loaded
+      ? map.getStyle().layers.filter((layer) => {
+          return layer.type === 'symbol' && layer['source-layer'] === 'place';
+        })
+      : []
+  );
 
-  $: colors = contrastingColor(fillColor);
-  $: if (map && loaded) {
+  let colors = $derived(contrastingColor(fillColor));
+  $effect(() => {
     for (let layer of textLayers) {
-      map.setPaintProperty(layer.id, 'text-color', colors.textColor);
-      map.setPaintProperty(layer.id, 'text-halo-color', colors.textOutlineColor);
+      map?.setPaintProperty(layer.id, 'text-color', colors.textColor);
+      map?.setPaintProperty(layer.id, 'text-halo-color', colors.textOutlineColor);
     }
-  }
+  });
 
-  let filterStates = false;
-  $: filter = filterStates ? ['==', 'T', ['slice', ['get', 'NAME'], 0, 1]] : undefined;
-  // END EXTRACT
+  let filterStates = $state(false);
+  let filter: ExpressionSpecification | undefined = $derived(
+    filterStates ? ['==', 'T', ['slice', ['get', 'NAME'], 0, 1]] : undefined
+  );
 </script>
 
 <div class="grid w-full max-w-md items-center gap-y-2 self-start">
@@ -77,15 +81,6 @@
     {/if}
   </GeoJSON>
 </MapLibre>
-
-<CodeSample
-  {code}
-  startBoundary="// START EXTRACT"
-  endBoundary="// END EXTRACT"
-  omitStartBoundary
-  omitEndBoundary
-  language="javascript"
-/>
 <CodeSample {code} />
 
 <style>

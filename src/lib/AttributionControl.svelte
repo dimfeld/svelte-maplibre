@@ -1,26 +1,36 @@
 <script lang="ts">
-  import { mapContext } from './context';
+  import { getMapContext } from './context.svelte.js';
   import maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
-  const { map } = mapContext();
+  const { map, loaded } = $derived(getMapContext());
 
-  export let position: maplibregl.ControlPosition = 'bottom-right';
-  export let compact = false;
-  export let customAttribution: string | string[] | undefined = undefined;
-
-  let control: maplibregl.AttributionControl | null = null;
-  $: if ($map && !control) {
-    control = new maplibregl.AttributionControl({
-      compact,
-      customAttribution,
-    });
-    $map.addControl(control, position);
+  interface Props {
+    position?: maplibregl.ControlPosition;
+    compact?: boolean;
+    customAttribution?: string | string[] | undefined;
   }
 
+  let {
+    position = 'bottom-right',
+    compact = false,
+    customAttribution = undefined,
+  }: Props = $props();
+
+  let control: maplibregl.AttributionControl | undefined = $state();
+  $effect(() => {
+    if (!control) {
+      control = new maplibregl.AttributionControl({
+        compact,
+        customAttribution,
+      });
+      map.addControl(control, position);
+    }
+  });
+
   onDestroy(() => {
-    if ($map?.loaded() && control) {
-      $map.removeControl(control);
+    if (loaded && control) {
+      map.removeControl(control);
     }
   });
 </script>
