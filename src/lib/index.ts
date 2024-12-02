@@ -31,13 +31,7 @@ export { default as Terrain } from './Terrain.svelte';
 export { default as TerrainControl } from './TerrainControl.svelte';
 export { default as VectorTileSource } from './VectorTileSource.svelte';
 export { default as ZoomRange } from './ZoomRange.svelte';
-export {
-  getId,
-  getMapContext as mapContext,
-  updatedSourceContext,
-  updatedLayerContext,
-  updatedMarkerContext,
-} from './context.svelte.js';
+export * from './context.svelte.js';
 export * from './expressions.js';
 export * from './filters.js';
 export { addSource, removeSource } from './source.js';
