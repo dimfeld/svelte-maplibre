@@ -17,6 +17,7 @@
   import FullscreenControl from './FullscreenControl.svelte';
   import ScaleControl from './ScaleControl.svelte';
   import type { Snippet } from 'svelte';
+  import { handlers } from 'svelte/legacy';
 
   interface Props {
     map?: maplibregl.Map;
@@ -223,6 +224,17 @@
   let sourcesToReAddAfterStyleChange: Record<string, SourceSpecification> | undefined =
     $state(undefined);
 
+  function handleError(event: ErrorEvent) {
+    if (onerror) {
+      onerror(event);
+    } else if (event.error.name !== 'AbortError') {
+      // If there's no error handler, just log it to match the default behavior from MapLibre.
+      // But skip AbortError since that's a normal thing that happens inside certain sources,
+      // and not useful to log.
+      console.error(event);
+    }
+  }
+
   function createMap(element: HTMLDivElement) {
     onHashChange();
 
@@ -265,9 +277,7 @@
       loaded = true;
     });
 
-    if (onerror) {
-      map.on('error', onerror);
-    }
+    map.on('error', handleError);
 
     if (onmovestart) {
       map.on('movestart', onmovestart);
