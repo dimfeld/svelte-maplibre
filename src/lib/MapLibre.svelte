@@ -231,7 +231,7 @@
       // If there's no error handler, just log it to match the default behavior from MapLibre.
       // But skip AbortError since that's a normal thing that happens inside certain sources,
       // and not useful to log.
-      console.error(event);
+      console.error(event.error);
     }
   }
 
