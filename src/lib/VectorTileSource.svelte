@@ -5,7 +5,7 @@
   import { addSource, removeSource } from './source.js';
   import type { Scheme } from './types.js';
   import * as pmtiles from 'pmtiles';
-  import maplibregl, { type VectorTileSource } from 'maplibre-gl';
+  import maplibregl, { type VectorTileSource as MaplibreVectorTileSource } from 'maplibre-gl';
   import { flush } from '$lib/flush.js';
 
   interface Props {
@@ -46,7 +46,7 @@
   const { map } = $derived(getMapContext());
   const { source } = updatedSourceContext();
 
-  let sourceObj: VectorTileSource | undefined = $state();
+  let sourceObj: MaplibreVectorTileSource | undefined = $state();
 
   $effect(() => {
     if (source.value !== id) {
@@ -71,7 +71,7 @@
           if (!source.value) {
             return;
           }
-          sourceObj = map.getSource(source.value) as VectorTileSource;
+          sourceObj = map.getSource(source.value) as MaplibreVectorTileSource;
         }
       );
     }
@@ -81,7 +81,7 @@
     map.on('style.load', () => {
       // When the style changes the current sources are nuked and recreated. Because of this the
       // source object no longer references the current source on the map so we update it here.
-      sourceObj = map.getSource(id) as VectorTileSource | undefined;
+      sourceObj = map.getSource(id) as MaplibreVectorTileSource | undefined;
     });
   });
 
