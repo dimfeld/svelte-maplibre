@@ -306,6 +306,7 @@
   let actualCloseButton = $derived(closeButton ?? (!closeOnClickOutside && !closeOnClickInside));
   $effect(() => {
     if (!popup) {
+      let fullPopupClass = popupClass ? `${popupClass} sv-maplibregl-popup` : 'sv-maplibregl-popup';
       popup = new maplibregl.Popup({
         closeButton: actualCloseButton,
         // We handle this ourselves to improve behavior on mobile.
@@ -313,7 +314,7 @@
         closeOnMove,
         focusAfterOpen,
         maxWidth,
-        className: popupClass,
+        className: fullPopupClass,
         anchor,
         offset,
       });
@@ -398,7 +399,7 @@
 </script>
 
 {#if children}
-  <div bind:this={popupEl}>
+  <div bind:this={popupEl} class="sv-popup">
     {#if features?.length || popupTarget?.value instanceof maplibregl.Marker}
       {@render children?.({
         features,
@@ -409,3 +410,9 @@
     {/if}
   </div>
 {/if}
+
+<style>
+  :global(.sv-maplibregl-popup) {
+    z-index: 200;
+  }
+</style>
