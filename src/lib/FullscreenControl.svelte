@@ -23,10 +23,14 @@
   });
 
   $effect(() => {
-    if (containerEl && !control) {
-      control = new maplibregl.FullscreenControl({
-        container: containerEl,
-      });
+    if (!control) {
+      if (containerEl) {
+        control = new maplibregl.FullscreenControl({
+          container: containerEl,
+        });
+      } else {
+        control = new maplibregl.FullscreenControl();
+      }
       map.addControl(control, position);
     }
   });
