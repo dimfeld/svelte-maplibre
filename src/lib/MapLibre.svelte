@@ -17,7 +17,6 @@
   import FullscreenControl from './FullscreenControl.svelte';
   import ScaleControl from './ScaleControl.svelte';
   import type { Snippet } from 'svelte';
-  import { handlers } from 'svelte/legacy';
 
   interface Props {
     map?: maplibregl.Map;
