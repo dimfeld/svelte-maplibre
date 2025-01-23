@@ -48,7 +48,7 @@
     id="earthquakes"
     data={earthquakes}
     cluster={{
-      radius: 500,
+      radius: 50,
       maxZoom: 14,
       properties: {
         // Sum the `mag` property from all the points in each cluster.
