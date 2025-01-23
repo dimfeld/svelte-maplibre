@@ -400,7 +400,7 @@
 
 {#if children}
   <div bind:this={popupEl} class="sv-popup">
-    {#if features?.length || popupTarget?.value instanceof maplibregl.Marker}
+    {#if features?.length || popupTarget?.value instanceof maplibregl.Marker || (!popupTarget && open)}
       {@render children?.({
         features,
         data: features?.[0] ?? undefined,

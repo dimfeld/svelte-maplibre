@@ -1,6 +1,6 @@
 <script lang="ts">
   import { flush } from '$lib/flush.js';
-  import { createMapContext } from './context.svelte.js';
+  import { Box, createMapContext, setLayerEvent } from './context.svelte.js';
   import { getViewportHash, parseViewportHash } from './hash.js';
   import maplibre, {
     type CenterZoomBearing,
@@ -163,6 +163,7 @@
   );
 
   const mapContext = createMapContext();
+  setLayerEvent(new Box(undefined));
 
   let loadingImages = $state(new Set());
   async function loadImage(image: CustomImageSpec, force = false) {

@@ -54,6 +54,7 @@
     { href: '/tests/marker-z-index', title: `Marker Z-Index` },
     { href: '/tests/replace_source', title: `Replace a Source` },
     { href: '/tests/change_center_zoom', title: `Change Center and Zoom` },
+    { href: '/tests/standalone-popup', title: `Standalone Popup` },
   ];
 
   beforeNavigate(() => {
