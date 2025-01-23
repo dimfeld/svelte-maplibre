@@ -14,11 +14,19 @@
 
 - [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`0485a6a`](https://github.com/dimfeld/svelte-maplibre/commit/0485a6a56a7eb78dc8f2d838902236a022793755) Thanks [@dimfeld](https://github.com/dimfeld)! - Use `undefined` instead of `null` in many places. This improves ergonomics with Svelte component props.
 
+- [`77c50dd`](https://github.com/dimfeld/svelte-maplibre/commit/77c50dd6dd124c1d4e1911814296e6521cb49f7e) Thanks [@dimfeld](https://github.com/dimfeld)! - Update dependency spec for compatibility with maplibgre-gl 5
+
 ### Minor Changes
 
 - [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`0485a6a`](https://github.com/dimfeld/svelte-maplibre/commit/0485a6a56a7eb78dc8f2d838902236a022793755) Thanks [@dimfeld](https://github.com/dimfeld)! - Add generics for Features on many components to permit better type safety
 
 - [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`0485a6a`](https://github.com/dimfeld/svelte-maplibre/commit/0485a6a56a7eb78dc8f2d838902236a022793755) Thanks [@dimfeld](https://github.com/dimfeld)! - Only add event handlers to the map when something is actually listening
+
+### Patch Changes
+
+- [`6715e61`](https://github.com/dimfeld/svelte-maplibre/commit/6715e6139e0117b09b882450768461e023fbdb38) Thanks [@dimfeld](https://github.com/dimfeld)! - Fix standalone popups not appearing
+
+- [`87692e4`](https://github.com/dimfeld/svelte-maplibre/commit/87692e4f7ad2cebb55a8bdac53f8700f1507914f) Thanks [@dimfeld](https://github.com/dimfeld)! - Default marker offset is unset instead of [0, 0]
 
 ## 0.9.14
 
