@@ -89,7 +89,9 @@
     marker.value?.setLngLat(lngLat);
   });
   $effect(() => {
-    marker.value?.setOffset(offset ?? [0, 0]);
+    if (offset) {
+      marker.value?.setOffset(offset);
+    }
   });
   $effect(() => {
     marker.value?.setRotation(rotation);
