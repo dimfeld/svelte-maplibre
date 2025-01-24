@@ -34,6 +34,7 @@
     zoom?: number | undefined;
     pitch?: number;
     bearing?: number;
+    bearingSnap?: number;
     bounds?: LngLatBoundsLike | undefined;
     /** Set to true to track the map viewport in the URL hash. If the URL hash is set, that overrides initial viewport settings. */
     hash?: boolean;
@@ -111,6 +112,7 @@
     zoom = $bindable(undefined),
     pitch = $bindable(0),
     bearing = $bindable(0),
+    bearingSnap = 7,
     bounds = $bindable(undefined),
     hash = false,
     updateHash = (url) => {
@@ -247,6 +249,7 @@
         zoom,
         pitch,
         bearing,
+        bearingSnap,
         minZoom,
         maxZoom,
         minPitch,
