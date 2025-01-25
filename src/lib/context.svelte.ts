@@ -1,4 +1,4 @@
-import type { Map as MapLibre, MapMouseEvent, Marker } from 'maplibre-gl';
+import type { LngLatLike, Map as MapLibre, MapMouseEvent, Marker } from 'maplibre-gl';
 import { getContext, setContext } from 'svelte';
 import { SvelteSet } from 'svelte/reactivity';
 import type { ClusterOptions, MarkerClickInfo } from './types';
@@ -136,6 +136,14 @@ export function setLayerEvent(value: Box<LayerEvent | undefined>) {
   setContext(LAYER_EVENT_KEY, value);
 }
 
+export function setLngLatContext(value: Box<LngLatLike | undefined>) {
+  setContext(LNG_LAT_KEY, value);
+}
+
+export function getLngLatContext(): Box<LngLatLike | undefined> | undefined {
+  return getContext(LNG_LAT_KEY);
+}
+
 export type MarkerMouseEvent = MarkerClickInfo & { layerType: 'marker'; type: string };
 
 export interface DeckGlMouseEvent<DATA = unknown> extends PickingInfo<DATA> {
@@ -152,6 +160,7 @@ const SOURCE_KEY = Symbol.for('svelte-maplibre.source');
 const CLUSTER_KEY = Symbol.for('svelte-maplibre.cluster');
 const ZOOM_KEY = Symbol.for('svelte-maplibre.zoom');
 const LAYER_EVENT_KEY = Symbol.for('svelte-maplibre.layer-event');
+const LNG_LAT_KEY = Symbol.for('svelte-maplibre.lng-lat');
 
 export function getMapContext(): MapContext {
   return getContext(MAP_CONTEXT_KEY);
