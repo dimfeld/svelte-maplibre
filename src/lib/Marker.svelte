@@ -1,7 +1,7 @@
 <script lang="ts" generics="FEATURE extends Feature = Feature">
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import type { Snippet } from 'svelte';
-  import { getMapContext, updatedMarkerContext } from './context.svelte.js';
+  import { Box, getMapContext, setLngLatContext, updatedMarkerContext } from './context.svelte.js';
   import type {
     MarkerClickInfo,
     MarkerClickInfoFeature as GenMarkerClickInfoFeature,
@@ -126,8 +126,12 @@
     };
   }
 
+  let lngLatBox = new Box(lngLat);
+  setLngLatContext(lngLatBox);
+
   $effect(() => {
     marker.value?.setLngLat(lngLat);
+    lngLatBox.value = lngLat;
   });
   $effect(() => {
     if (offset) {
