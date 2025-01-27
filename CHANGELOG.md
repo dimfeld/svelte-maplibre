@@ -22,6 +22,8 @@
 
 - [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`0485a6a`](https://github.com/dimfeld/svelte-maplibre/commit/0485a6a56a7eb78dc8f2d838902236a022793755) Thanks [@dimfeld](https://github.com/dimfeld)! - Only add event handlers to the map when something is actually listening
 
+- [#244](https://github.com/dimfeld/svelte-maplibre/pull/244) [`49af3f3`](https://github.com/dimfeld/svelte-maplibre/commit/49af3f3b0cdf5b92a507fef4ba8e053d2b3e8e96) Thanks [@Tintow](https://github.com/Tintow)! - Exposed the bearingSnap property in the maps props to allow control over the default automatic snap-to-north
+
 ### Patch Changes
 
 - [`6715e61`](https://github.com/dimfeld/svelte-maplibre/commit/6715e6139e0117b09b882450768461e023fbdb38) Thanks [@dimfeld](https://github.com/dimfeld)! - Fix standalone popups not appearing
