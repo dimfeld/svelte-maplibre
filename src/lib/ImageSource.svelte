@@ -3,7 +3,7 @@
   import type { Snippet } from 'svelte';
   import { getId, getMapContext, updatedSourceContext } from './context.svelte.js';
   import { addSource, removeSource } from './source.js';
-  import type { ImageSource, Coordinates } from 'maplibre-gl';
+  import type { ImageSource as MaplibreImageSource, Coordinates } from 'maplibre-gl';
   import { flush } from '$lib/flush.js';
 
   interface Props {
@@ -17,7 +17,7 @@
 
   const { map } = $derived(getMapContext());
   const { source } = updatedSourceContext();
-  let sourceObj: ImageSource | undefined = $state();
+  let sourceObj: MaplibreImageSource | undefined = $state();
 
   let first = $state(true);
   $effect(() => {
@@ -36,7 +36,7 @@
           if (!source.value) {
             return;
           }
-          sourceObj = map.getSource(source.value) as ImageSource;
+          sourceObj = map.getSource(source.value) as MaplibreImageSource;
           first = true;
         }
       );
@@ -58,7 +58,7 @@
     map.on('style.load', () => {
       // When the style changes the current sources are nuked and recreated. Because of this the
       // source object no longer references the current source on the map so we update it here.
-      sourceObj = map.getSource(id) as ImageSource | undefined;
+      sourceObj = map.getSource(id) as MaplibreImageSource | undefined;
     });
   });
 
