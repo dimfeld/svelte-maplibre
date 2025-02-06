@@ -6,7 +6,7 @@
   import type { Scheme } from './types.js';
   import { flush } from '$lib/flush.js';
   import * as pmtiles from 'pmtiles';
-  import maplibregl, { type RasterTileSource } from 'maplibre-gl';
+  import maplibregl, { type RasterTileSource as MaplibreRasterTileSource } from 'maplibre-gl';
 
   interface Props {
     id?: string;
@@ -48,7 +48,7 @@
 
   const { map } = $derived(getMapContext());
   const { source } = updatedSourceContext();
-  let sourceObj: RasterTileSource | undefined = $state();
+  let sourceObj: MaplibreRasterTileSource | undefined = $state();
 
   let first = $state(true);
   $effect(() => {
@@ -75,7 +75,7 @@
             return;
           }
 
-          sourceObj = map.getSource(source.value) as RasterTileSource;
+          sourceObj = map.getSource(source.value) as MaplibreRasterTileSource;
           first = true;
         }
       );
@@ -100,7 +100,7 @@
     map.on('style.load', () => {
       // When the style changes the current sources are nuked and recreated. Because of this the
       // source object no longer references the current source on the map so we update it here.
-      sourceObj = map.getSource(id) as RasterTileSource | undefined;
+      sourceObj = map.getSource(id) as MaplibreRasterTileSource | undefined;
     });
   });
 

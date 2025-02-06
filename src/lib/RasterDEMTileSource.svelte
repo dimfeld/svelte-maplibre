@@ -4,7 +4,10 @@
   import { getId, getMapContext, updatedSourceContext } from './context.svelte.js';
   import { addSource, removeSource } from './source.js';
   import { flush } from '$lib/flush.js';
-  import type { DEMEncoding, RasterDEMTileSource } from 'maplibre-gl';
+  import type {
+    DEMEncoding,
+    RasterDEMTileSource as MaplibreRasterDEMTileSource,
+  } from 'maplibre-gl';
 
   interface Props {
     id?: string;
@@ -42,7 +45,7 @@
 
   const { map } = $derived(getMapContext());
   const { source } = updatedSourceContext();
-  let sourceObj: RasterDEMTileSource | undefined = $state();
+  let sourceObj: MaplibreRasterDEMTileSource | undefined = $state();
 
   let first = $state(true);
   $effect(() => {
@@ -72,7 +75,7 @@
             return;
           }
 
-          sourceObj = map.getSource(source.value) as RasterDEMTileSource;
+          sourceObj = map.getSource(source.value) as MaplibreRasterDEMTileSource;
           first = true;
         }
       );
@@ -96,7 +99,7 @@
     map.on('style.load', () => {
       // When the style changes the current sources are nuked and recreated. Because of this the
       // source object no longer references the current source on the map so we update it here.
-      sourceObj = map.getSource(id) as RasterDEMTileSource | undefined;
+      sourceObj = map.getSource(id) as MaplibreRasterDEMTileSource | undefined;
     });
   });
 
