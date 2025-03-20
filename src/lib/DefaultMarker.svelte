@@ -2,7 +2,7 @@
   import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
-  import { getMapContext, updatedMarkerContext } from './context.svelte.js';
+  import { Box, getMapContext, setLngLatContext, updatedMarkerContext } from './context.svelte.js';
   import type { MarkerClickInfo } from './types';
   import type { Feature, Point } from 'geojson';
   import { flush } from '$lib/flush.js';
@@ -88,8 +88,12 @@
     marker.value?.remove();
   });
 
+  let lngLatBox = new Box(lngLat);
+  setLngLatContext(lngLatBox);
+
   $effect(() => {
     marker.value?.setLngLat(lngLat);
+    lngLatBox.value = lngLat;
   });
   $effect(() => {
     if (offset) {

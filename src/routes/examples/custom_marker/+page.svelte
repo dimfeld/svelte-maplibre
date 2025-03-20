@@ -44,6 +44,18 @@
       name: 'Ninoy Aquino',
     },
   ];
+
+  let open = $state(markers.map(() => false));
+
+  let buttonAction = $derived(open.some((v) => v === false) ? 'open' : 'close');
+
+  function toggleAll() {
+    if (buttonAction === 'open') {
+      open = open.map(() => true);
+    } else {
+      open = open.map(() => false);
+    }
+  }
 </script>
 
 <p>
@@ -54,6 +66,10 @@
   {/if}
 </p>
 
+<button type="button" class="btn-base" onclick={toggleAll}>
+  {buttonAction === 'open' ? 'Open All' : 'Close All'} Popups
+</button>
+
 <MapLibre
   style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
   class={mapClasses}
@@ -61,7 +77,7 @@
   zoom={1}
   center={[-20, 0]}
 >
-  {#each markers as { lngLat, label, name } (label)}
+  {#each markers as { lngLat, label, name }, i (label)}
     <Marker
       {lngLat}
       onclick={() => (clickedName = name)}
@@ -71,7 +87,7 @@
         {label}
       </span>
 
-      <Popup openOn="hover" offset={[0, -10]}>
+      <Popup openOn="click" bind:open={open[i]} offset={[0, -10]}>
         <div class="text-lg font-bold">{name}</div>
       </Popup>
     </Marker>
