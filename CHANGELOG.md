@@ -4,6 +4,25 @@
 
 ### Major Changes
 
+- [#262](https://github.com/dimfeld/svelte-maplibre/pull/262) [`547e5e1`](https://github.com/dimfeld/svelte-maplibre/commit/547e5e1eee15f91fb56267455992da29cae9173d) Thanks [@dimfeld](https://github.com/dimfeld)! - Set `loaded = true` on `style.load` instead of `load`.
+
+  This greatly improves responsiveness of setting up the initial sources and layers.
+  The MapLibre component also no longer gates rendering its children snippet on `loaded`.
+  The `Layer` and various source-based components included with this library will wait for it, but if you have
+  a custom component you may need to wait for `loaded` yourself using a pattern like this:
+
+  ```javascript
+
+  const { map, loaded } = $derived(getMapContext())
+
+  $effect(() => {
+      if(map && loaded) {
+          map.addSource(...);
+      }
+  })
+
+  ```
+
 - [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`eadb5a4`](https://github.com/dimfeld/svelte-maplibre/commit/eadb5a4fa3ef301d503f6b7533b0483ec70c368d) Thanks [@dimfeld](https://github.com/dimfeld)! - Update to deck.gl v9
 
 - [#214](https://github.com/dimfeld/svelte-maplibre/pull/214) [`0485a6a`](https://github.com/dimfeld/svelte-maplibre/commit/0485a6a56a7eb78dc8f2d838902236a022793755) Thanks [@dimfeld](https://github.com/dimfeld)! - Remove `map` attribute from events. It was already present as `target`
@@ -24,11 +43,25 @@
 
 - [#244](https://github.com/dimfeld/svelte-maplibre/pull/244) [`49af3f3`](https://github.com/dimfeld/svelte-maplibre/commit/49af3f3b0cdf5b92a507fef4ba8e053d2b3e8e96) Thanks [@Tintow](https://github.com/Tintow)! - Exposed the bearingSnap property in the maps props to allow control over the default automatic snap-to-north
 
+- [#246](https://github.com/dimfeld/svelte-maplibre/pull/246) [`2db55af`](https://github.com/dimfeld/svelte-maplibre/commit/2db55af65031ec0736cbacc8893db831512edccd) Thanks [@dimfeld](https://github.com/dimfeld)! - Add `canOpen` property to a Popup which allows per-feature control over whether to show a popup or not
+
+- [#262](https://github.com/dimfeld/svelte-maplibre/pull/262) [`547e5e1`](https://github.com/dimfeld/svelte-maplibre/commit/547e5e1eee15f91fb56267455992da29cae9173d) Thanks [@dimfeld](https://github.com/dimfeld)! - Add BackgroundLayer component
+
+- [#262](https://github.com/dimfeld/svelte-maplibre/pull/262) [`547e5e1`](https://github.com/dimfeld/svelte-maplibre/commit/547e5e1eee15f91fb56267455992da29cae9173d) Thanks [@dimfeld](https://github.com/dimfeld)! - Add projection support
+
+- [#262](https://github.com/dimfeld/svelte-maplibre/pull/262) [`547e5e1`](https://github.com/dimfeld/svelte-maplibre/commit/547e5e1eee15f91fb56267455992da29cae9173d) Thanks [@dimfeld](https://github.com/dimfeld)! - Add `anchor` property to markers
+
+- [#245](https://github.com/dimfeld/svelte-maplibre/pull/245) [`c1e8a00`](https://github.com/dimfeld/svelte-maplibre/commit/c1e8a007ba435787ab7c98fa582d0b176f5988c7) Thanks [@dimfeld](https://github.com/dimfeld)! - Allow Popups to inherit lngLat from a parent Marker
+
 ### Patch Changes
 
 - [`6715e61`](https://github.com/dimfeld/svelte-maplibre/commit/6715e6139e0117b09b882450768461e023fbdb38) Thanks [@dimfeld](https://github.com/dimfeld)! - Fix standalone popups not appearing
 
 - [`87692e4`](https://github.com/dimfeld/svelte-maplibre/commit/87692e4f7ad2cebb55a8bdac53f8700f1507914f) Thanks [@dimfeld](https://github.com/dimfeld)! - Default marker offset is unset instead of [0, 0]
+
+- [#262](https://github.com/dimfeld/svelte-maplibre/pull/262) [`547e5e1`](https://github.com/dimfeld/svelte-maplibre/commit/547e5e1eee15f91fb56267455992da29cae9173d) Thanks [@dimfeld](https://github.com/dimfeld)! - Fix bounds equality check
+
+- [#248](https://github.com/dimfeld/svelte-maplibre/pull/248) [`db5ed15`](https://github.com/dimfeld/svelte-maplibre/commit/db5ed15ed10fddfada9735ee39823d27b8416341) Thanks [@viernullvier](https://github.com/viernullvier)! - Fix type name conflicts with Maplibre types
 
 ## 0.9.14
 
