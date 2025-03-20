@@ -12,7 +12,7 @@
   let { source = undefined, exaggeration = undefined }: Props = $props();
 
   $effect(() => {
-    if (source) {
+    if (source && loaded) {
       let specification = { source: source, exaggeration: exaggeration };
       map.setTerrain(specification);
     }

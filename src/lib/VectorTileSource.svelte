@@ -43,13 +43,13 @@
     }
   }
 
-  const { map } = $derived(getMapContext());
+  const { map, loaded } = $derived(getMapContext());
   const { source } = updatedSourceContext();
 
   let sourceObj: MaplibreVectorTileSource | undefined = $state();
 
   $effect(() => {
-    if (source.value !== id) {
+    if (map && loaded && source.value !== id) {
       source.value = id;
       addSource(
         map,
