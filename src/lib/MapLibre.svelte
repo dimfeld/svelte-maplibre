@@ -41,6 +41,7 @@
     bearing?: number;
     bearingSnap?: number;
     bounds?: LngLatBoundsLike | undefined;
+    projection?: maplibregl.ProjectionSpecification | undefined;
     /** Set to true to track the map viewport in the URL hash. If the URL hash is set, that overrides initial viewport settings. */
     hash?: boolean;
     /** Update the URL when the hash changes, if `hash` is true.
@@ -122,6 +123,7 @@
     bearingSnap = 7,
     bounds = $bindable(undefined),
     hash = false,
+    projection = undefined,
     updateHash = (url) => {
       window.history.replaceState(window.history.state, '', url);
     },
@@ -351,6 +353,10 @@
 
     map.on('style.load', (ev) => {
       if (map) {
+        if (projection) {
+          map.setProjection(projection);
+        }
+
         mapContext.loaded = true;
         loaded = true;
         const mapStyle = map.getStyle();
@@ -462,6 +468,12 @@
       if (Object.keys(options).length) {
         map.easeTo(options);
       }
+    }
+  });
+
+  $effect(() => {
+    if (projection && loaded) {
+      map?.setProjection(projection);
     }
   });
 
