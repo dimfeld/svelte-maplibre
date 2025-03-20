@@ -12,6 +12,7 @@
     marker?: maplibre.Marker | undefined;
     lngLat: LngLatLike;
     class?: string | undefined;
+    anchor?: maplibre.PositionAnchor;
     /** Handle mouse events */
     draggable?: boolean;
     /** A GeoJSON Feature related to the point. This is only actually used to send an ID and set of properties along with
@@ -36,6 +37,7 @@
     marker: markerProp = $bindable(undefined),
     lngLat = $bindable(),
     class: classNames = undefined,
+    anchor,
     draggable = false,
     feature = undefined,
     offset = undefined,
@@ -67,6 +69,7 @@
       draggable,
       rotation,
       className: classNames,
+      anchor,
       offset,
       opacity: opacity.toString(),
     })

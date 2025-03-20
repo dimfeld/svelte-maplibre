@@ -15,6 +15,7 @@
     marker?: maplibre.Marker | undefined;
     lngLat: LngLatLike;
     class?: string | undefined;
+    anchor?: maplibre.PositionAnchor;
     /** Handle mouse events */
     interactive?: boolean;
     /** Make markers tabbable and add the button role. */
@@ -56,8 +57,8 @@
     zIndex = undefined,
     rotation = 0,
     opacity = 1,
+    anchor,
     children,
-
     ...eventCbs
   }: Props = $props();
 
@@ -70,6 +71,7 @@
       rotation,
       draggable,
       offset,
+      anchor,
       opacity: opacity.toString(),
     })
       .setLngLat(lngLat)
