@@ -54,6 +54,10 @@
       ]
     >;
 
+    /** A callback which can return `false` if the popup should not open.
+     * For example, the features for this popup may not contain any data for the popup. */
+    canOpen?: (features: Array<DATA> | undefined) => boolean;
+
     onopen?: (popup: maplibregl.Popup) => void;
     onclose?: (popup: maplibregl.Popup) => void;
     onhover?: (popup: maplibregl.Popup) => void;
@@ -74,6 +78,7 @@
     lngLat = $bindable(undefined),
     html = undefined,
     open = $bindable(false),
+    canOpen,
     children,
 
     onopen = undefined,
@@ -179,6 +184,15 @@
     };
   });
 
+  function tryToOpen() {
+    if (canOpen && !canOpen(features)) {
+      open = false;
+      return;
+    }
+
+    open = true;
+  }
+
   function skipHandlingEvent(e: MapLayerMouseEvent | LayerEvent) {
     if (!openIfTopMost) {
       return false;
@@ -209,7 +223,7 @@
 
     // Wait a tick in case closeOnClick is set. Then the map will close the popup and we'll reopen it
     // just after.
-    setTimeout(() => (open = true));
+    setTimeout(tryToOpen);
   }
 
   let touchStartCoords: MapLayerTouchEvent['point'] | undefined = undefined;
@@ -233,7 +247,7 @@
         touchOpenState = 'justOpened';
       } else {
         touchOpenState = 'opening';
-        open = true;
+        tryToOpen();
       }
     }
   }
@@ -258,9 +272,9 @@
       return;
     }
 
-    open = true;
     features = (e.features ?? []) as DATA[];
     lngLat = e.lngLat;
+    tryToOpen();
   }
 
   function globalClickHandler(e: MapMouseEvent) {
@@ -322,9 +336,12 @@
       popupElement = popup.getElement();
 
       popup.on('open', () => {
-        open = true;
-        setPopupClickHandler();
-        onopen?.(popup!);
+        tryToOpen();
+
+        if (open) {
+          setPopupClickHandler();
+          onopen?.(popup!);
+        }
       });
 
       popup.on('close', () => {
@@ -367,7 +384,12 @@
       if (hoveringOnLayer && layerEvent.value) {
         handleLayerEvent(layerEvent.value);
       }
-      open = (hoveringOnLayer || hoveringOnPopup) ?? false;
+
+      if (hoveringOnLayer || hoveringOnPopup) {
+        tryToOpen();
+      } else {
+        open = false;
+      }
     }
   });
 
