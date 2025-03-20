@@ -13,6 +13,7 @@
     getLayer,
     getLayerEvent,
     getPopupTarget,
+    getLngLatContext,
   } from './context.svelte.js';
   import type { MarkerClickInfo } from './types.js';
 
@@ -41,7 +42,8 @@
     lngLat?: maplibregl.LngLatLike;
     /** If set and the slot is omitted, use this string as HTML to pass into the popup. */
     html?: string;
-    /** Whether the popup is open or not. Can be set to manualy open the popup at `lngLat`. */
+    /** Whether the popup is open or not. Can be set to manually open the popup at `lngLat`,
+     * if openOn is not `hover`. */
     open?: boolean;
     children?: Snippet<
       [
@@ -85,6 +87,8 @@
     onclose = undefined,
     onhover = undefined,
   }: Props = $props();
+
+  let inheritedLngLat = getLngLatContext();
 
   const { map, eventTopMost, markerClickManager, loaded } = $derived(getMapContext());
   const layer = getLayer();
@@ -402,7 +406,8 @@
   });
 
   $effect(() => {
-    if (lngLat) popup?.setLngLat(lngLat);
+    let actualLnglat = lngLat ?? inheritedLngLat?.value ?? undefined;
+    if (actualLnglat) popup?.setLngLat(actualLnglat);
   });
 
   $effect(() => {
