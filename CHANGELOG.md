@@ -53,6 +53,8 @@
 
 - [#245](https://github.com/dimfeld/svelte-maplibre/pull/245) [`c1e8a00`](https://github.com/dimfeld/svelte-maplibre/commit/c1e8a007ba435787ab7c98fa582d0b176f5988c7) Thanks [@dimfeld](https://github.com/dimfeld)! - Allow Popups to inherit lngLat from a parent Marker
 
+- [`fbadf74`](https://github.com/dimfeld/svelte-maplibre/commit/fbadf74453148c0ded21b332542e62cfc8114db2) Thanks [@dimfeld](https://github.com/dimfeld)! - Pass bound `bounds` prop out of component in same format it was passed in
+
 ### Patch Changes
 
 - [`6715e61`](https://github.com/dimfeld/svelte-maplibre/commit/6715e6139e0117b09b882450768461e023fbdb38) Thanks [@dimfeld](https://github.com/dimfeld)! - Fix standalone popups not appearing
