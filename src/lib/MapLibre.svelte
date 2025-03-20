@@ -13,6 +13,7 @@
   import 'maplibre-gl/dist/maplibre-gl.css';
   import {
     boundsEqual,
+    convertBoundsToUserFormat,
     type CustomImageSpec,
     type MapMoveEvent,
     type StyleLoadEvent,
@@ -301,7 +302,7 @@
       zoom = ev.target.getZoom();
       pitch = ev.target.getPitch();
       bearing = ev.target.getBearing();
-      bounds = ev.target.getBounds();
+      bounds = convertBoundsToUserFormat(ev.target.getBounds(), bounds);
       onmoveend?.(ev);
       if (hash) {
         let location = new URL(window.location.href.replace(/(#.+)?$/, getViewportHash(ev.target)));
@@ -478,8 +479,11 @@
   });
 
   $effect(() => {
-    if (bounds && !boundsEqual(bounds, map?.getBounds())) {
-      map?.fitBounds(bounds);
+    if (bounds) {
+      const { equal, bounds: newBounds } = boundsEqual(bounds, map?.getBounds());
+      if (!equal) {
+        map?.fitBounds(newBounds);
+      }
     }
   });
   $effect(() => {
