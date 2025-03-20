@@ -1,4 +1,5 @@
 export { default as AttributionControl } from './AttributionControl.svelte';
+export { default as BackgroundLayer } from './BackgroundLayer.svelte';
 export { default as CircleLayer } from './CircleLayer.svelte';
 export { default as Control } from './Control.svelte';
 export { default as ControlButton } from './ControlButton.svelte';

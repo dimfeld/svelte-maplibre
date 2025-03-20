@@ -14,6 +14,7 @@
     paint?: object | undefined;
     layout?: object | undefined;
     applyToClusters?: boolean;
+    requireSource?: boolean;
   }
 
   type FeatureFromMap = MapGeoJSONFeature & FEATURE;
@@ -29,6 +30,7 @@
     layout = undefined,
     filter = undefined,
     applyToClusters = undefined,
+    requireSource = true,
     minzoom = undefined,
     maxzoom = undefined,
     manageHoverState = false,
@@ -47,6 +49,7 @@
   }: Props = $props();
 
   const sourceName = getSource();
+  const { loaded } = $derived(getMapContext());
   const { layer } = updatedLayerContext();
   const {
     map,
@@ -226,7 +229,7 @@
   let actualMaxZoom = $derived(maxzoom ?? maxzoomContext);
   let actualSource = $derived(source || sourceName?.value);
   $effect(() => {
-    if (layer.value !== id && actualSource) {
+    if (layer.value !== id && loaded && (actualSource || !requireSource)) {
       if (layer.value) {
         unsubEvents(layer.value);
         layerInfo.delete(layer.value);

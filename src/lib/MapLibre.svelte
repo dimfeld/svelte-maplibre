@@ -11,7 +11,12 @@
   } from 'maplibre-gl';
   import compare from 'just-compare';
   import 'maplibre-gl/dist/maplibre-gl.css';
-  import type { CustomImageSpec, MapMoveEvent } from './types.js';
+  import {
+    boundsEqual,
+    type CustomImageSpec,
+    type MapMoveEvent,
+    type StyleLoadEvent,
+  } from './types.js';
   import NavigationControl from './NavigationControl.svelte';
   import GeolocateControl from './GeolocateControl.svelte';
   import FullscreenControl from './FullscreenControl.svelte';
@@ -77,6 +82,7 @@
       [
         {
           map: maplibregl.Map;
+          loaded: boolean;
           loadedImages: Set<string>;
           allImagesLoaded: boolean;
         },
@@ -98,6 +104,7 @@
     onrotate?: (e: maplibregl.MapLibreEvent<MouseEvent | TouchEvent | undefined>) => void;
     onwheel?: (e: maplibregl.MapWheelEvent) => void;
     ondata?: (e: maplibregl.MapDataEvent) => void;
+    onstyleload?: (e: StyleLoadEvent) => void;
     onstyledata?: (e: maplibregl.MapStyleDataEvent) => void;
     onidle?: (e: maplibregl.MapLibreEvent) => void;
   }
@@ -156,6 +163,7 @@
     onrotate,
     onwheel,
     ondata,
+    onstyleload,
     onstyledata,
     onidle,
   }: Props = $props();
@@ -341,8 +349,10 @@
     // have come from the new basemap style and then add back in any layers and
     // styles that where added by the user as sub elements
 
-    map.on('style.load', () => {
+    map.on('style.load', (ev) => {
       if (map) {
+        mapContext.loaded = true;
+        loaded = true;
         const mapStyle = map.getStyle();
         lastStyleLayerIds = mapStyle.layers.map((l) => l.id);
         lastStyleSourceIds = Object.keys(mapStyle.sources);
@@ -363,6 +373,8 @@
           // but it's actually safe to do so.
           loadImage(image, true);
         }
+
+        onstyleload?.(ev);
       }
     });
 
@@ -454,7 +466,9 @@
   });
 
   $effect(() => {
-    if (bounds && !compare(bounds, map?.getBounds())) map?.fitBounds(bounds);
+    if (bounds && !boundsEqual(bounds, map?.getBounds())) {
+      map?.fitBounds(bounds);
+    }
   });
   $effect(() => {
     zoomOnDoubleClick ? map?.doubleClickZoom.enable() : map?.doubleClickZoom.disable();
@@ -484,7 +498,7 @@
   use:createMap
   data-testid="map-container"
 >
-  {#if map && loaded}
+  {#if map}
     {#if standardControls}
       <NavigationControl position={standardControlsPosition} />
       <GeolocateControl position={standardControlsPosition} fitBoundsOptions={{ maxZoom: 12 }} />
@@ -493,6 +507,7 @@
     {/if}
     {@render children?.({
       map,
+      loaded,
       loadedImages: mapContext.loadedImages,
       allImagesLoaded,
     })}

@@ -1,5 +1,13 @@
 import type { Feature, Point } from 'geojson';
-import type { MapGeoJSONFeature, MapLibreEvent, MapMouseEvent, Marker } from 'maplibre-gl';
+import {
+  type LngLatBoundsLike,
+  type MapGeoJSONFeature,
+  type MapLibreEvent,
+  type MapMouseEvent,
+  type Marker,
+} from 'maplibre-gl';
+import MapLibre from 'maplibre-gl';
+const { LngLatBounds } = MapLibre;
 import type { Snippet } from 'svelte';
 
 export type {
@@ -116,4 +124,39 @@ export interface CommonLayerProps<FEATURE extends Feature = Feature> {
   onmouseenter?: (e: LayerClickInfo<FEATURE>) => void;
   onmousemove?: (e: LayerClickInfo<FEATURE>) => void;
   onmouseleave?: (e: Pick<LayerClickInfo<FEATURE>, 'map' | 'layer' | 'source'>) => void;
+}
+
+export interface StyleLoadEvent {
+  type: 'style.load';
+  map: maplibregl.Map;
+  style: maplibregl.Style;
+}
+
+function compareFloat(a: number, b: number): boolean {
+  return Math.abs(a - b) < 0.000001;
+}
+
+export function boundsEqual(a: LngLatBoundsLike, b: LngLatBoundsLike | undefined): boolean {
+  if (!b) {
+    return false;
+  }
+
+  let ab = LngLatBounds.convert(a);
+  let bb = LngLatBounds.convert(b);
+
+  let abNe = ab.getNorthEast();
+  let bbNe = bb.getNorthEast();
+
+  if (!compareFloat(abNe.lat, bbNe.lat) || !compareFloat(abNe.wrap().lng, bbNe.wrap().lng)) {
+    return false;
+  }
+
+  let abSw = ab.getSouthWest();
+  let bbSw = bb.getSouthWest();
+
+  if (!compareFloat(abSw.lat, bbSw.lat) || !compareFloat(abSw.wrap().lng, bbSw.wrap().lng)) {
+    return false;
+  }
+
+  return true;
 }

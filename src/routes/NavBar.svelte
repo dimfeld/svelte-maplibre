@@ -43,6 +43,7 @@
     { href: '/examples/raster_source', title: `Raster Source` },
     { href: '/examples/image_source', title: `Image Source` },
     { href: '/examples/cooperative_gestures', title: `Cooperative Gestures` },
+    { href: '/examples/background', title: `Background Layer` },
     { href: '/examples/3d_terrain', title: `3D Terrain` },
   ];
 

@@ -43,13 +43,13 @@
     children,
   }: Props = $props();
 
-  const { map } = $derived(getMapContext());
+  const { map, loaded } = $derived(getMapContext());
   const { source } = updatedSourceContext();
   let sourceObj: MaplibreRasterDEMTileSource | undefined = $state();
 
   let first = $state(true);
   $effect(() => {
-    if (map && source.value !== id) {
+    if (map && loaded && source.value !== id) {
       source.value = id;
       addSource(
         map,
