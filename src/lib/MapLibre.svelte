@@ -8,6 +8,7 @@
     type LngLatBoundsLike,
     type LngLatLike,
     type SourceSpecification,
+    type FlyToOptions,
   } from 'maplibre-gl';
   import compare from 'just-compare';
   import 'maplibre-gl/dist/maplibre-gl.css';
@@ -42,6 +43,7 @@
     bearing?: number;
     bearingSnap?: number;
     bounds?: LngLatBoundsLike | undefined;
+    fitBoundsOptions?: FlyToOptions;
     projection?: maplibregl.ProjectionSpecification | undefined;
     /** Set to true to track the map viewport in the URL hash. If the URL hash is set, that overrides initial viewport settings. */
     hash?: boolean;
@@ -123,6 +125,7 @@
     bearing = $bindable(0),
     bearingSnap = 7,
     bounds = $bindable(undefined),
+    fitBoundsOptions = {},
     hash = false,
     projection = undefined,
     updateHash = (url) => {
@@ -482,7 +485,7 @@
     if (bounds) {
       const { equal, bounds: newBounds } = boundsEqual(bounds, map?.getBounds());
       if (!equal) {
-        map?.fitBounds(newBounds);
+        map?.fitBounds(newBounds, fitBoundsOptions);
       }
     }
   });
@@ -517,7 +520,10 @@
   {#if map}
     {#if standardControls}
       <NavigationControl position={standardControlsPosition} />
-      <GeolocateControl position={standardControlsPosition} fitBoundsOptions={{ maxZoom: 12 }} />
+      <GeolocateControl
+        position={standardControlsPosition}
+        fitBoundsOptions={{ ...fitBoundsOptions, maxZoom: 12 }}
+      />
       <FullscreenControl position={standardControlsPosition} />
       <ScaleControl position={standardControlsPosition} />
     {/if}
