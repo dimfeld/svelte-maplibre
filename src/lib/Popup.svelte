@@ -52,6 +52,7 @@
           data: DATA | undefined;
           map: maplibregl.Map | undefined;
           close: () => void;
+          isOpen: boolean;
         },
       ]
     >;
@@ -433,6 +434,7 @@
         data: features?.[0] ?? undefined,
         map: map,
         close: () => (open = false),
+        isOpen: open,
       })}
     {/if}
   </div>
