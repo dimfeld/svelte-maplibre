@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 1.1.0
+
+### Minor Changes
+
+- [#273](https://github.com/dimfeld/svelte-maplibre/pull/273) [`f8fef31`](https://github.com/dimfeld/svelte-maplibre/commit/f8fef314c8184b7d17ab38b7124b5a7dd69c0fdd) Thanks [@hmnd](https://github.com/hmnd)! - pass isOpen to Popup children to prevent rendering Popup content before shown
+
 ## 1.0.0
 
 ### Major Changes
