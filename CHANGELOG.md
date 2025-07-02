@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 1.2.0
+
+### Minor Changes
+
+- [#264](https://github.com/dimfeld/svelte-maplibre/pull/264) [`2de25f5`](https://github.com/dimfeld/svelte-maplibre/commit/2de25f57ea9c9c1dab1f446ca4ce301fd42b0752) Thanks [@jaeh](https://github.com/jaeh)! - Add fitBoundsOptions prop to MapLibre component
+
 ## 1.1.0
 
 ### Minor Changes
