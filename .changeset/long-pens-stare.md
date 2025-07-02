@@ -1,5 +1,5 @@
 ---
-'svelte-maplibre': patch
+'svelte-maplibre': minor
 ---
 
-add fitBoundsOptions prop to MapLibre component
+Add fitBoundsOptions prop to MapLibre component
