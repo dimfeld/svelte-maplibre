@@ -8,7 +8,7 @@
     type LngLatBoundsLike,
     type LngLatLike,
     type SourceSpecification,
-    type FlyToOptions,
+    type FitBoundsOptions,
   } from 'maplibre-gl';
   import compare from 'just-compare';
   import 'maplibre-gl/dist/maplibre-gl.css';
@@ -43,7 +43,7 @@
     bearing?: number;
     bearingSnap?: number;
     bounds?: LngLatBoundsLike | undefined;
-    fitBoundsOptions?: FlyToOptions;
+    fitBoundsOptions?: FitBoundsOptions;
     projection?: maplibregl.ProjectionSpecification | undefined;
     /** Set to true to track the map viewport in the URL hash. If the URL hash is set, that overrides initial viewport settings. */
     hash?: boolean;
