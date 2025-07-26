@@ -12,6 +12,7 @@
     onclick?: (e: maplibregl.MapMouseEvent) => void;
     ondblclick?: (e: maplibregl.MapMouseEvent) => void;
     oncontextmenu?: (e: maplibregl.MapMouseEvent) => void;
+    onmousemove?: (e: MapMoveEvent) => void;
     onmovestart?: (e: MapMoveEvent) => void;
     onmoveend?: (e: MapMoveEvent) => void;
     onzoomstart?: (e: maplibregl.MapLibreZoomEvent) => void;
