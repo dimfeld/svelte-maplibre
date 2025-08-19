@@ -24,5 +24,6 @@ export function getViewportHash(map: Map): string {
 
 // Returns [zoom, center lat, center lng, optionally bearing, optionally pitch]
 export function parseViewportHash(hash: string): number[] {
-  return hash.replace('#', '').split('/').map(parseFloat);
+  const parts = hash.replace('#', '').split('/').map(parseFloat);
+  return parts.some(isNaN) ? [] : parts;
 }
