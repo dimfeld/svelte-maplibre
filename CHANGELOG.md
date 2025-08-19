@@ -1,5 +1,15 @@
 # svelte-maplibre
 
+## 1.2.1
+
+### Patch Changes
+
+- [#276](https://github.com/dimfeld/svelte-maplibre/pull/276) [`d7adebe`](https://github.com/dimfeld/svelte-maplibre/commit/d7adebe6c6d736011caa92b8a219c4138ea43cbe) Thanks [@realStandal](https://github.com/realStandal)! - Added the "onmousemove" prop to MapEvents.svelte to satisfy typings
+
+- [#277](https://github.com/dimfeld/svelte-maplibre/pull/277) [`ffcff3c`](https://github.com/dimfeld/svelte-maplibre/commit/ffcff3cbc3a344ef7258c4c854a755ea07ac9f90) Thanks [@dabreegster](https://github.com/dabreegster)! - Fix crash in hash parsing
+
+- [#278](https://github.com/dimfeld/svelte-maplibre/pull/278) [`a92c493`](https://github.com/dimfeld/svelte-maplibre/commit/a92c49344d3ab709ed77c3dc2840271b8f695195) Thanks [@dabreegster](https://github.com/dabreegster)! - Fix bug where a destroyed Layer kept the onclick handler
+
 ## 1.2.0
 
 ### Minor Changes
