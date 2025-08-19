@@ -210,6 +210,7 @@
   let first = $state(true);
 
   function unsubEvents(layerName: string) {
+    map.off('click', layerName, handleClick);
     map.off('dblclick', layerName, handleClick);
     map.off('contextmenu', layerName, handleClick);
     map.off('mouseenter', layerName, handleMouseEnter);
