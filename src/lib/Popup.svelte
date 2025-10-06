@@ -390,7 +390,8 @@
         handleLayerEvent(layerEvent.value);
       }
 
-      if (hoveringOnLayer || hoveringOnPopup) {
+      const touchKeepingOpen = touchOpenState !== 'normal';
+      if (hoveringOnLayer || hoveringOnPopup || touchKeepingOpen) {
         tryToOpen();
       } else {
         open = false;
