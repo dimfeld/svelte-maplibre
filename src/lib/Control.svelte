@@ -31,13 +31,11 @@
   };
 
   $effect(() => {
-    if (el) {
-      map.addControl(control, position);
-    }
+    map?.addControl(control, position);
   });
 
   onDestroy(() => {
-    map.removeControl(control);
+    map?.removeControl(control);
   });
 </script>
 

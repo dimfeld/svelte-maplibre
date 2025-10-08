@@ -77,15 +77,22 @@
     }
   });
 
+  function handleStyleLoad() {
+    if (!map) return;
+
+    // When the style changes the current sources are nuked and recreated. Because of this the
+    // source object no longer references the current source on the map so we update it here.
+    sourceObj = map.getSource(id) as MaplibreVectorTileSource | undefined;
+  }
+
   $effect(() => {
-    map.on('style.load', () => {
-      // When the style changes the current sources are nuked and recreated. Because of this the
-      // source object no longer references the current source on the map so we update it here.
-      sourceObj = map.getSource(id) as MaplibreVectorTileSource | undefined;
-    });
+    if (map) {
+      map.on('style.load', handleStyleLoad);
+    }
   });
 
   onDestroy(() => {
+    map?.off('style.load', handleStyleLoad);
     if (source.value && map) {
       removeSource(map, source.value, sourceObj);
       source.value = undefined;

@@ -95,12 +95,16 @@
     }
   });
 
+  function handleStyleLoad() {
+    if (!map) return;
+
+    // When the style changes the current sources are nuked and recreated. Because of this the
+    // source object no longer references the current source on the map so we update it here.
+    sourceObj = map.getSource(id) as MaplibreRasterDEMTileSource | undefined;
+  }
+
   $effect(() => {
-    map.on('style.load', () => {
-      // When the style changes the current sources are nuked and recreated. Because of this the
-      // source object no longer references the current source on the map so we update it here.
-      sourceObj = map.getSource(id) as MaplibreRasterDEMTileSource | undefined;
-    });
+    map?.on('style.load', handleStyleLoad);
   });
 
   onDestroy(() => {

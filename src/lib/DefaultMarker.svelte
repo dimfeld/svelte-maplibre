@@ -63,29 +63,32 @@
     sendEvent(ondragend, 'dragend');
   };
 
-  // svelte-ignore state_referenced_locally
-  marker.value = new maplibre.Marker(
-    flush({
-      draggable,
-      rotation,
-      className: classNames,
-      anchor,
-      offset,
-      opacity: opacity.toString(),
-    })
-  )
-    .setLngLat(lngLat)
-    .addTo(map);
-  markerProp = marker.value;
-  if (draggable) {
-    marker.value.on('dragstart', dragStartListener);
-    marker.value.on('drag', dragListener);
-    marker.value.on('dragend', dragEndListener);
-  }
-
   onDestroy(() => {
     markerProp = undefined;
     marker.value?.remove();
+  });
+
+  $effect(() => {
+    if (map && !marker.value) {
+      marker.value = new maplibre.Marker(
+        flush({
+          draggable,
+          rotation,
+          className: classNames,
+          anchor,
+          offset,
+          opacity: opacity.toString(),
+        })
+      )
+        .setLngLat(lngLat)
+        .addTo(map);
+      markerProp = marker.value;
+      if (draggable) {
+        marker.value.on('dragstart', dragStartListener);
+        marker.value.on('drag', dragListener);
+        marker.value.on('dragend', dragEndListener);
+      }
+    }
   });
 
   let lngLatBox = new Box(lngLat);
