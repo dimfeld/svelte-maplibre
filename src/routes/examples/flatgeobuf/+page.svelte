@@ -13,8 +13,8 @@
   // Extraction can be achieved with prop extractGeomCols={true}
   import kathmanduFgbData from '$site/kathmandu.fgb?url';
 
-  let map: Map | undefined;
-  let loaded: boolean;
+  let map: Map | undefined = $state(undefined);
+  let loaded: boolean = $state(false);
 
   // Load a standard XYZ map, else the polygons render underneath the style?
   const osmStyle = {
