@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 1.2.2
+
+### Patch Changes
+
+- [#283](https://github.com/dimfeld/svelte-maplibre/pull/283) [`cd4be46`](https://github.com/dimfeld/svelte-maplibre/commit/cd4be46f600278e9be05eb90fd4ef1c8a22dbe57) Thanks [@hmnd](https://github.com/hmnd)! - handle nullish context.map on re-render
+
 ## 1.2.1
 
 ### Patch Changes
