@@ -28,8 +28,8 @@
   });
 
   onDestroy(() => {
-    if (loaded && control) {
-      map.removeControl(control);
-    }
+      if (loaded && control) {
+        map?.removeControl(control);
+      }
   });
 </script>

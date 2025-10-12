@@ -78,6 +78,8 @@
 
   let installedHandlers = false;
   function setupHandlers() {
+    if (!map) return;
+
     installedHandlers = true;
 
     map.on('zoom', handleZoom);
@@ -161,7 +163,7 @@
   }
 
   function updateMarkers() {
-    if (!source?.value) {
+    if (!source?.value || !map) {
       return;
     }
 
@@ -199,9 +201,14 @@
   }
 
   // svelte-ignore state_referenced_locally
-  let zoom = $state(map.getZoom());
+  let zoom = $state(map?.getZoom() ?? 1);
   function handleZoom(e: MapLibreZoomEvent) {
-    zoom = map.getZoom();
+    const currentZoom = map?.getZoom() ?? 1;
+    if (currentZoom) {
+      zoom = currentZoom;
+    }
+
+    console.log('updating markers');
     updateMarkers();
   }
 </script>

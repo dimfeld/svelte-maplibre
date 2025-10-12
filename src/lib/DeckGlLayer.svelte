@@ -65,10 +65,13 @@
   layerId.value = id;
   setPopupTarget(new Box(undefined));
 
-  let zoom = $state(context.map.getZoom() ?? 1);
+  let zoom = $state(context.map?.getZoom() ?? 1);
 
   function handleZoom() {
-    zoom = map.getZoom();
+    const currentZoom = map?.getZoom();
+    if (currentZoom) {
+      zoom = currentZoom;
+    }
   }
 
   function handleClick(e: PickingInfo<DATA>) {
@@ -103,7 +106,7 @@
   let layer: import('@deck.gl/mapbox').MapboxOverlay | undefined = $state();
 
   onDestroy(() => {
-    if (loaded && layer) {
+    if (loaded && layer && map) {
       // @ts-expect-error Mapbox/Maplibre types don't quite match
       map.removeControl(layer);
       map.off('zoom', handleZoom);

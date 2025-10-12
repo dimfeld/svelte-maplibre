@@ -12,14 +12,14 @@
   let { source = undefined, exaggeration = undefined }: Props = $props();
 
   $effect(() => {
-    if (source && loaded) {
+    if (source && loaded && map) {
       let specification = { source: source, exaggeration: exaggeration };
       map.setTerrain(specification);
     }
   });
 
   onDestroy(() => {
-    if (loaded && source) {
+    if (loaded && source && map) {
       map.setTerrain(null);
     }
   });

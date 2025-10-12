@@ -7,6 +7,7 @@
     MarkerClickInfoFeature as GenMarkerClickInfoFeature,
   } from './types';
   import type { Feature, Point } from 'geojson';
+  import type { Action } from 'svelte/action';
 
   type MarkerClickInfoFeature = GenMarkerClickInfoFeature<FEATURE>;
 
@@ -65,19 +66,7 @@
   const { map, markerClickManager } = $derived(getMapContext());
   const { layerEvent, marker } = updatedMarkerContext();
 
-  function addMarker(node: HTMLDivElement) {
-    marker.value = new maplibre.Marker({
-      element: node,
-      rotation,
-      draggable,
-      offset,
-      anchor,
-      opacity: opacity.toString(),
-    })
-      .setLngLat(lngLat)
-      .addTo(map!);
-    markerProp = marker.value;
-
+  const addMarker: Action<HTMLDivElement> = (node) => {
     const dragStartListener = () => sendEvent('dragstart');
     const dragListener = () => {
       propagateLngLatChange();
@@ -88,14 +77,31 @@
       sendEvent('dragend');
     };
 
-    if (draggable) {
-      marker.value.on('dragstart', dragStartListener);
-      marker.value.on('drag', dragListener);
-      marker.value.on('dragend', dragEndListener);
-    }
+    $effect(() => {
+      if (!map || marker.value) return;
+
+      marker.value = new maplibre.Marker({
+        element: node,
+        rotation,
+        draggable,
+        offset,
+        anchor,
+        opacity: opacity.toString(),
+      })
+        .setLngLat(lngLat)
+        .addTo(map!);
+      markerProp = marker.value;
+
+      if (draggable) {
+        marker.value.on('dragstart', dragStartListener);
+        marker.value.on('drag', dragListener);
+        marker.value.on('dragend', dragEndListener);
+      }
+    });
 
     return {
-      destroy() {
+      destroy: () => {
+        console.log('removing marker', marker.value);
         if (draggable) {
           marker.value?.off('dragstart', dragStartListener);
           marker.value?.off('drag', dragListener);
@@ -105,7 +111,7 @@
         marker.value?.remove();
       },
     };
-  }
+  };
 
   function manageClasses(node: HTMLDivElement, initialAddedClasses: string | undefined) {
     // These classes are added by MapLibre and we don't want to mess with them.

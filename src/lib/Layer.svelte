@@ -60,7 +60,7 @@
   } = $derived(getMapContext());
 
   onDestroy(() => {
-    if (layer.value) {
+    if (layer.value && map) {
       layerInfo.delete(layer.value);
       map.removeLayer(layer.value);
     }
@@ -102,7 +102,7 @@
   }
 
   function handleMouseEnter(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
-    if (!interactive || !layer.value) {
+    if (!interactive || !layer.value || !map) {
       return;
     }
 
@@ -131,7 +131,7 @@
   }
 
   function handleMouseMove(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
-    if (!interactive) {
+    if (!interactive || !map) {
       return;
     }
 
@@ -210,6 +210,7 @@
   let first = $state(true);
 
   function unsubEvents(layerName: string) {
+    if (!map) return;
     map.off('click', layerName, handleClick);
     map.off('dblclick', layerName, handleClick);
     map.off('contextmenu', layerName, handleClick);
@@ -230,7 +231,7 @@
   let actualMaxZoom = $derived(maxzoom ?? maxzoomContext);
   let actualSource = $derived(source || sourceName?.value);
   $effect(() => {
-    if (layer.value !== id && loaded && (actualSource || !requireSource)) {
+    if (map && layer.value !== id && loaded && (actualSource || !requireSource)) {
       if (layer.value) {
         unsubEvents(layer.value);
         layerInfo.delete(layer.value);
@@ -286,6 +287,7 @@
   let applyPaint = $derived(
     layer.value
       ? diffApplier((key, value) => {
+          if (!map) return;
           if (map.style._loaded) {
             map.setPaintProperty(layer.value!, key, value);
           } else {
@@ -297,6 +299,7 @@
   let applyLayout = $derived(
     layer.value
       ? diffApplier((key, value) => {
+          if (!map) return;
           if (map.style._loaded) {
             map.setLayoutProperty(layer.value!, key, value);
           } else {
@@ -312,11 +315,11 @@
     applyLayout?.(layout);
   });
   $effect(() => {
-    if (layer.value) map.setLayerZoomRange(layer.value, actualMinZoom, actualMaxZoom);
+    if (layer.value && map) map.setLayerZoomRange(layer.value, actualMinZoom, actualMaxZoom);
   });
   // Don't set the filter again after we've just created it.
   $effect(() => {
-    if (layer.value) {
+    if (layer.value && map) {
       if (first) {
         first = false;
       } else {

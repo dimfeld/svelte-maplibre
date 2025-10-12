@@ -147,7 +147,7 @@
     );
   }
 
-  onMount(() => {
+  $effect(() => {
     if (!map) {
       return;
     }
@@ -164,29 +164,29 @@
       map.on('touchstart', popupTarget.value, handleLayerTouchStart);
       map.on('touchend', popupTarget.value, handleLayerTouchEnd);
     }
+  });
 
-    return () => {
-      if (loaded) {
-        popup?.remove();
-        map.off('click', globalClickHandler);
-        map.off('contextmenu', globalClickHandler);
-        markerClickManager.remove(globalMarkerClickHandler);
+  onDestroy(() => {
+    if (loaded && map) {
+      popup?.remove();
+      map.off('click', globalClickHandler);
+      map.off('contextmenu', globalClickHandler);
+      markerClickManager.remove(globalMarkerClickHandler);
 
-        if (popupTarget?.value instanceof maplibregl.Marker) {
-          if (popupTarget.value.getPopup() === popup) {
-            popupTarget.value.setPopup(undefined);
-          }
-        } else if (typeof popupTarget?.value === 'string') {
-          map.off('click', popupTarget.value, handleLayerClick);
-          map.off('dblclick', popupTarget.value, handleLayerClick);
-          map.off('contextmenu', popupTarget.value, handleLayerClick);
-          map.off('mousemove', popupTarget.value, handleLayerMouseMove);
-          map.off('mouseleave', popupTarget.value, handleLayerMouseLeave);
-          map.off('touchstart', popupTarget.value, handleLayerTouchStart);
-          map.off('touchend', popupTarget.value, handleLayerTouchEnd);
+      if (popupTarget?.value instanceof maplibregl.Marker) {
+        if (popupTarget.value.getPopup() === popup) {
+          popupTarget.value.setPopup(undefined);
         }
+      } else if (typeof popupTarget?.value === 'string') {
+        map.off('click', popupTarget.value, handleLayerClick);
+        map.off('dblclick', popupTarget.value, handleLayerClick);
+        map.off('contextmenu', popupTarget.value, handleLayerClick);
+        map.off('mousemove', popupTarget.value, handleLayerMouseMove);
+        map.off('mouseleave', popupTarget.value, handleLayerMouseLeave);
+        map.off('touchstart', popupTarget.value, handleLayerTouchStart);
+        map.off('touchend', popupTarget.value, handleLayerTouchEnd);
       }
-    };
+    }
   });
 
   function tryToOpen() {

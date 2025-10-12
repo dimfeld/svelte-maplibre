@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
   import { getMapContext, setZoomLimits } from './context.svelte.js';
 
@@ -23,18 +23,22 @@
   });
 
   // svelte-ignore state_referenced_locally
-  let zoom = $state(map.getZoom() ?? 0);
+  let zoom = $state(map?.getZoom() ?? 1);
   function handleZoom() {
-    zoom = map.getZoom();
+    const currentZoom = map?.getZoom();
+
+    if (currentZoom) {
+      zoom = currentZoom;
+    }
   }
 
-  onMount(() => {
-    map.on('zoom', handleZoom);
-    return () => {
-      if (loaded) {
-        map.off('zoom', handleZoom);
-      }
-    };
+  $effect(() => {
+    map?.on('zoom', handleZoom);
+  });
+  onDestroy(() => {
+    if (loaded) {
+      map?.off('zoom', handleZoom);
+    }
   });
 </script>
 

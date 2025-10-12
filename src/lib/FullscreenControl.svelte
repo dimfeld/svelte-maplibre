@@ -23,7 +23,7 @@
   });
 
   $effect(() => {
-    if (!control) {
+    if (map && !control) {
       if (containerEl) {
         control = new maplibregl.FullscreenControl({
           container: containerEl,
@@ -37,7 +37,7 @@
 
   onDestroy(() => {
     if (loaded && control) {
-      map.removeControl(control);
+      map?.removeControl(control);
     }
   });
 </script>

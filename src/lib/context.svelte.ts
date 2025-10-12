@@ -25,7 +25,7 @@ export class Box<T> {
 }
 
 export class MapContext {
-  map = $state() as MapLibre;
+  map = $state() as MapLibre | undefined;
   loaded = $state(false);
   // cluster: Box<ClusterOptions | undefined>;
   /** A list of images that have been successfully loaded. */

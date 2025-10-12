@@ -19,7 +19,7 @@
 
   let control: maplibregl.AttributionControl | undefined = $state();
   $effect(() => {
-    if (!control) {
+    if (map && !control) {
       control = new maplibregl.AttributionControl({
         compact,
         customAttribution,
@@ -29,7 +29,7 @@
   });
 
   onDestroy(() => {
-    if (loaded && control) {
+    if (loaded && control && map) {
       map.removeControl(control);
     }
   });

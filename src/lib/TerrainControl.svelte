@@ -15,14 +15,14 @@
 
   let control: maplibregl.TerrainControl | undefined = $state();
   $effect(() => {
-    if (!control) {
+    if (map && !control) {
       control = new maplibregl.TerrainControl({ source: source, exaggeration: exaggeration });
       map.addControl(control, position);
     }
   });
 
   onDestroy(() => {
-    if (loaded && control) {
+    if (loaded && control && map) {
       map.removeControl(control);
     }
   });
