@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 1.2.3
+
+### Patch Changes
+
+- [#284](https://github.com/dimfeld/svelte-maplibre/pull/284) [`1272702`](https://github.com/dimfeld/svelte-maplibre/commit/127270200bc96a6d70abccb9e90a56a7ed88f239) Thanks [@dabreegster](https://github.com/dabreegster)! - Remove console logs
+
 ## 1.2.2
 
 ### Patch Changes
