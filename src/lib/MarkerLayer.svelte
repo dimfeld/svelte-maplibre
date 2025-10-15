@@ -208,7 +208,6 @@
       zoom = currentZoom;
     }
 
-    console.log('updating markers');
     updateMarkers();
   }
 </script>
