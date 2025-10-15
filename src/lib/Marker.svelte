@@ -101,7 +101,6 @@
 
     return {
       destroy: () => {
-        console.log('removing marker', marker.value);
         if (draggable) {
           marker.value?.off('dragstart', dragStartListener);
           marker.value?.off('drag', dragListener);
