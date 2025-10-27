@@ -20,7 +20,7 @@
   }: Props = $props();
 
   let control: maplibregl.NavigationControl | undefined = $state();
-  $effect(() => {
+  $effect.pre(() => {
     if (map && !control) {
       control = new maplibregl.NavigationControl({ showCompass, showZoom, visualizePitch });
       map.addControl(control, position);
@@ -28,8 +28,8 @@
   });
 
   onDestroy(() => {
-      if (loaded && control) {
-        map?.removeControl(control);
-      }
+    if (loaded && control) {
+      map?.removeControl(control);
+    }
   });
 </script>

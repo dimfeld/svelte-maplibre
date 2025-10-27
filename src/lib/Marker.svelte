@@ -77,7 +77,7 @@
       sendEvent('dragend');
     };
 
-    $effect(() => {
+    $effect.pre(() => {
       if (!map || marker.value) return;
 
       marker.value = new maplibre.Marker({
@@ -112,23 +112,34 @@
     };
   };
 
-  function manageClasses(node: HTMLDivElement, initialAddedClasses: string | undefined) {
-    // These classes are added by MapLibre and we don't want to mess with them.
-    const frozenClasses = node.className;
+  let previousClassNames: Set<string> | undefined;
+  function manageClasses(node: HTMLDivElement) {
+    $effect.pre(() => {
+      if (!marker.value) return;
 
-    function updateClasses(newClassNames: string | undefined) {
-      if (newClassNames) {
-        node.className = `${frozenClasses} ${newClassNames}`;
-      } else {
-        node.className = frozenClasses;
+      // Parse the classNames prop into a set
+      const newClassNames = new Set(classNames?.split(/\s+/).filter((c) => c.length > 0) ?? []);
+
+      // Calculate classes to remove and add
+      const previous = previousClassNames;
+      const toRemove = previous ? [...previous].filter((c) => !newClassNames.has(c)) : [];
+      const toAdd = previous
+        ? [...newClassNames].filter((c) => !previous.has(c))
+        : [...newClassNames];
+
+      // Batch DOM changes
+      if (toRemove.length > 0 || toAdd.length > 0) {
+        if (toRemove.length > 0) {
+          node.classList.remove(...toRemove);
+        }
+        if (toAdd.length > 0) {
+          node.classList.add(...toAdd);
+        }
       }
-    }
 
-    updateClasses(initialAddedClasses);
-
-    return {
-      update: updateClasses,
-    };
+      // Update previousClassNames for next comparison
+      previousClassNames = newClassNames;
+    });
   }
 
   let lngLatBox = new Box(lngLat);
@@ -231,7 +242,7 @@
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <div
   use:addMarker
-  use:manageClasses={classNames}
+  use:manageClasses
   style:z-index={zIndex}
   tabindex={asButton ? 0 : undefined}
   role={asButton ? 'button' : undefined}

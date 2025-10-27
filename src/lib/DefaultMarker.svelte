@@ -68,7 +68,7 @@
     marker.value?.remove();
   });
 
-  $effect(() => {
+  $effect.pre(() => {
     if (map && !marker.value) {
       marker.value = new maplibre.Marker(
         flush({

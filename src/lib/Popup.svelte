@@ -147,7 +147,7 @@
     );
   }
 
-  $effect(() => {
+  $effect.pre(() => {
     if (!map) {
       return;
     }
