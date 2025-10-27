@@ -1,5 +1,9 @@
 # svelte-maplibre
 
+## 1.2.4
+
+- Fix marker class update
+
 ## 1.2.3
 
 ### Patch Changes
