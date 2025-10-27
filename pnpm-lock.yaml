@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       d3-geo:
-        specifier: ^3.1.1
+        specifier: ^3.1.0
         version: 3.1.1
       dequal:
         specifier: ^2.0.3
@@ -18,10 +18,10 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       maplibre-gl:
-        specifier: ^5.10.0
+        specifier: ^4.0.0 || ^5.0.1
         version: 5.10.0
       pmtiles:
-        specifier: ^3.2.1
+        specifier: ^3.0.3
         version: 3.2.1
     devDependencies:
       '@changesets/changelog-github':
