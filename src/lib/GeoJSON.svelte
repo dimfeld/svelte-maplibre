@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
-  import { getCluster, getId, getMapContext, updatedSourceContext } from './context.svelte.js';
-  import type { GeoJSON } from 'geojson';
+  import { getId, getMapContext, updatedSourceContext } from './context.svelte.js';
+  import type { GeoJSON as GeoJSONType } from 'geojson';
   import type { ClusterOptions } from './types.js';
   import { addSource, removeSource } from './source.js';
   import { flush } from '$lib/flush.js';
@@ -10,7 +10,7 @@
 
   interface Props {
     id?: string;
-    data: GeoJSON | string;
+    data: GeoJSONType | string;
     /** Generate a unique id for each feature. This will overwrite existing IDs. */
     generateId?: boolean;
     /** Use this property on the feature as the ID. This will overwrite existing IDs. */
