@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 1.2.5
+
+### Patch Changes
+
+- [#289](https://github.com/dimfeld/svelte-maplibre/pull/289) [`cdbe095`](https://github.com/dimfeld/svelte-maplibre/commit/cdbe095e3e9d8a01b424285d68690fb55bf70c55) Thanks [@hmnd](https://github.com/hmnd)! - geojson type import in geojson component causing typescript errors
+
 ## 1.2.4
 
 - Fix marker class update
@@ -245,7 +251,6 @@
 - [#128](https://github.com/dimfeld/svelte-maplibre/pull/128) [`802474a`](https://github.com/dimfeld/svelte-maplibre/commit/802474ad25d5e719e0f3150b2075d8eba56c9d6f) Thanks [@dimfeld](https://github.com/dimfeld)! - Support maplibre v4
 
   All the breaking changes in the MaplibreGL JS v4 release apply here. Some specific API changes to this package:
-
   - Upgrade maplibregl-js to ^4.0.0
   - Upgrade pmtiles to ^3.0.3
   - `cooperativeGestures` prop is now just a boolean to match maplibre v4.
