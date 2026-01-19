@@ -78,9 +78,11 @@
 
   let installedHandlers = false;
   function setupHandlers() {
-    if (!map) return;
+    if (!map || installedHandlers) return;
 
     installedHandlers = true;
+
+    zoom = map.getZoom();
 
     map.on('zoom', handleZoom);
     map.on('move', updateMarkers);
@@ -111,7 +113,6 @@
     map.off('zoom', handleZoom);
     map.off('move', updateMarkers);
     map.off('moveend', updateMarkers);
-    map.off('sourcedata', handleData);
   });
 
   let sourceObj = $derived(map && source?.value ? map.getSource(source.value) : undefined);
@@ -121,12 +122,15 @@
       return;
     }
 
+    map.on('sourcedata', handleData);
+
     if (sourceObj?.loaded()) {
       setupHandlers();
-    } else {
-      // Need to wait for the data to load
-      map.on('sourcedata', handleData);
     }
+
+    return () => {
+      map.off('sourcedata', handleData);
+    };
   });
 
   let features: Array<FeatureWithId<FEATURE>> = $state([]);
