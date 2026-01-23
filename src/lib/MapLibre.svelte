@@ -37,6 +37,7 @@
      * make minimal changes. If you enable this, be aware of https://github.com/maplibre/maplibre-gl-js/issues/2651,
      * which may prevent some style changes from becoming visible when diffing is enabled. */
     diffStyleUpdates?: boolean;
+    aroundCenter?: boolean;
     center?: LngLatLike | undefined;
     zoom?: number | undefined;
     pitch?: number;
@@ -149,6 +150,7 @@
     preserveDrawingBuffer = false,
     maxBounds = undefined,
     images = [],
+    aroundCenter,
     standardControls = false,
     filterLayers = undefined,
     transformRequest = undefined,
@@ -280,6 +282,7 @@
         attributionControl,
         transformRequest,
         cooperativeGestures,
+        aroundCenter
       })
     );
 
