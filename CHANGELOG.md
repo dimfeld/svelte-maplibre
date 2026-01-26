@@ -1,5 +1,13 @@
 # svelte-maplibre
 
+## 1.2.6
+
+### Patch Changes
+
+- [#291](https://github.com/dimfeld/svelte-maplibre/pull/291) [`fe071b8`](https://github.com/dimfeld/svelte-maplibre/commit/fe071b869bebf0032f6abfa906fd071f7e5a25a0) Thanks [@lchimaru](https://github.com/lchimaru)! - add aroundCenter prop to MapLibre component
+
+- [#290](https://github.com/dimfeld/svelte-maplibre/pull/290) [`3c333ba`](https://github.com/dimfeld/svelte-maplibre/commit/3c333ba66214cfd4b7f3998adbff2b9e19d8342b) Thanks [@hmnd](https://github.com/hmnd)! - fix: stale zoom state on initial load causing markers to not load until user zooms
+
 ## 1.2.5
 
 ### Patch Changes
