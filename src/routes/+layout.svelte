@@ -1,11 +1,11 @@
 <script lang="ts">
-  import '../app.postcss';
+  import '../app.css';
   import { AppShell, AppBar, Drawer, initializeStores } from '@skeletonlabs/skeleton';
   import type { Snippet } from 'svelte';
 
   import hljs from 'highlight.js';
   // @ts-expect-error No types
-  import hljsSvelte from 'highlightjs-svelte';
+  import hljsSvelte from 'highlightjs-svelte/dist/index.mjs';
   import 'highlight.js/styles/github-dark.css';
   import { storeHighlightJs } from '@skeletonlabs/skeleton';
 

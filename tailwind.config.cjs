@@ -1,5 +1,5 @@
 const { join } = require('path');
-const { skeleton }  = require('@skeletonlabs/tw-plugin');
+const { skeleton } = require('@skeletonlabs/tw-plugin');
 
 const config = {
   content: [
