@@ -1,5 +1,6 @@
 <script lang="ts" generics="FEATURE extends Feature = Feature">
   import type maplibregl from 'maplibre-gl';
+  import type { MapLibreZoomEvent, PointLike } from 'maplibre-gl';
   import type { Feature } from 'geojson';
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
@@ -8,7 +9,6 @@
   import { geoCentroid } from 'd3-geo';
   import Marker from './Marker.svelte';
   import FillLayer from './FillLayer.svelte';
-  import type { MapLibreZoomEvent } from 'maplibre-gl';
   import type { FeatureWithId, MarkerClickInfo, MarkerClickInfoFeature } from './types';
   import { dequal } from 'dequal/lite';
 
@@ -25,6 +25,9 @@
   interface Props {
     applyToClusters?: boolean;
     filter?: maplibregl.ExpressionSpecification;
+    anchor?: maplibregl.PositionAnchor;
+    /** Pixel offset passed through to `Marker` / MapLibre. */
+    offset?: PointLike;
     /** How to calculate the coordinates of the marker.
      * @default Calls d3.geoCentroid` on the feature. */
     markerLngLat?: (feature: FEATURE) => [number, number];
@@ -53,6 +56,8 @@
   let {
     applyToClusters = undefined,
     filter = undefined,
+    anchor = undefined,
+    offset = undefined,
     markerLngLat = geoCentroid,
     interactive = true,
     asButton = false,
@@ -220,6 +225,9 @@
 @component Manages a set of HTML markers for the features in a source.
   This acts similar to a Layer component, but is not actually registered with
 the map as a layer. Markers for non-point features are placed at the geometry's center.
+
+For pin-shaped custom HTML, set `anchor="bottom"` (and optional `offset`) so the tip stays on the
+coordinate when zooming—same as standalone `Marker` and typical MapLibre custom-marker examples.
 -->
 
 <!-- Set up an invisible layer so that querySourceFeatures has something to search through. -->
@@ -230,6 +238,8 @@ the map as a layer. Markers for non-point features are placed at the geometry's 
     {@const c = markerLngLat(feature)}
     {@const z = typeof zIndex === 'function' ? zIndex(feature) : zIndex}
     <Marker
+      {anchor}
+      {offset}
       {asButton}
       {interactive}
       {draggable}

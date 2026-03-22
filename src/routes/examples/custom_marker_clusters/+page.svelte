@@ -78,6 +78,7 @@
 
     <MarkerLayer
       applyToClusters={false}
+      anchor="bottom"
       asButton
       onclick={(e) => (clickedFeature = e.feature?.properties)}
     >
