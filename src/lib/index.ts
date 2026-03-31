@@ -30,6 +30,7 @@ export { default as ScaleControl } from './ScaleControl.svelte';
 export { default as SymbolLayer } from './SymbolLayer.svelte';
 export { default as Terrain } from './Terrain.svelte';
 export { default as TerrainControl } from './TerrainControl.svelte';
+export { default as TopoJSON } from './TopoJSON.svelte';
 export { default as VectorTileSource } from './VectorTileSource.svelte';
 export { default as ZoomRange } from './ZoomRange.svelte';
 export * from './context.svelte.js';
