@@ -100,26 +100,25 @@
   // Fetch + convert from `url` prop
   $effect(() => {
     if (!url) return;
-    let cancelled = false;
+    const controller = new AbortController();
 
-    fetch(url)
+    fetch(url, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error(`TopoJSON fetch failed: ${res.status} ${url}`);
         return res.json();
       })
       .then((topo: Topology) => convert(topo, objectName))
       .then((fc) => {
-        if (cancelled) return;
         geojson = fc;
         ondata?.(fc);
       })
       .catch((err) => {
-        if (cancelled) return;
+        if (controller.signal.aborted) return;
         handleError(err);
       });
 
     return () => {
-      cancelled = true;
+      controller.abort();
     };
   });
 </script>
