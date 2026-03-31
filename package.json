@@ -1,6 +1,6 @@
 {
   "name": "svelte-maplibre",
-  "version": "1.2.6",
+  "version": "1.3.0",
   "description": "Svelte bindings for MapLibre",
   "author": {
     "name": "Daniel Imfeld",
@@ -31,7 +31,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "test:unit": "vitest",
     "changeset": "changeset",
-    "generate-changelog": "source ghtoken; GITHUB_TOKEN=${GITHUB_TOKEN} changeset version",
+    "generate-changelog": "GITHUB_TOKEN=$(gh auth token) changeset version",
     "lint": "prettier --plugin-search-dir . --check src && eslint .",
     "format": "prettier --plugin-search-dir . --write src"
   },

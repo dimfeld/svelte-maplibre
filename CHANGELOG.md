@@ -1,5 +1,13 @@
 # svelte-maplibre
 
+## 1.3.0
+
+### Minor Changes
+
+- [#295](https://github.com/dimfeld/svelte-maplibre/pull/295) [`d475824`](https://github.com/dimfeld/svelte-maplibre/commit/d475824d67d4668bb4f1dd62cb1f0277db6ee0da) Thanks [@Simon900225](https://github.com/Simon900225)! - MarkerLayer: support anchor and offset for correct pin-style HTML marker positioning
+
+- [#296](https://github.com/dimfeld/svelte-maplibre/pull/296) [`9962566`](https://github.com/dimfeld/svelte-maplibre/commit/9962566322309645a6b0ca4ffdf1141c30bde14c) Thanks [@RobertFrenken](https://github.com/RobertFrenken)! - Add TopoJSON component
+
 ## 1.2.6
 
 ### Patch Changes
