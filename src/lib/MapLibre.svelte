@@ -253,8 +253,29 @@
     }
   }
 
+  function isWebglSupported() {
+    if (!window.WebGLRenderingContext) {
+      return false;
+    }
+    const canvas = document.createElement('canvas');
+    try {
+      const context = canvas.getContext('webgl2') || canvas.getContext('webgl');
+      if (context && typeof context.getParameter == 'function') {
+        return true;
+      }
+    } catch (e) {
+      // WebGL is supported, but disabled
+    }
+    return false;
+  }
+
   function createMap(element: HTMLDivElement) {
     onHashChange();
+
+    if (!isWebglSupported()) {
+      handleError(new ErrorEvent('', { error: new Error('WebGL is disabled or not supported') }));
+      return;
+    }
 
     map = mapContext.map = new maplibre.Map(
       flush({
@@ -282,7 +303,7 @@
         attributionControl,
         transformRequest,
         cooperativeGestures,
-        aroundCenter
+        aroundCenter,
       })
     );
 
