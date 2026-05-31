@@ -65,9 +65,19 @@
 
 <div class="flex gap-4">
   <div class="flex gap-4">
-    <button class="variant-filled btn mb-4" type="button" onclick={toggle}> Toggle </button>
+    <button
+      class="mb-4 inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+      type="button"
+      onclick={toggle}
+    >
+      Toggle
+    </button>
 
-    <button class="variant-filled btn mb-4" type="button" onclick={quickToggle}>
+    <button
+      class="mb-4 inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+      type="button"
+      onclick={quickToggle}
+    >
       Toggle and Back
     </button>
   </div>

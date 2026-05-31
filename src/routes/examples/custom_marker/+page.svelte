@@ -66,7 +66,11 @@
   {/if}
 </p>
 
-<button type="button" class="btn-base" onclick={toggleAll}>
+<button
+  type="button"
+  class="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+  onclick={toggleAll}
+>
   {buttonAction === 'open' ? 'Open All' : 'Close All'} Popups
 </button>
 

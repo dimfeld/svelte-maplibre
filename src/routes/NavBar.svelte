@@ -2,19 +2,17 @@
   import { beforeNavigate } from '$app/navigation';
   import { page } from '$app/stores';
   import { dev } from '$app/environment';
-  import { getDrawerStore } from '@skeletonlabs/skeleton';
+  import { Button } from '$site/components/ui/button';
   import LogoAndMenu from './LogoAndMenu.svelte';
 
   interface Props {
-    inDrawer?: boolean;
     class?: string;
+    /** Called after a navigation starts, used to close the mobile drawer. */
+    close?: () => void;
   }
 
-  let { inDrawer = false, class: classNames = '' }: Props = $props();
+  let { class: className = '', close }: Props = $props();
 
-  const drawerStore = getDrawerStore();
-
-  const components = [];
   const examples = [
     { href: '/examples/basic', title: `Plain Map` },
     { href: '/examples/marker', title: `Default Markers` },
@@ -60,42 +58,59 @@
   ];
 
   beforeNavigate(() => {
-    drawerStore.close();
+    close?.();
   });
 </script>
 
-<div class="h-full w-full overflow-y-auto p-4 {classNames}">
-  <LogoAndMenu menuButton={inDrawer} />
+<nav class="flex h-full w-full flex-col gap-4 overflow-y-auto p-4 {className}">
+  <LogoAndMenu />
 
-  <h2 class="my-4">Examples</h2>
-
-  <ul>
-    {#each examples as { href, title }}
-      <li>
-        <a
-          {href}
-          class="btn-primary btn w-full justify-start rounded-lg"
-          class:variant-filled={href === $page.url.pathname}>{title}</a
-        >
-      </li>
-    {/each}
-  </ul>
-
-  {#if dev}
-    <h2 class="my-4">Tests</h2>
-
-    <ul>
-      {#each tests as { href, title }}
+  <div>
+    <h2 class="text-muted-foreground mb-2 px-2 text-xs font-semibold tracking-wide uppercase">
+      Examples
+    </h2>
+    <ul class="flex flex-col gap-0.5">
+      {#each examples as { href, title } (href)}
         <li>
-          <a
+          <Button
             {href}
-            class="btn-primary btn w-full justify-start rounded-lg"
-            class:variant-filled={href === $page.url.pathname}>{title}</a
+            variant={href === $page.url.pathname ? 'secondary' : 'ghost'}
+            class="w-full justify-start font-normal"
           >
+            {title}
+          </Button>
         </li>
       {/each}
     </ul>
+  </div>
+
+  {#if dev}
+    <div>
+      <h2 class="text-muted-foreground mb-2 px-2 text-xs font-semibold tracking-wide uppercase">
+        Tests
+      </h2>
+      <ul class="flex flex-col gap-0.5">
+        {#each tests as { href, title } (href)}
+          <li>
+            <Button
+              {href}
+              variant={href === $page.url.pathname ? 'secondary' : 'ghost'}
+              class="w-full justify-start font-normal"
+            >
+              {title}
+            </Button>
+          </li>
+        {/each}
+      </ul>
+    </div>
   {/if}
 
-  <p class="mt-4"><a href="https://github.com/dimfeld/svelte-maplibre">Github</a></p>
-</div>
+  <p class="mt-2 px-2 text-sm">
+    <a
+      class="hover:text-primary underline underline-offset-4"
+      href="https://github.com/dimfeld/svelte-maplibre"
+    >
+      Github
+    </a>
+  </p>
+</nav>
