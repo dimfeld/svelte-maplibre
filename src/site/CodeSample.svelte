@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CodeBlock } from '@skeletonlabs/skeleton';
+  import CodeBlock from '$site/components/CodeBlock.svelte';
   import dedent from 'dedent';
 
   interface Props {
@@ -72,5 +72,5 @@
 </script>
 
 <div class="my-4 flex w-full flex-col items-stretch">
-  <CodeBlock {language} background="bg-gray-800" code={output} />
+  <CodeBlock {language} code={output} />
 </div>
