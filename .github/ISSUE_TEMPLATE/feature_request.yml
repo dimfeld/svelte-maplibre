@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest an idea or enhancement for svelte-maplibre
+labels: ['enhancement']
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: >-
+        Describe the use case or the limitation you're running into. Focus on
+        the concrete thing you're trying to do, not just a proposed API.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would you like svelte-maplibre to do? An example of how you'd use it is helpful.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any workarounds you're using today, or other approaches you've thought about.
+    validations:
+      required: false
