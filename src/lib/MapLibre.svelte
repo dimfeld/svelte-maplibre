@@ -282,7 +282,7 @@
         attributionControl,
         transformRequest,
         cooperativeGestures,
-        aroundCenter
+        aroundCenter,
       })
     );
 

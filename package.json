@@ -93,6 +93,7 @@
     "@deck.gl/core": "~9.1.15",
     "@deck.gl/layers": "~9.1.15",
     "@deck.gl/mapbox": "~9.1.15",
+    "@internationalized/date": "^3.12.0",
     "@lucide/svelte": "^1.17.0",
     "@mapbox/mapbox-gl-draw": "^1.5.0",
     "@playwright/test": "^1.56.1",
