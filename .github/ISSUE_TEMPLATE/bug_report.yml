@@ -1,0 +1,83 @@
+name: Bug report
+description: Report a problem with svelte-maplibre
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a report! A clear description and a
+        minimal reproduction are by far the most useful things you can provide.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: >-
+        What did you expect to happen, and what actually happened? Describe the
+        actual symptoms you observe in as much concrete detail as you can —
+        error messages, what renders (or doesn't), console output, etc.
+      placeholder: When I add a <Marker>, it renders at the wrong coordinates and the console logs ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: >-
+        A link to a minimal reproduction (StackBlitz, a small repo, or a REPL)
+        or a self-contained code snippet that demonstrates the problem. Please
+        strip out everything not needed to reproduce it — the smaller the
+        example, the faster this can be fixed.
+      placeholder: https://stackblitz.com/edit/... or a short code snippet
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: svelte-maplibre version
+      description: Which version of svelte-maplibre are you using?
+      placeholder: e.g. 1.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Svelte / SvelteKit version and environment
+      description: >-
+        Relevant versions (Svelte, SvelteKit, maplibre-gl) and your
+        environment (browser, OS, SSR vs. client-only) if applicable.
+      placeholder: e.g. Svelte 5.0.0, SvelteKit 2.0.0, maplibre-gl 4.0.0, Chrome on macOS
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ### A note on AI-generated diagnoses
+
+        Please **don't** paste an AI assistant's explanation of *why* the code
+        is broken in place of describing the problem. These explanations are
+        very often misleading — they sound plausible and confident but point at
+        the wrong cause, which sends everyone down the wrong path and makes the
+        bug *harder* to fix.
+
+        If you don't fully understand the cause yourself, that's completely
+        fine! It is far more helpful to describe the **actual symptoms** in
+        detail — what you did, what you saw, the exact errors — than to include
+        a guess at the root cause. By all means use AI to help build a clean
+        minimal reproduction.
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmation
+      options:
+        - label: >-
+            I have described the actual symptoms I observe rather than pasting
+            an AI-generated guess at the root cause.
+          required: true
+        - label: I have included a minimal reproduction or a self-contained code snippet.
+          required: true
