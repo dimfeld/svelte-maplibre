@@ -1,7 +1,7 @@
 <script lang="ts" module>
   import hljs from 'highlight.js';
   // @ts-expect-error No types
-  import hljsSvelte from 'highlightjs-svelte';
+  import hljsSvelte from 'highlightjs-svelte/dist/index.mjs';
 
   // Register the Svelte language once for all instances.
   hljsSvelte(hljs);
