@@ -41,7 +41,7 @@ export function createConfig(withSvelte = false) {
       : null,
 
     {
-      ignores: ['**/build/', '**/.svelte-kit/', '**/dist/', '**/playwright-report/'],
+      ignores: ['**/build/', '**/.svelte-kit/', '**/.vercel/', '**/dist/', '**/playwright-report/'],
     },
   ].filter((x) => x != null);
 }

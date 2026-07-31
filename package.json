@@ -32,8 +32,8 @@
     "test:unit": "vitest",
     "changeset": "changeset",
     "generate-changelog": "GITHUB_TOKEN=$(gh auth token) changeset version",
-    "lint": "prettier --plugin-search-dir . --check src && eslint .",
-    "format": "prettier --plugin-search-dir . --write src"
+    "lint": "prettier --check src && eslint .",
+    "format": "prettier --write src"
   },
   "exports": {
     ".": {
@@ -93,6 +93,7 @@
     "@deck.gl/core": "~9.3.2",
     "@deck.gl/layers": "~9.3.2",
     "@deck.gl/mapbox": "~9.3.2",
+    "@eslint/js": "^10.0.1",
     "@internationalized/date": "^3.12.0",
     "@lucide/svelte": "^1.17.0",
     "@mapbox/mapbox-gl-draw": "^1.5.0",
