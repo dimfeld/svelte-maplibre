@@ -3,10 +3,11 @@
   import Layer from './Layer.svelte';
   import type { Feature } from 'geojson';
   import type { CommonLayerProps } from './types.js';
+  import type { LineLayerSpecification } from 'maplibre-gl';
 
   interface Props extends CommonLayerProps<FEATURE> {
-    paint: maplibregl.LineLayerSpecification['paint'];
-    layout?: maplibregl.LineLayerSpecification['layout'] | undefined;
+    paint: LineLayerSpecification['paint'];
+    layout?: LineLayerSpecification['layout'] | undefined;
   }
 
   let {

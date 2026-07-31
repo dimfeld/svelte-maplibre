@@ -3,10 +3,11 @@
   import { getId } from './context.svelte.js';
   import Layer from './Layer.svelte';
   import type { CommonLayerProps } from './types.js';
+  import type { CircleLayerSpecification } from 'maplibre-gl';
 
   interface Props extends CommonLayerProps<FEATURE> {
-    paint: maplibregl.CircleLayerSpecification['paint'];
-    layout?: maplibregl.CircleLayerSpecification['layout'] | undefined;
+    paint: CircleLayerSpecification['paint'];
+    layout?: CircleLayerSpecification['layout'] | undefined;
     applyToClusters?: boolean | undefined;
   }
 

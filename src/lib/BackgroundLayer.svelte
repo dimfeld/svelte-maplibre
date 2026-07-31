@@ -3,10 +3,11 @@
   import { getId } from './context.svelte.js';
   import Layer from './Layer.svelte';
   import type { CommonLayerProps } from './types.js';
+  import type { BackgroundLayerSpecification } from 'maplibre-gl';
 
   interface Props extends Omit<CommonLayerProps<FEATURE>, 'source' | 'sourceLayer'> {
-    paint: maplibregl.BackgroundLayerSpecification['paint'];
-    layout?: maplibregl.BackgroundLayerSpecification['layout'];
+    paint: BackgroundLayerSpecification['paint'];
+    layout?: BackgroundLayerSpecification['layout'];
     applyToClusters?: boolean | undefined;
   }
 

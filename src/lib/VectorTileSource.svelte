@@ -5,7 +5,8 @@
   import { addSource, removeSource } from './source.js';
   import type { Scheme } from './types.js';
   import * as pmtiles from 'pmtiles';
-  import maplibregl, { type VectorTileSource as MaplibreVectorTileSource } from 'maplibre-gl';
+  import * as maplibregl from 'maplibre-gl';
+  import type { VectorTileSource as MaplibreVectorTileSource } from 'maplibre-gl';
   import { flush } from '$lib/flush.js';
 
   interface Props {

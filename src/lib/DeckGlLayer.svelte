@@ -107,7 +107,6 @@
 
   onDestroy(() => {
     if (loaded && layer && map) {
-      // @ts-expect-error Mapbox/Maplibre types don't quite match
       map.removeControl(layer);
       map.off('zoom', handleZoom);
       map.off('zoomend', handleZoom);
@@ -142,7 +141,6 @@
         interleaved,
         layers: [new type(options)],
       });
-      // @ts-expect-error Mapbox/Maplibre types don't quite match
       map.addControl(layer);
     }
   });

@@ -2,11 +2,12 @@
   import { getId } from './context.svelte.js';
   import Layer from './Layer.svelte';
   import type { CommonLayerProps } from './types.js';
+  import type { SymbolLayerSpecification } from 'maplibre-gl';
   import type { Feature } from 'geojson';
 
   interface Props extends CommonLayerProps<FEATURE> {
-    paint?: maplibregl.SymbolLayerSpecification['paint'] | undefined;
-    layout?: maplibregl.SymbolLayerSpecification['layout'] | undefined;
+    paint?: SymbolLayerSpecification['paint'] | undefined;
+    layout?: SymbolLayerSpecification['layout'] | undefined;
     applyToClusters?: boolean | undefined;
   }
 

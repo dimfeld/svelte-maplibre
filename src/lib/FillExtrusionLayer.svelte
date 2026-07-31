@@ -3,10 +3,11 @@
   import Layer from './Layer.svelte';
   import type { Feature } from 'geojson';
   import type { CommonLayerProps } from './types.js';
+  import type { FillExtrusionLayerSpecification } from 'maplibre-gl';
 
   interface Props extends CommonLayerProps<FEATURE> {
-    paint: maplibregl.FillExtrusionLayerSpecification['paint'];
-    layout?: maplibregl.FillExtrusionLayerSpecification['layout'] | undefined;
+    paint: FillExtrusionLayerSpecification['paint'];
+    layout?: FillExtrusionLayerSpecification['layout'] | undefined;
   }
 
   let {

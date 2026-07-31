@@ -1,10 +1,7 @@
 <script lang="ts" generics="DATA = Feature">
   import type { Feature } from 'geojson';
-  import maplibregl, {
-    type MapMouseEvent,
-    type MapLayerMouseEvent,
-    type MapLayerTouchEvent,
-  } from 'maplibre-gl';
+  import * as maplibregl from 'maplibre-gl';
+  import type { MapMouseEvent, MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl';
   import { onDestroy, onMount, type Snippet } from 'svelte';
   import {
     getMapContext,
@@ -63,7 +60,6 @@
 
     onopen?: (popup: maplibregl.Popup) => void;
     onclose?: (popup: maplibregl.Popup) => void;
-    onhover?: (popup: maplibregl.Popup) => void;
   }
 
   let {
@@ -86,7 +82,6 @@
 
     onopen = undefined,
     onclose = undefined,
-    onhover = undefined,
   }: Props = $props();
 
   let inheritedLngLat = getLngLatContext();
@@ -353,12 +348,6 @@
         open = false;
         onclose?.(popup!);
       });
-
-      if (onhover) {
-        popup.on('hover', () => {
-          onhover?.(popup!);
-        });
-      }
     }
   });
 

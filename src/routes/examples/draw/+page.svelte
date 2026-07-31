@@ -8,7 +8,7 @@
   // import 'svelte-maplibre/draw-plugin.css';
   import '$lib/draw-plugin.css';
 
-  import type maplibregl from 'maplibre-gl';
+  import type * as maplibregl from 'maplibre-gl';
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';

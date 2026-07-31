@@ -3,10 +3,11 @@
   import Layer from './Layer.svelte';
   import type { Feature } from 'geojson';
   import type { CommonLayerProps } from './types.js';
+  import type { RasterLayerSpecification } from 'maplibre-gl';
 
   interface Props extends CommonLayerProps<FEATURE> {
-    paint: maplibregl.RasterLayerSpecification['paint'];
-    layout?: maplibregl.RasterLayerSpecification['layout'] | undefined;
+    paint: RasterLayerSpecification['paint'];
+    layout?: RasterLayerSpecification['layout'] | undefined;
   }
 
   let {

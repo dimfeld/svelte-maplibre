@@ -1,4 +1,4 @@
-import type { ExpressionSpecification } from 'maplibre-gl';
+import type { ExpressionSpecification, LayerSpecification } from 'maplibre-gl';
 
 export function combineFilters(
   join: 'all' | 'any',
@@ -50,7 +50,7 @@ export function hoverStateFilter(
 }
 
 /** A function that returns if a layer is a text layer, and optionally if it belongs to a particular source. */
-export function isTextLayer(layer: maplibregl.LayerSpecification, source?: string): boolean {
+export function isTextLayer(layer: LayerSpecification, source?: string): boolean {
   return (
     layer.type === 'symbol' &&
     (!source || layer.source === source) &&

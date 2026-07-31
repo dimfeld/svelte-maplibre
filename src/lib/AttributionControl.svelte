@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getMapContext } from './context.svelte.js';
-  import maplibregl from 'maplibre-gl';
+  import * as maplibregl from 'maplibre-gl';
   import { onDestroy } from 'svelte';
 
   const { map, loaded } = $derived(getMapContext());

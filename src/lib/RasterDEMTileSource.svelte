@@ -5,7 +5,7 @@
   import { addSource, removeSource } from './source.js';
   import { flush } from '$lib/flush.js';
   import type {
-    DEMEncoding,
+    RasterDEMSourceSpecification,
     RasterDEMTileSource as MaplibreRasterDEMTileSource,
   } from 'maplibre-gl';
 
@@ -18,7 +18,7 @@
     minzoom?: number;
     maxzoom?: number;
     volatile?: boolean;
-    encoding?: DEMEncoding;
+    encoding?: RasterDEMSourceSpecification['encoding'];
     redFactor?: number;
     greenFactor?: number;
     blueFactor?: number;
