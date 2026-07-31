@@ -28,8 +28,8 @@
   This should work on PMTiles, MVT and GeoJSON sources.
   <br />
   Ensure that you use <code>promoteId</code> to indicated which column to use to get the id of the
-  feature in the source that you are trying to target, and provide a <code>sourceLayer</code> if you
-  are trying to join to PMTiles or MVT tiles.
+  feature in the source that you are trying to target, and provide a <code>sourceLayer</code> if you are
+  trying to join to PMTiles or MVT tiles.
 </p>
 
 <button
