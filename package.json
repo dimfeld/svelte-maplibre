@@ -97,7 +97,7 @@
     "@internationalized/date": "^3.12.0",
     "@lucide/svelte": "^1.17.0",
     "@mapbox/mapbox-gl-draw": "^1.5.0",
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.62.0",
     "@sveltejs/adapter-vercel": "^6.3.3",
     "@sveltejs/kit": "^2.61.1",
     "@sveltejs/package": "^2.5.7",
