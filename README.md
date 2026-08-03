@@ -22,17 +22,36 @@ npm install svelte-maplibre
 
 ## Usage
 
+If you use Vite, import the MapLibre worker URL and set it before you create the first map:
+
+```js
+import * as maplibregl from 'maplibre-gl';
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+
+maplibregl.setWorkerUrl(maplibreWorkerUrl);
+```
+
+The `?worker&url` import tells Vite to emit the worker as an asset. Call `setWorkerUrl` in the page
+component that creates the map or anything else that loads before the map.
+
 ```svelte
+<script module>
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
+</script>
+
 <script>
   import { MapLibre } from 'svelte-maplibre';
 </script>
 
-<MapLibre 
-  center={[50,20]}
+<MapLibre
+  center={[50, 20]}
   zoom={7}
   class="map"
   standardControls
-  style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" />
+  style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+/>
 
 <style>
   :global(.map) {
@@ -40,6 +59,11 @@ npm install svelte-maplibre
   }
 </style>
 ```
+
+### Other bundlers
+
+If using other bundlers, see [the MapLibre installation
+instructions](https://maplibre.org/maplibre-gl-js/docs/#installation) for details on configuring the worker.
 
 ## Developing
 

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import MapLibre from '$lib/MapLibre.svelte';
@@ -7,6 +9,8 @@
   import RasterLayer from '$lib/RasterLayer.svelte';
   import Marker from '$lib/Marker.svelte';
   import quakeImageUrl from '$site/earthquake.png';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let topLeft = $state({ lng: -49.0, lat: 1.9 });
   let bottomRight = $state({ lng: -73.6, lat: -17.9 });

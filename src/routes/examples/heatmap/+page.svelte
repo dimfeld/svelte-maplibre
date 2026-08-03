@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import { mapClasses } from '../styles.js';
@@ -8,6 +10,8 @@
   import CircleLayer from '$lib/CircleLayer.svelte';
 
   import earthquakes from '$site/earthquakes.geojson?url';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 </script>
 
 <p>

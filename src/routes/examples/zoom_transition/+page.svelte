@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import { mapClasses } from '../styles.js';
@@ -14,6 +16,8 @@
   import type { FeatureCollection, Feature, Point } from 'geojson';
   import ZoomRange from '$lib/ZoomRange.svelte';
   import { zoomTransition } from '$lib/expressions.js';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   function calculateCenters(g: FeatureCollection): FeatureCollection {
     let centers: Feature<Point>[] = g.features.map((f) => {

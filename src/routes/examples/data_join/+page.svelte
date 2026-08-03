@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import VectorTileSource from '$lib/VectorTileSource.svelte';
   import { mapClasses } from '../styles.js';
@@ -7,6 +9,8 @@
   import FillLayer from '$lib/FillLayer.svelte';
   import JoinedData from '$lib/JoinedData.svelte';
   import { hoverStateFilter } from '$lib';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let dataSet = $state(0);
   function changeData() {

@@ -1,10 +1,14 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import VectorTileSource from '$lib/VectorTileSource.svelte';
   import { mapClasses } from '../styles.js';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import LineLayer from '$lib/LineLayer.svelte';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 </script>
 
 <p>

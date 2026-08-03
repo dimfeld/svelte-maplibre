@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import { SymbolLayer, MapLibre, GeoJSON, FillLayer, LineLayer } from '$lib';
   import { mapClasses } from '../styles.js';
   import code from './+page.svelte?raw';
@@ -7,6 +9,8 @@
   import type { FeatureCollection } from 'geojson';
   import quakeImageUrl from '$site/earthquake.png';
   import tsunamiImageUrl from '$site/tsunami.png';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let showBorder = true;
   let showFill = true;

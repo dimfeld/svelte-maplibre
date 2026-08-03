@@ -1,10 +1,14 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import Marker from '$lib/Marker.svelte';
   import { mapClasses } from '../styles';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import Popup from '$lib/Popup.svelte';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let clickedName = $state('');
 

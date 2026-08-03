@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import DefaultMarker from '$lib/DefaultMarker.svelte';
   import { mapClasses } from '../styles';
@@ -7,6 +9,8 @@
   import CodeSample from '$site/CodeSample.svelte';
   import Popup from '$lib/Popup.svelte';
   import type { LngLatLike } from 'maplibre-gl';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   const markers: { lngLat: LngLatLike; label: string; name: string }[] = [
     {

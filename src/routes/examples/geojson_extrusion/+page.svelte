@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import { mapClasses } from '../styles.js';
@@ -8,6 +10,8 @@
   import FillExtrusionLayer from '$lib/FillExtrusionLayer.svelte';
   import Popup from '$lib/Popup.svelte';
   import type { FeatureCollection } from 'geojson';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 </script>
 
 <p>

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
@@ -6,6 +8,8 @@
   import CircleLayer from '$lib/CircleLayer.svelte';
   import { hoverStateFilter } from '$lib/filters';
   import Popup from '$lib/Popup.svelte';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   type PointFeature = GeoJSON.Feature<GeoJSON.Point, { radius: number; color: string }>;
 

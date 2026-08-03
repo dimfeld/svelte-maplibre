@@ -1,9 +1,13 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import { BackgroundLayer } from '$lib';
   import DefaultMarker from '$lib/DefaultMarker.svelte';
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 </script>
 
 <MapLibre

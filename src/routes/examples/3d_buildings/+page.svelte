@@ -1,9 +1,13 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import { mapClasses, streetsStyle, hasMaptilerKey } from '../styles.js';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import FillExtrusionLayer from '$lib/FillExtrusionLayer.svelte';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 </script>
 
 {#if !hasMaptilerKey}

@@ -1,10 +1,14 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import Marker from '$lib/Marker.svelte';
   import { mapClasses } from '../styles';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import type { MarkerClickInfo } from '$lib';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let markerPos = $state([-122.2993, 47.4464]);
   const handleDrag = (event: MarkerClickInfo) => (markerPos = event.lngLat);

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   // Import MapboxDraw and its CSS
   import MapboxDraw from '@mapbox/mapbox-gl-draw';
   import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
@@ -8,10 +10,11 @@
   // import 'svelte-maplibre/draw-plugin.css';
   import '$lib/draw-plugin.css';
 
-  import type * as maplibregl from 'maplibre-gl';
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let map: maplibregl.Map | undefined = $state();
 

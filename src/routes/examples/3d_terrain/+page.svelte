@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import NavigationControl from '$lib/NavigationControl.svelte';
   import AttributionControl from '$lib/AttributionControl.svelte';
@@ -11,6 +13,8 @@
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
   import type { PropertyValueSpecification } from 'maplibre-gl';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let terrainExaggeration: number = $state(1.0);
   let hillshadeExaggeration: number = $state(0.5);

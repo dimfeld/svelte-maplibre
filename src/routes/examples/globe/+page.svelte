@@ -1,7 +1,11 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import code from './+page.svelte?raw';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let projection = $state('globe');
 

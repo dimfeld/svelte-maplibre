@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import { mapClasses } from '../styles.js';
@@ -7,6 +9,8 @@
   import states from '$site/states.json?url';
   import MarkerLayer from '$lib/MarkerLayer.svelte';
   import Popup from '$lib/Popup.svelte';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 </script>
 
 <MapLibre

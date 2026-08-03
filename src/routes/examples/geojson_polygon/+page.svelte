@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type * as maplibregl from 'maplibre-gl';
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import FillLayer from '$lib/FillLayer.svelte';
@@ -11,6 +12,8 @@
   import { contrastingColor } from '$site/colors.js';
   import { hoverStateFilter } from '$lib/filters.js';
   import type { ExpressionSpecification } from 'maplibre-gl';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let showBorder = $state(true);
   let showFill = $state(true);

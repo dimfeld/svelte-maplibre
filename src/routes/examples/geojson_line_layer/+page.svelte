@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import { replaceState } from '$app/navigation';
   import { page } from '$app/stores';
   import MapLibre from '$lib/MapLibre.svelte';
@@ -8,6 +10,8 @@
   import { mapClasses } from '../styles';
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   const data: Feature = {
     type: 'Feature',

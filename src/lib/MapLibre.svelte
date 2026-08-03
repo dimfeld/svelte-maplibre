@@ -13,11 +13,6 @@
   } from 'maplibre-gl';
   import compare from 'just-compare';
   import 'maplibre-gl/dist/maplibre-gl.css';
-  // MapLibre 6 is ESM-only and can no longer locate its worker from `import.meta.url` once a
-  // bundler has rewritten the module graph, so the worker URL has to be supplied explicitly.
-  // `?worker&url` routes it through Vite's worker pipeline so the emitted chunk carries its
-  // `maplibre-gl-shared.mjs` sibling with it; plain `?url` breaks in production builds.
-  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import {
     boundsEqual,
     convertBoundsToUserFormat,
@@ -267,11 +262,6 @@
 
   function createMap(element: HTMLDivElement) {
     onHashChange();
-
-    // Don't stomp on a consumer that set its own worker URL.
-    if (!maplibregl.getWorkerUrl()) {
-      maplibregl.setWorkerUrl(maplibreWorkerUrl);
-    }
 
     map = mapContext.map = new maplibregl.Map({
       ...flush({

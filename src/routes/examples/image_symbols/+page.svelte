@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import CodeSample from '$site/CodeSample.svelte';
@@ -12,6 +14,8 @@
   import tsunamiImageUrl from '$site/tsunami.png';
   import earthquakes from '$site/earthquakes.geojson?url';
   import type { GeoJsonProperties } from 'geojson';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let clickedFeature: GeoJsonProperties | undefined = $state();
 </script>

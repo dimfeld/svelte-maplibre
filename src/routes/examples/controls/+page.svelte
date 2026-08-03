@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import { mapClasses } from '../styles.js';
   import code from './+page.svelte?raw';
@@ -11,6 +13,8 @@
   import AttributionControl from '$lib/AttributionControl.svelte';
   import ScaleControl from '$lib/ScaleControl.svelte';
   import FullscreenControl from '$lib/FullscreenControl.svelte';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 </script>
 
 <p>Click the controls in the upper right corner to fly to a location.</p>

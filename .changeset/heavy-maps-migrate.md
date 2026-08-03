@@ -4,7 +4,7 @@
 
 Support maplibre-gl 6. The required `maplibre-gl` version is now `^6.0.0`; versions 4 and 5 are no longer supported.
 
-MapLibre 6 is ESM-only and drops its default export, so internal imports switched to namespace imports. It also no longer resolves its own worker URL once a bundler has rewritten the module graph, so `MapLibre` now calls `setWorkerUrl()` with a Vite-bundled worker before creating the map (skipped if you already called `setWorkerUrl()` yourself).
+MapLibre 6 is ESM-only and drops its default export, so internal imports switched to namespace imports. Vite users must import `maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url` and pass the result to `maplibregl.setWorkerUrl()` before creating a map.
 
 Breaking changes to this library's own API:
 

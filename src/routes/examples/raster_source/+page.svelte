@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import RasterTileSource from '$lib/RasterTileSource.svelte';
   import RasterLayer from '$lib/RasterLayer.svelte';
@@ -6,6 +8,8 @@
   import code from './+page.svelte?raw';
   import CodeSample from '$site/CodeSample.svelte';
   import LineLayer from '$lib/LineLayer.svelte';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let pollutant = $state('PM25_viridis');
   let url = $derived(

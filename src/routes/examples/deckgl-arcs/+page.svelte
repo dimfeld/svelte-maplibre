@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import DeckGlLayer from '$lib/DeckGlLayer.svelte';
   import { ArcLayer } from '@deck.gl/layers';
@@ -13,6 +15,8 @@
   import FillLayer from '$lib/FillLayer.svelte';
   import GeoJson from '$lib/GeoJSON.svelte';
   import { hoverStateFilter } from '$lib';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   type GeoProperties = {
     GEOID: string;

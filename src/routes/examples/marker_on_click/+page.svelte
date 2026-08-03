@@ -1,10 +1,14 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import CodeSample from '$site/CodeSample.svelte';
   import MapEvents from '$lib/MapEvents.svelte';
   import code from './+page.svelte?raw';
   import DefaultMarker from '$lib/DefaultMarker.svelte';
   import type { LngLat, MapMouseEvent } from 'maplibre-gl';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let markers: { lngLat: LngLat }[] = $state([]);
 

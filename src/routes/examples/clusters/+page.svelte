@@ -1,4 +1,6 @@
 <script lang="ts">
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import CodeSample from '$site/CodeSample.svelte';
@@ -19,6 +21,8 @@
   } from '../cluster_feature_properties';
   import type { Feature, Geometry } from 'geojson';
   import type { LayerClickInfo } from '$lib';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   let clickedFeature: ClusterFeatureProperties | null | undefined = $state();
 

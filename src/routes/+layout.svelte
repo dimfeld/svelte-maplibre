@@ -1,5 +1,7 @@
 <script lang="ts">
   import '../app.css';
+  import * as maplibregl from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import type { Snippet } from 'svelte';
   import MenuIcon from '@lucide/svelte/icons/menu';
 
@@ -7,6 +9,8 @@
   import { Button } from '$site/components/ui/button';
   import NavBar from './NavBar.svelte';
   import LogoAndMenu from './LogoAndMenu.svelte';
+
+  maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
   interface Props {
     children?: Snippet;
