@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type maplibregl from 'maplibre-gl';
+  import type * as maplibregl from 'maplibre-gl';
   import MapLibre from '$lib/MapLibre.svelte';
   import GeoJSON from '$lib/GeoJSON.svelte';
   import FillLayer from '$lib/FillLayer.svelte';

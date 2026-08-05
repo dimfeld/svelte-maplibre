@@ -1,5 +1,6 @@
 <script lang="ts" generics="FEATURE extends Feature = Feature">
-  import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
+  import * as maplibregl from 'maplibre-gl';
+  import type { LngLatLike, PointLike } from 'maplibre-gl';
   import type { Snippet } from 'svelte';
   import { Box, getMapContext, setLngLatContext, updatedMarkerContext } from './context.svelte.js';
   import type {
@@ -13,10 +14,10 @@
 
   interface Props {
     /** The Marker instance which was added to the map */
-    marker?: maplibre.Marker | undefined;
+    marker?: maplibregl.Marker | undefined;
     lngLat: LngLatLike;
     class?: string | undefined;
-    anchor?: maplibre.PositionAnchor;
+    anchor?: maplibregl.PositionAnchor;
     /** Handle mouse events */
     interactive?: boolean;
     /** Make markers tabbable and add the button role. */
@@ -33,7 +34,7 @@
     rotation?: number;
     /** The opacity of the marker */
     opacity?: number;
-    children?: Snippet<[{ marker: maplibre.Marker }]>;
+    children?: Snippet<[{ marker: maplibregl.Marker }]>;
 
     ondrag?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
     ondragstart?: (e: MarkerClickInfo<MarkerClickInfoFeature>) => void;
@@ -80,7 +81,7 @@
     $effect.pre(() => {
       if (!map || marker.value) return;
 
-      marker.value = new maplibre.Marker({
+      marker.value = new maplibregl.Marker({
         element: node,
         rotation,
         draggable,

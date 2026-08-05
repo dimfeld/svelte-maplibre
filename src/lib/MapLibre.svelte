@@ -2,16 +2,22 @@
   import { flush } from '$lib/flush.js';
   import { Box, createMapContext, setLayerEvent } from './context.svelte.js';
   import { getViewportHash, parseViewportHash } from './hash.js';
-  import maplibre, {
-    type CenterZoomBearing,
-    type LayerSpecification,
-    type LngLatBoundsLike,
-    type LngLatLike,
-    type SourceSpecification,
-    type FitBoundsOptions,
+  import * as maplibregl from 'maplibre-gl';
+  import type {
+    CenterZoomBearing,
+    LayerSpecification,
+    LngLatBoundsLike,
+    LngLatLike,
+    SourceSpecification,
+    FitBoundsOptions,
   } from 'maplibre-gl';
   import compare from 'just-compare';
   import 'maplibre-gl/dist/maplibre-gl.css';
+  // MapLibre 6 is ESM-only and can no longer locate its worker from `import.meta.url` once a
+  // bundler has rewritten the module graph, so the worker URL has to be supplied explicitly.
+  // `?worker&url` routes it through Vite's worker pipeline so the emitted chunk carries its
+  // `maplibre-gl-shared.mjs` sibling with it; plain `?url` breaks in production builds.
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import {
     boundsEqual,
     convertBoundsToUserFormat,
@@ -46,6 +52,11 @@
     bounds?: LngLatBoundsLike | undefined;
     fitBoundsOptions?: FitBoundsOptions;
     projection?: maplibregl.ProjectionSpecification | undefined;
+    /** How many zoom levels past a source's `maxzoom` to overscale its tiles. Below that, tiles are
+     * split instead, which improves labeling at high zoom. Pass `null` to overscale at every zoom
+     * level, restoring the behavior from before MapLibre 6. Only applied when the map is created.
+     * @default 4 */
+    zoomLevelsToOverscale?: number | null;
     /** Set to true to track the map viewport in the URL hash. If the URL hash is set, that overrides initial viewport settings. */
     hash?: boolean;
     /** Update the URL when the hash changes, if `hash` is true.
@@ -69,7 +80,7 @@
     locale?: any;
     interactive?: boolean;
     /** Set false to hide the default attribution control, so you can add your own. */
-    attributionControl?: false | maplibre.AttributionControlOptions;
+    attributionControl?: false | maplibregl.AttributionControlOptions;
     /** Set true to require hitting ⌘/Ctrl while scrolling to zoom. Or use two fingers on phones. */
     cooperativeGestures?: boolean;
     /** Set to true if you want to export the map as an image */
@@ -102,13 +113,13 @@
     oncontextmenu?: (e: maplibregl.MapMouseEvent) => void;
     onmovestart?: (e: MapMoveEvent) => void;
     onmoveend?: (e: MapMoveEvent) => void;
-    onzoomstart?: (e: maplibregl.MapLibreZoomEvent) => void;
-    onzoom?: (e: maplibregl.MapLibreZoomEvent) => void;
-    onzoomend?: (e: maplibregl.MapLibreZoomEvent) => void;
-    onpitch?: (e: maplibregl.MapLibreEvent<MouseEvent | TouchEvent | undefined>) => void;
-    onrotate?: (e: maplibregl.MapLibreEvent<MouseEvent | TouchEvent | undefined>) => void;
+    onzoomstart?: (e: maplibregl.MapMovementEvent) => void;
+    onzoom?: (e: maplibregl.MapMovementEvent) => void;
+    onzoomend?: (e: maplibregl.MapMovementEvent) => void;
+    onpitch?: (e: maplibregl.MapMovementEvent) => void;
+    onrotate?: (e: maplibregl.MapMovementEvent) => void;
     onwheel?: (e: maplibregl.MapWheelEvent) => void;
-    ondata?: (e: maplibregl.MapDataEvent) => void;
+    ondata?: (e: maplibregl.MapSourceDataEvent | maplibregl.MapStyleDataEvent) => void;
     onstyleload?: (e: StyleLoadEvent) => void;
     onstyledata?: (e: maplibregl.MapStyleDataEvent) => void;
     onidle?: (e: maplibregl.MapLibreEvent) => void;
@@ -129,6 +140,7 @@
     fitBoundsOptions = {},
     hash = false,
     projection = undefined,
+    zoomLevelsToOverscale,
     updateHash = (url) => {
       window.history.replaceState(window.history.state, '', url);
     },
@@ -256,8 +268,13 @@
   function createMap(element: HTMLDivElement) {
     onHashChange();
 
-    map = mapContext.map = new maplibre.Map(
-      flush({
+    // Don't stomp on a consumer that set its own worker URL.
+    if (!maplibregl.getWorkerUrl()) {
+      maplibregl.setWorkerUrl(maplibreWorkerUrl);
+    }
+
+    map = mapContext.map = new maplibregl.Map({
+      ...flush({
         container: element,
         style,
         locale,
@@ -283,8 +300,13 @@
         transformRequest,
         cooperativeGestures,
         aroundCenter,
-      })
-    );
+      }),
+      // MapLibre tells "absent" (overscale 4 levels) apart from an explicit `undefined`
+      // (overscale everything), and `flush` drops both, so this is applied outside it.
+      ...(zoomLevelsToOverscale === undefined
+        ? {}
+        : { zoomLevelsToOverscale: zoomLevelsToOverscale ?? undefined }),
+    });
 
     map.on('load', (e) => {
       e.target.getContainer().setAttribute('data-testid', 'map');

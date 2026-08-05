@@ -1,6 +1,6 @@
 <script lang="ts" generics="FEATURE extends Feature = Feature">
-  import type maplibregl from 'maplibre-gl';
-  import type { MapLibreZoomEvent, PointLike } from 'maplibre-gl';
+  import type * as maplibregl from 'maplibre-gl';
+  import type { PointLike } from 'maplibre-gl';
   import type { Feature } from 'geojson';
   import { onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
@@ -211,7 +211,7 @@
 
   // svelte-ignore state_referenced_locally
   let zoom = $state(map?.getZoom() ?? 1);
-  function handleZoom(e: MapLibreZoomEvent) {
+  function handleZoom() {
     const currentZoom = map?.getZoom() ?? 1;
     if (currentZoom) {
       zoom = currentZoom;

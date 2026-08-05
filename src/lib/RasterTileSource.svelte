@@ -6,7 +6,8 @@
   import type { Scheme } from './types.js';
   import { flush } from '$lib/flush.js';
   import * as pmtiles from 'pmtiles';
-  import maplibregl, { type RasterTileSource as MaplibreRasterTileSource } from 'maplibre-gl';
+  import * as maplibregl from 'maplibre-gl';
+  import type { RasterTileSource as MaplibreRasterTileSource } from 'maplibre-gl';
 
   interface Props {
     id?: string;

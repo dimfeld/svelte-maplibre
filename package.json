@@ -32,8 +32,8 @@
     "test:unit": "vitest",
     "changeset": "changeset",
     "generate-changelog": "GITHUB_TOKEN=$(gh auth token) changeset version",
-    "lint": "prettier --plugin-search-dir . --check src && eslint .",
-    "format": "prettier --plugin-search-dir . --write src"
+    "lint": "prettier --check src && eslint .",
+    "format": "prettier --write src"
   },
   "exports": {
     ".": {
@@ -77,7 +77,7 @@
     "d3-geo": "^3.1.0",
     "dequal": "^2.0.3",
     "just-compare": "^2.3.0",
-    "maplibre-gl": "^4.0.0 || ^5.0.1",
+    "maplibre-gl": "^6.0.0",
     "pmtiles": "^3.0.3"
   },
   "peerDependencies": {
@@ -93,10 +93,11 @@
     "@deck.gl/core": "~9.3.2",
     "@deck.gl/layers": "~9.3.2",
     "@deck.gl/mapbox": "~9.3.2",
+    "@eslint/js": "^10.0.1",
     "@internationalized/date": "^3.12.0",
     "@lucide/svelte": "^1.17.0",
     "@mapbox/mapbox-gl-draw": "^1.5.0",
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.62.0",
     "@sveltejs/adapter-vercel": "^6.3.3",
     "@sveltejs/kit": "^2.61.1",
     "@sveltejs/package": "^2.5.7",

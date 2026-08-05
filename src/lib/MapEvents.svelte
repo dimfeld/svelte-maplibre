@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import { getMapContext } from './context.svelte.js';
-  import maplibregl from 'maplibre-gl';
+  import * as maplibregl from 'maplibre-gl';
   import type { MapEventType, MapLayerEventType } from 'maplibre-gl';
   import type { MapMoveEvent } from './types.js';
 
@@ -15,13 +15,13 @@
     onmousemove?: (e: MapMoveEvent) => void;
     onmovestart?: (e: MapMoveEvent) => void;
     onmoveend?: (e: MapMoveEvent) => void;
-    onzoomstart?: (e: maplibregl.MapLibreZoomEvent) => void;
-    onzoom?: (e: maplibregl.MapLibreZoomEvent) => void;
-    onzoomend?: (e: maplibregl.MapLibreZoomEvent) => void;
-    onpitch?: (e: maplibregl.MapLibreEvent<MouseEvent | TouchEvent | undefined>) => void;
-    onrotate?: (e: maplibregl.MapLibreEvent<MouseEvent | TouchEvent | undefined>) => void;
+    onzoomstart?: (e: maplibregl.MapMovementEvent) => void;
+    onzoom?: (e: maplibregl.MapMovementEvent) => void;
+    onzoomend?: (e: maplibregl.MapMovementEvent) => void;
+    onpitch?: (e: maplibregl.MapMovementEvent) => void;
+    onrotate?: (e: maplibregl.MapMovementEvent) => void;
     onwheel?: (e: maplibregl.MapWheelEvent) => void;
-    ondata?: (e: maplibregl.MapDataEvent) => void;
+    ondata?: (e: maplibregl.MapSourceDataEvent | maplibregl.MapStyleDataEvent) => void;
     onstyledata?: (e: maplibregl.MapStyleDataEvent) => void;
     onidle?: (e: maplibregl.MapLibreEvent) => void;
   }

@@ -3,10 +3,11 @@
   import Layer from './Layer.svelte';
   import type { Feature } from 'geojson';
   import type { CommonLayerProps } from './types.js';
+  import type { FillLayerSpecification } from 'maplibre-gl';
 
   interface Props extends CommonLayerProps<FEATURE> {
-    paint: maplibregl.FillLayerSpecification['paint'];
-    layout?: maplibregl.FillLayerSpecification['layout'] | undefined;
+    paint: FillLayerSpecification['paint'];
+    layout?: FillLayerSpecification['layout'] | undefined;
   }
 
   let {

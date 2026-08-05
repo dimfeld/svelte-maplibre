@@ -1,8 +1,13 @@
 <script lang="ts" generics="FEATURE extends Feature = Feature">
   import { flush } from '$lib/flush.js';
   import type { Feature } from 'geojson';
-  import type maplibregl from 'maplibre-gl';
-  import type { MapGeoJSONFeature, MapMouseEvent } from 'maplibre-gl';
+  import type * as maplibregl from 'maplibre-gl';
+  import type {
+    AllLayoutProperties,
+    AllPaintProperties,
+    MapGeoJSONFeature,
+    MapMouseEvent,
+  } from 'maplibre-gl';
   import { onDestroy } from 'svelte';
   import { diffApplier } from './compare.js';
   import { getId, getSource, getMapContext, updatedLayerContext } from './context.svelte.js';
@@ -11,8 +16,8 @@
 
   interface Props extends CommonLayerProps<FEATURE> {
     type: maplibregl.LayerSpecification['type'];
-    paint?: object | undefined;
-    layout?: object | undefined;
+    paint?: AllPaintProperties | undefined;
+    layout?: AllLayoutProperties | undefined;
     applyToClusters?: boolean;
     requireSource?: boolean;
   }
@@ -286,7 +291,7 @@
   });
   let applyPaint = $derived(
     layer.value
-      ? diffApplier((key, value) => {
+      ? diffApplier<AllPaintProperties>((key, value) => {
           if (!map) return;
           if (map.style._loaded) {
             map.setPaintProperty(layer.value!, key, value);
@@ -298,7 +303,7 @@
   );
   let applyLayout = $derived(
     layer.value
-      ? diffApplier((key, value) => {
+      ? diffApplier<AllLayoutProperties>((key, value) => {
           if (!map) return;
           if (map.style._loaded) {
             map.setLayoutProperty(layer.value!, key, value);

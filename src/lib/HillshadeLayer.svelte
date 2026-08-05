@@ -3,10 +3,11 @@
   import Layer from './Layer.svelte';
   import type { Feature } from 'geojson';
   import type { CommonLayerProps } from './types.js';
+  import type { HillshadeLayerSpecification } from 'maplibre-gl';
 
   interface Props extends CommonLayerProps<FEATURE> {
-    paint?: maplibregl.HillshadeLayerSpecification['paint'] | undefined;
-    layout?: maplibregl.HillshadeLayerSpecification['layout'] | undefined;
+    paint?: HillshadeLayerSpecification['paint'] | undefined;
+    layout?: HillshadeLayerSpecification['layout'] | undefined;
   }
 
   let {

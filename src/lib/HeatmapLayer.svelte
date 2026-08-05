@@ -3,10 +3,11 @@
   import Layer from './Layer.svelte';
   import type { Feature } from 'geojson';
   import type { CommonLayerProps } from './types.js';
+  import type { HeatmapLayerSpecification } from 'maplibre-gl';
 
   interface Props extends CommonLayerProps<FEATURE> {
-    paint: maplibregl.HeatmapLayerSpecification['paint'];
-    layout?: maplibregl.HeatmapLayerSpecification['layout'] | undefined;
+    paint: HeatmapLayerSpecification['paint'];
+    layout?: HeatmapLayerSpecification['layout'] | undefined;
   }
 
   let {

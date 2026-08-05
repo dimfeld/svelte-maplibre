@@ -1,13 +1,14 @@
 import type { Feature, Point } from 'geojson';
 import {
+  LngLat,
+  LngLatBounds,
   type LngLatBoundsLike,
   type MapGeoJSONFeature,
   type MapLibreEvent,
   type MapMouseEvent,
   type Marker,
 } from 'maplibre-gl';
-import MapLibre from 'maplibre-gl';
-const { LngLatBounds, LngLat } = MapLibre;
+import type * as maplibregl from 'maplibre-gl';
 import type { Snippet } from 'svelte';
 
 export type {
@@ -82,8 +83,9 @@ export interface MarkerClickInfo<FEATURE extends Feature = Feature> {
   features: FEATURE[];
 }
 
-export interface MarkerLayerEventInfo<FEATURE extends Feature = Feature>
-  extends MarkerClickInfo<FEATURE> {
+export interface MarkerLayerEventInfo<
+  FEATURE extends Feature = Feature,
+> extends MarkerClickInfo<FEATURE> {
   source: string;
   feature: FEATURE;
 }
@@ -126,11 +128,7 @@ export interface CommonLayerProps<FEATURE extends Feature = Feature> {
   onmouseleave?: (e: Pick<LayerClickInfo<FEATURE>, 'map' | 'layer' | 'source'>) => void;
 }
 
-export interface StyleLoadEvent {
-  type: 'style.load';
-  map: maplibregl.Map;
-  style: maplibregl.Style;
-}
+export type StyleLoadEvent = maplibregl.MapStyleLoadEvent;
 
 function compareFloat(a: number, b: number): boolean {
   return Math.abs(a - b) < 0.000001;
@@ -138,8 +136,8 @@ function compareFloat(a: number, b: number): boolean {
 
 export function boundsEqual(
   param: LngLatBoundsLike,
-  mapBounds: MapLibre.LngLatBounds | undefined
-): { equal: boolean; bounds: MapLibre.LngLatBounds } {
+  mapBounds: LngLatBounds | undefined
+): { equal: boolean; bounds: LngLatBounds } {
   let paramBounds = LngLatBounds.convert(param);
   if (!mapBounds) {
     return { equal: false, bounds: paramBounds };
@@ -163,7 +161,7 @@ export function boundsEqual(
 }
 
 export function convertBoundsToUserFormat(
-  bounds: MapLibre.LngLatBounds,
+  bounds: LngLatBounds,
   param: LngLatBoundsLike | undefined
 ): LngLatBoundsLike {
   const sw = bounds.getSouthWest();
