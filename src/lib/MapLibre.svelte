@@ -263,40 +263,49 @@
   function createMap(element: HTMLDivElement) {
     onHashChange();
 
-    map = mapContext.map = new maplibregl.Map({
-      ...flush({
-        container: element,
-        style,
-        locale,
-        center,
-        zoom,
-        pitch,
-        bearing,
-        bearingSnap,
-        minZoom,
-        maxZoom,
-        minPitch,
-        maxPitch,
-        renderWorldCopies,
-        dragPan,
-        dragRotate,
-        pitchWithRotate,
-        antialias,
-        interactive,
-        preserveDrawingBuffer,
-        maxBounds,
-        bounds,
-        attributionControl,
-        transformRequest,
-        cooperativeGestures,
-        aroundCenter,
-      }),
-      // MapLibre tells "absent" (overscale 4 levels) apart from an explicit `undefined`
-      // (overscale everything), and `flush` drops both, so this is applied outside it.
-      ...(zoomLevelsToOverscale === undefined
-        ? {}
-        : { zoomLevelsToOverscale: zoomLevelsToOverscale ?? undefined }),
-    });
+    try {
+      map = mapContext.map = new maplibregl.Map({
+        ...flush({
+          container: element,
+          style,
+          locale,
+          center,
+          zoom,
+          pitch,
+          bearing,
+          bearingSnap,
+          minZoom,
+          maxZoom,
+          minPitch,
+          maxPitch,
+          renderWorldCopies,
+          dragPan,
+          dragRotate,
+          pitchWithRotate,
+          antialias,
+          interactive,
+          preserveDrawingBuffer,
+          maxBounds,
+          bounds,
+          attributionControl,
+          transformRequest,
+          cooperativeGestures,
+          aroundCenter,
+        }),
+        // MapLibre tells "absent" (overscale 4 levels) apart from an explicit `undefined`
+        // (overscale everything), and `flush` drops both, so this is applied outside it.
+        ...(zoomLevelsToOverscale === undefined
+          ? {}
+          : { zoomLevelsToOverscale: zoomLevelsToOverscale ?? undefined }),
+      });
+    } catch (e) {
+      // This is the only error we expect the constructor to throw
+      if (e instanceof maplibregl.GPUInitializationError) {
+        handleError(new ErrorEvent('GPUInitializationError', { error: e }));
+        return;
+      }
+      throw e;
+    }
 
     map.on('load', (e) => {
       e.target.getContainer().setAttribute('data-testid', 'map');
