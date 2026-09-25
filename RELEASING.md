@@ -30,6 +30,13 @@ versioned commit from `master` after you push it to GitHub.
    publish token before you continue. npm may require a second authentication
    step when you publish, even if `pnpm whoami` works.
 
+   If a registry command fails because the local npm cache is not writable, use
+   a temporary cache for this shell:
+
+   ```sh
+   export npm_config_cache="$(mktemp -d)"
+   ```
+
    If there is no changeset for a change that affects the package, add one with
    `pnpm changeset` before you version the release. Review the proposed version
    against the changes since the last release.
@@ -70,9 +77,23 @@ versioned commit from `master` after you push it to GitHub.
    pnpm changeset publish --no-git-tag
    ```
 
-   `changeset publish` publishes versions that are not yet on npm. Complete any
-   npm authentication prompt. Do not run the publish command again until you
-   check the registry if a publish attempt fails.
+   `changeset publish` publishes versions that are not yet on npm. The
+   `--no-git-tag` option prevents it from tagging Jujutsu's empty working
+   commit. Complete any npm authentication prompt. Do not run the publish
+   command again until you check the registry if a publish attempt fails.
+
+   If Changesets stops with `EOTP`, check the registry and npm web UI for a
+   pending version before you retry. If the publish failed, retry from an
+   interactive terminal with:
+
+   ```sh
+   npm_config_browser=false pnpm publish --access public --no-git-checks
+   ```
+
+   npm prints a browser authentication URL. Open it, approve the request, and
+   leave the terminal running until pnpm reports success. `--no-git-checks` is
+   needed here because Jujutsu leaves Git on a detached working commit; confirm
+   that the release commit is on remote `master` before you use it.
 
 ## Verify and tag
 
