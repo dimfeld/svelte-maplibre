@@ -27,7 +27,8 @@ versioned commit from `master` after you push it to GitHub.
    ```
 
    If `pnpm whoami` fails, sign in with `pnpm login` or set up a valid npm
-   publish token before you continue.
+   publish token before you continue. npm may require a second authentication
+   step when you publish, even if `pnpm whoami` works.
 
    If there is no changeset for a change that affects the package, add one with
    `pnpm changeset` before you version the release. Review the proposed version
@@ -87,3 +88,16 @@ git push origin vX.Y.Z
 Replace `X.Y.Z` with the new version. Check that the tag points to the release
 commit. Do not publish the same version again: npm does not allow a published
 version to be replaced.
+
+## Create the GitHub release
+
+Use the matching section of `CHANGELOG.md` as the GitHub release notes. Create
+the release only after npm shows the new version and the Git tag is on GitHub.
+
+```sh
+awk -v version="X.Y.Z" '$0 == "## " version { in_release=1; next } in_release && /^## / { exit } in_release { print }' CHANGELOG.md > /tmp/svelte-maplibre-release-notes.md
+gh release create vX.Y.Z --verify-tag --title vX.Y.Z --notes-file /tmp/svelte-maplibre-release-notes.md
+```
+
+Replace `X.Y.Z` in both commands. Check the release page to confirm that its
+notes match the changelog.
