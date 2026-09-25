@@ -81,7 +81,7 @@ then push the tag.
 
 ```sh
 pnpm view svelte-maplibre version dist-tags --json
-git tag vX.Y.Z "$(jj log -r master -T commit_id)"
+git tag vX.Y.Z "$(jj log --no-graph -r master -T commit_id)"
 git push origin vX.Y.Z
 ```
 
