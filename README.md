@@ -76,3 +76,5 @@ If you don't have one, you can set this to a blank value to use the other exampl
 ## Credits
 
 Logo created by [Bruce Wayyn](https://github.com/brucewayyn)
+
+[Release instructions](https://github.com/dimfeld/svelte-maplibre/blob/master/RELEASING.md)

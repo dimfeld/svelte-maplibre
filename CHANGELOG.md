@@ -1,5 +1,11 @@
 # svelte-maplibre
 
+## 2.0.1
+
+### Patch Changes
+
+- [#297](https://github.com/dimfeld/svelte-maplibre/pull/297) [`66782b6`](https://github.com/dimfeld/svelte-maplibre/commit/66782b6397885fe8f05fd386d3e151acbacf4357) Thanks [@meesfrensel](https://github.com/meesfrensel)! - fix: handle maplibre GPUInitializationError when constructing new map
+
 ## 2.0.0
 
 ### Major Changes
