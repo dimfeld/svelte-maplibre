@@ -76,6 +76,11 @@ versioned commit from `master` after you push it to GitHub.
 
 ## Verify and tag
 
+After the publish command succeeds, npm may show the package as validating.
+During validation, the registry can still report the old `latest` version. Wait
+for validation to finish and check again. Do not repeat the publish command
+because the registry still shows the old version.
+
 Confirm that `latest` points to the new version. Tag the `master` release commit,
 then push the tag.
 
