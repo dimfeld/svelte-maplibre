@@ -13,7 +13,7 @@
 
   let pollutant = $state('PM25_viridis');
   let url = $derived(
-    `https://ukair.maps.rcdo.co.uk/ukairserver/services/aq_amb_2021/${pollutant}/MapServer/WMSServer?bbox={bbox-epsg-3857}&request=GetMap&version=1.3.0&format=image%2Fpng&crs=EPSG%3A3857&width=256&height=256&styles=&layers=20`
+    `/api/rasta_source_proxy?pollutant=${pollutant}&bbox={bbox-epsg-3857}&request=GetMap&version=1.3.0&format=image%2Fpng&crs=EPSG%3A3857&width=256&height=256&styles=&layers=20`
   );
 </script>
 
