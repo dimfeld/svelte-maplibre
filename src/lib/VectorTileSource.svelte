@@ -102,6 +102,14 @@
   });
 </script>
 
+<!-- @component
+Add a vector tile source to the map. Give the tiles with `url` (a TileJSON URL) or with `tiles`.
+
+Place layer components inside this component's children and they use this source automatically. Set `sourceLayer` on each layer to select a layer from the tiles. The children render only after the source is added.
+
+If `url` starts with `pmtiles://`, the component registers the PMTiles protocol for you. The props are applied only when the source is created. If `id` changes, the component creates a new source.
+-->
+
 {#if source.value}
   {#key source.value}
     {@render children?.()}

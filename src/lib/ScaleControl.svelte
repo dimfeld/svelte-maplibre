@@ -30,3 +30,9 @@
     }
   });
 </script>
+
+<!-- @component
+Add the MapLibre scale control to the map. This control shows a scale bar for the current zoom level.
+
+Put it inside the `MapLibre` component. The component uses the props only when it creates the control. Changes to the props after that have no effect.
+-->

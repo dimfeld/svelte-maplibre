@@ -39,6 +39,16 @@
   }: Props = $props();
 </script>
 
+<!-- @component
+Add a MapLibre `circle` layer to the map. It shows point features as circles.
+
+This is a thin wrapper around `Layer` with `type` set to `circle`. Place it inside a source component such as `GeoJSON`, or set the `source` prop.
+
+Set `applyToClusters` to `true` to show only clustered points, or to `false` to show only points that are not clusters.
+
+Set `manageHoverState` to set the `hover` feature state on the feature under the mouse. Bind to `hovered` to get that feature.
+-->
+
 <Layer
   {id}
   type="circle"

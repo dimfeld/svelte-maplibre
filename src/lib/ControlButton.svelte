@@ -24,6 +24,12 @@
   }: Props = $props();
 </script>
 
+<!-- @component
+Show a button with the styling of the built-in MapLibre control buttons. Use it inside a `ControlGroup`.
+
+When `icon` is `true`, the content gets the `maplibregl-ctrl-icon` class. When `center` is `true`, the content is centered inside the button. Use `onclick` to handle clicks.
+-->
+
 <button type="button" {title} {onclick}>
   <div class:maplibregl-ctrl-icon={icon} class:ctrl-btn-center={center} class={classNames}>
     {@render children?.()}

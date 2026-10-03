@@ -37,6 +37,14 @@
   }: Props = $props();
 </script>
 
+<!-- @component
+Add a MapLibre `fill-extrusion` layer to the map. It shows polygon features as 3D shapes with a height.
+
+This is a thin wrapper around `Layer` with `type` set to `fill-extrusion`. Place it inside a source component such as `GeoJSON`, or set the `source` prop.
+
+Set `manageHoverState` to set the `hover` feature state on the feature under the mouse. Bind to `hovered` to get that feature.
+-->
+
 <Layer
   {id}
   type="fill-extrusion"

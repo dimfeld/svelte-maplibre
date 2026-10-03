@@ -164,6 +164,14 @@
   }
 </script>
 
+<!-- @component
+Show the standard MapLibre marker pin on the map at `lngLat`. Use `Marker` instead if you want to use your own HTML as the marker.
+
+Set `draggable` to let the user move the marker. `lngLat` is bindable, and it updates when the user drags the marker. `draggable`, `anchor`, and `class` are applied only when the marker is created. `lngLat`, `offset`, `rotation`, and `opacity` update the existing marker.
+
+The children render after the marker is created. Put a `Popup` inside the children to attach a popup to the marker.
+-->
+
 {#if marker.value}
   {@render children?.({ marker: marker.value })}
 {/if}

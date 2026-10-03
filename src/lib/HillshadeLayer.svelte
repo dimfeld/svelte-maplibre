@@ -30,6 +30,12 @@
   }: Props = $props();
 </script>
 
+<!-- @component
+Add a MapLibre `hillshade` layer to the map. It shows terrain shading from a raster DEM source, such as `RasterDEMTileSource`.
+
+This is a thin wrapper around `Layer` with `type` set to `hillshade`. Place it inside a source component such as `GeoJSON`, or set the `source` prop.
+-->
+
 <Layer
   {id}
   type="hillshade"

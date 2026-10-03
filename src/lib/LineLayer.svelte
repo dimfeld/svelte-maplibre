@@ -37,6 +37,14 @@
   }: Props = $props();
 </script>
 
+<!-- @component
+Add a MapLibre `line` layer to the map. It shows line features, and the outlines of polygon features.
+
+This is a thin wrapper around `Layer` with `type` set to `line`. Place it inside a source component such as `GeoJSON`, or set the `source` prop.
+
+Set `manageHoverState` to set the `hover` feature state on the feature under the mouse. Bind to `hovered` to get that feature.
+-->
+
 <Layer
   {id}
   type="line"

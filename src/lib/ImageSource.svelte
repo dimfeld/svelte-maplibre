@@ -73,6 +73,12 @@
   });
 </script>
 
+<!-- @component
+Add an image to the map as a source. `url` is the image and `coordinates` gives the four corners of the image on the map.
+
+Place a `RasterLayer` inside this component's children to show the image. The children render only after the source is added. When `coordinates` changes, the component moves the image. `url` is applied only when the source is created.
+-->
+
 {#if source.value}
   {#key source.value}
     {@render children?.()}

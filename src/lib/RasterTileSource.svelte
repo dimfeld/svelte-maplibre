@@ -118,6 +118,14 @@
   });
 </script>
 
+<!-- @component
+Add a raster tile source to the map. Give the tiles with `tiles` (an array of tile URLs) or with `url`.
+
+Place a `RasterLayer` inside this component's children and it uses this source automatically. The children render only after the source is added.
+
+If `url` contains `pmtiles://`, the component registers the PMTiles protocol for you. When `tiles` changes, the component updates the tiles of the existing source. Most other props are applied only when the source is created.
+-->
+
 {#if source.value}
   {#key source.value}
     {@render children?.()}

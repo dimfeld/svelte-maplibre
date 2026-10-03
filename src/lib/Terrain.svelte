@@ -24,3 +24,9 @@
     }
   });
 </script>
+
+<!-- @component
+Show 3D terrain on the map. Set `source` to the ID of a `RasterDEMTileSource`.
+
+`exaggeration` sets the vertical scale of the terrain. The component removes the terrain when it is destroyed. It must be inside a `MapLibre` component and does not render anything.
+-->
