@@ -30,6 +30,12 @@
   }: Props = $props();
 </script>
 
+<!-- @component
+Add a MapLibre `raster` layer to the map. It shows raster tiles, such as from a `RasterTileSource`.
+
+This is a thin wrapper around `Layer` with `type` set to `raster`. Place it inside a source component such as `GeoJSON`, or set the `source` prop.
+-->
+
 <Layer
   {id}
   type="raster"

@@ -130,3 +130,65 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Documentation pages */
+@layer components {
+  .doc-page {
+    @apply mx-auto w-full max-w-4xl pb-16;
+  }
+
+  .doc-h1 {
+    @apply mt-2 mb-4 text-3xl font-bold tracking-tight;
+  }
+
+  .doc-h2 {
+    @apply mt-6 mb-3 text-xl font-semibold tracking-tight;
+  }
+
+  .doc-h3 {
+    @apply mt-5 mb-2 text-base font-semibold;
+  }
+
+  .doc-prose {
+    @apply leading-relaxed;
+  }
+
+  .doc-prose p,
+  .doc-prose ul,
+  .doc-prose pre {
+    @apply my-2;
+  }
+
+  .doc-prose ul {
+    @apply list-disc pl-6;
+  }
+
+  .doc-prose a {
+    @apply underline underline-offset-4;
+  }
+
+  .doc-prose code,
+  .doc-type {
+    @apply bg-muted rounded px-1 py-0.5 font-mono text-[0.875em];
+  }
+
+  .doc-type a {
+    @apply underline decoration-dotted underline-offset-2;
+  }
+
+  .doc-prose pre {
+    @apply bg-muted overflow-x-auto rounded-lg p-3 text-sm;
+  }
+
+  .doc-prose pre code {
+    @apply bg-transparent p-0;
+  }
+
+  .doc-badge {
+    @apply bg-secondary text-secondary-foreground rounded border px-1.5 py-0.5 text-xs font-medium;
+  }
+
+  .doc-badge-required {
+    @apply border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300;
+  }
+}

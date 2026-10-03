@@ -37,7 +37,7 @@
     return eventCbs['on' + event];
   }
 
-  function sendEvent(e: maplibregl.MapLibreEvent<unknown>) {
+  function sendEvent(e: maplibregl.Event) {
     getHandler(e.type as EventName)?.(e);
   }
 
@@ -108,3 +108,9 @@
     }
   });
 </script>
+
+<!-- @component
+Listen to events on the map from inside a `MapLibre` component. Each `on*` prop adds a listener for the event with the same name.
+
+Set `layer` to listen only to mouse events on that layer, such as `click`, `mousemove`, or `contextmenu`. This component does not render anything.
+-->

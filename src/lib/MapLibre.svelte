@@ -249,9 +249,9 @@
   let sourcesToReAddAfterStyleChange: Record<string, SourceSpecification> | undefined =
     $state(undefined);
 
-  function handleError(event: ErrorEvent) {
+  function handleError(event: ErrorEvent | maplibregl.ErrorEvent) {
     if (onerror) {
-      onerror(event);
+      onerror(event as Partial<ErrorEvent>);
     } else if (event.error.name !== 'AbortError') {
       // If there's no error handler, just log it to match the default behavior from MapLibre.
       // But skip AbortError since that's a normal thing that happens inside certain sources,
@@ -531,6 +531,16 @@
     }
   }
 </script>
+
+<!-- @component
+Create a MapLibre map. Put all other components of this library inside this component's children.
+
+This component makes the map context. Sources, layers, markers, popups and controls inside it use this context to find the map. The children render only after the map is created, and they receive `map`, `loaded`, `loadedImages`, and `allImagesLoaded`.
+
+`center`, `zoom`, `pitch`, `bearing`, and `bounds` are bindable. The component updates them when the map stops moving, and it moves the map when you change them. `map`, `mapContainer`, and `loaded` are also bindable. Most other options, such as `minZoom`, `maxZoom`, `interactive`, and `transformRequest`, are applied only when the map is created.
+
+When `style` changes, the component keeps the sources and layers that you added and adds them again after the new style loads. It also loads `images` again. Set `hash` to keep the viewport in the URL hash. Set `standardControls` to add the navigation, geolocate, fullscreen, and scale controls.
+-->
 
 <svelte:window onhashchange={onHashChange} />
 

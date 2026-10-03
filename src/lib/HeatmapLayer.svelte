@@ -37,6 +37,12 @@
   }: Props = $props();
 </script>
 
+<!-- @component
+Add a MapLibre `heatmap` layer to the map. It shows the density of point features as a heatmap.
+
+This is a thin wrapper around `Layer` with `type` set to `heatmap`. Place it inside a source component such as `GeoJSON`, or set the `source` prop.
+-->
+
 <Layer
   {id}
   type="heatmap"

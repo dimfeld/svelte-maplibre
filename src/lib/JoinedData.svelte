@@ -56,3 +56,11 @@
     }
   });
 </script>
+
+<!-- @component
+Join a table of data to the features of a source with feature state. Put this component inside a source component, such as `VectorTileSource` or `GeoJSON`.
+
+For each row in `data`, the component finds the feature whose ID is the value of the `idCol` column, and sets the values of the row as the feature state of that feature. Use `sourceLayer` with vector tile sources. You can then use `feature-state` expressions in layer paint properties to style the features.
+
+When a row is removed from `data`, the component removes the feature state keys for that feature. It does not change other state on the feature, such as hover state. This component does not render anything.
+-->

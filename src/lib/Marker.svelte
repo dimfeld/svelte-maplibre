@@ -240,6 +240,14 @@
   }
 </script>
 
+<!-- @component
+Show a marker on the map at `lngLat`. The children of this component become the marker element, so you can use any HTML as the marker.
+
+Set `draggable` to let the user move the marker. `lngLat` is bindable, and it updates when the user drags the marker. `draggable` and `anchor` are applied only when the marker is created. `lngLat`, `offset`, `rotation`, `opacity`, and `class` update the existing marker.
+
+The marker sends click, mouse, and drag events. Set `interactive` to `false` to stop them. Set `asButton` to make the marker tabbable with a `button` role. Put a `Popup` inside the children to attach a popup to the marker.
+-->
+
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <div
   use:addMarker

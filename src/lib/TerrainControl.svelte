@@ -27,3 +27,9 @@
     }
   });
 </script>
+
+<!-- @component
+Add the MapLibre terrain control to the map. This control shows a button that turns 3D terrain on and off.
+
+Put it inside the `MapLibre` component. Set `source` to the ID of a raster DEM source, and `exaggeration` to the terrain height multiplier. The component uses the props only when it creates the control.
+-->

@@ -37,6 +37,12 @@
   }: Props = $props();
 </script>
 
+<!-- @component
+Add a MapLibre `background` layer to the map. A background layer fills the full map with a color or a pattern.
+
+This is a thin wrapper around `Layer` with `type` set to `background`. It does not use a source, so you can put it anywhere inside the map.
+-->
+
 <Layer
   {id}
   type="background"

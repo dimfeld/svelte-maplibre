@@ -126,6 +126,14 @@
   });
 </script>
 
+<!-- @component
+Add a GeoJSON source to the map. `data` can be a GeoJSON object or a URL.
+
+Place layer components inside this component's children and they use this source automatically. The children render only after the source is added. When `data` changes, the component calls `setData` on the source.
+
+Set `cluster` to group nearby points into clusters. Changes to `cluster.maxZoom` and `cluster.radius` apply to the existing source. Most other props are applied only when the source is created. If `id` changes, the component creates a new source.
+-->
+
 {#if source.value}
   {#key source.value}
     {@render children?.()}

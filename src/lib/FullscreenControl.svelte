@@ -41,3 +41,9 @@
     }
   });
 </script>
+
+<!-- @component
+Add the MapLibre fullscreen control to the map. This control shows a button that toggles fullscreen mode.
+
+Put it inside the `MapLibre` component. Set `container` to an element or a CSS selector to make that element fullscreen instead of the map. The component uses the props only when it creates the control.
+-->

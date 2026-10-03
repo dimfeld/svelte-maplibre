@@ -123,6 +123,14 @@
   });
 </script>
 
+<!-- @component
+Load TopoJSON data, convert it to GeoJSON, and add it to the map as a `GeoJSON` source. Give the data with `data` or with `url`. If you give both, `url` is used.
+
+The conversion uses the `topojson-client` package, which you must install. `objectName` selects the object to convert. If you do not set it, the component uses the first object in the topology.
+
+Place layer components inside this component's children and they use this source automatically. The children render only after the data is converted. `ondata` receives the converted `FeatureCollection`, and `onerror` receives an error message if the fetch or conversion fails. The other props pass through to `GeoJSON`.
+-->
+
 {#if geojson}
   <GeoJSON
     data={geojson}

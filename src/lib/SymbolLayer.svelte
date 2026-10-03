@@ -39,6 +39,16 @@
   }: Props = $props();
 </script>
 
+<!-- @component
+Add a MapLibre `symbol` layer to the map. It shows icons and text labels for features.
+
+This is a thin wrapper around `Layer` with `type` set to `symbol`. Place it inside a source component such as `GeoJSON`, or set the `source` prop.
+
+Set `applyToClusters` to `true` to show only clustered points, or to `false` to show only points that are not clusters.
+
+Set `manageHoverState` to set the `hover` feature state on the feature under the mouse. Bind to `hovered` to get that feature.
+-->
+
 <Layer
   {id}
   type="symbol"
