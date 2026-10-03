@@ -37,7 +37,7 @@
     return eventCbs['on' + event];
   }
 
-  function sendEvent(e: maplibregl.MapLibreEvent<unknown>) {
+  function sendEvent(e: maplibregl.Event) {
     getHandler(e.type as EventName)?.(e);
   }
 

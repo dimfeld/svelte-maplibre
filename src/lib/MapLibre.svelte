@@ -249,9 +249,9 @@
   let sourcesToReAddAfterStyleChange: Record<string, SourceSpecification> | undefined =
     $state(undefined);
 
-  function handleError(event: ErrorEvent) {
+  function handleError(event: ErrorEvent | maplibregl.ErrorEvent) {
     if (onerror) {
-      onerror(event);
+      onerror(event as Partial<ErrorEvent>);
     } else if (event.error.name !== 'AbortError') {
       // If there's no error handler, just log it to match the default behavior from MapLibre.
       // But skip AbortError since that's a normal thing that happens inside certain sources,
